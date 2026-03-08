@@ -1,0 +1,59 @@
+{
+  "name": "vdb-digital",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "postinstall": "prisma generate",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:seed": "prisma db seed",
+    "audit:worker": "tsx scripts/run-audit-worker.ts",
+    "test:audit-scoring": "tsx modules/audit/__tests__/scoring.test.ts"
+  },
+  "dependencies": {
+    "bullmq": "^5.34.5",
+    "ioredis": "^5.4.1",
+    "@prisma/client": "6.19.2",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.47.10",
+    "bcryptjs": "latest",
+    "cheerio": "latest",
+    "framer-motion": "latest",
+    "jose": "latest",
+    "leva": "^0.10.1",
+    "next": "latest",
+    "nodemailer": "latest",
+    "openai": "latest",
+    "pdf-lib": "^1.17.1",
+    "react": "latest",
+    "react-dom": "latest",
+    "stripe": "^17.7.0",
+    "three": "^0.183.2",
+    "zod": "^4.3.6"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/nodemailer": "^7.0.11",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "prisma": "6.19.2",
+    "tailwindcss": "3.4.4",
+    "tsx": "^4.19.0",
+    "typescript": "latest"
+  }
+}

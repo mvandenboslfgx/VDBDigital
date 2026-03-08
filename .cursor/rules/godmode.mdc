@@ -1,0 +1,131 @@
+PROJECT: VDB Digital Platform
+
+You are working on the VDB Digital AI SaaS platform.
+
+This platform must follow these permanent rules.
+
+--------------------------------------------------
+
+CORE PHILOSOPHY
+
+The platform must be AI-first.
+
+The goal is that almost everything can be done automatically by AI while the owner only supervises and manages.
+
+The owner should not need to manually perform technical tasks.
+
+The system should automate as much work as possible.
+
+--------------------------------------------------
+
+PLATFORM GOAL
+
+Build an AI-driven online growth platform for businesses.
+
+The platform must allow users to:
+
+- analyze their website
+- receive AI growth insights
+- improve SEO
+- improve conversions
+- generate marketing strategies
+- generate landing pages
+- manage leads
+- view analytics
+
+Everything must be accessible online in one central dashboard.
+
+--------------------------------------------------
+
+CONTROL CENTER
+
+The platform should function as a central control center similar to:
+
+Shopify
+Stripe
+Linear
+
+The owner must be able to manage:
+
+users
+leads
+subscriptions
+AI usage
+revenue
+analytics
+system health
+chat conversations
+
+from one admin panel.
+
+--------------------------------------------------
+
+LANGUAGE
+
+All user-facing text must be written in professional Dutch.
+
+Examples:
+
+Start analyse
+Bekijk dashboard
+Upgrade abonnement
+Instellingen
+Statistieken
+AI-analyse
+
+English may only be used internally in code.
+
+--------------------------------------------------
+
+AUTOMATION
+
+The system should automate workflows whenever possible.
+
+Example automations:
+
+website scan → AI report → email report → save lead
+chat message → notification → admin reply
+subscription purchase → upgrade account automatically
+
+AI should perform analysis and content generation whenever possible.
+
+--------------------------------------------------
+
+USER EXPERIENCE
+
+The platform must feel like a premium SaaS product.
+
+Design inspiration:
+
+Stripe
+Vercel
+Linear
+Apple
+
+Use:
+
+clean layouts
+glass cards
+modern typography
+smooth animations
+dark luxury theme
+
+--------------------------------------------------
+
+PERFORMANCE
+
+The application must remain fast and scalable.
+
+Use:
+
+lazy loading
+optimized queries
+caching where possible
+
+--------------------------------------------------
+
+DEVELOPMENT RULE
+
+Cursor should always prefer solutions where the system performs tasks automatically rather than requiring manual actions from the owner.
+
+The owner supervises the system instead of operating it manually.

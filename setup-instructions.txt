@@ -1,0 +1,74 @@
+VDB DIGITAL PROJECT SETUP
+
+1. .gitignore regels toevoegen
+
+Open .gitignore en zorg dat dit erin staat:
+
+/private
+.env
+node_modules
+.next
+
+
+2. Private map gebruiken
+
+De map /private bevat interne documenten en mag nooit naar GitHub.
+
+Bestanden in /private:
+
+private/brandbook.md
+private/founder-story.md
+private/strategy.md
+
+
+3. Brandbook inhoud
+
+# VDB Digital Brandbook (Private)
+
+Brand: VDB Digital
+Legal name: VDB Digital Software
+Founder: Matthijs van den Bos
+
+Mission:
+VDB Digital helps businesses grow using technology, automation and AI tools.
+
+Vision:
+Create a platform where businesses can manage websites, marketing and analytics in one place.
+
+Core Values:
+- Simplicity
+- Automation
+- Performance
+- Innovation
+- Transparency
+
+
+4. Founder Story
+
+Matthijs van den Bos has a background in sales and commercial environments including telecom and multiple industries.
+
+Through experience building websites, running dropshipping projects and working with online systems he discovered that digital tools are often fragmented and complicated.
+
+Businesses often need multiple platforms for websites, marketing, analytics and automation.
+
+VDB Digital was created to simplify digital growth and give entrepreneurs one place where they can manage everything.
+
+
+5. Cursor instruction
+
+Analyze the entire VDB Digital repository.
+
+Improve the architecture to support a scalable SaaS platform.
+
+Add modules:
+
+- user dashboard
+- admin panel
+- AI tools
+- business calculators
+- Stripe subscriptions
+- secure authentication
+
+Keep private documentation inside /private.
+
+Ensure best practices for a Next.js SaaS architecture.

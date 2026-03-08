@@ -1,0 +1,201 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design system spacing: 4 / 8 / 16 / 24 / 32 / 48 / 64 */
+:root {
+  --space-1: 0.25rem;   /* 4 */
+  --space-2: 0.5rem;    /* 8 */
+  --space-4: 1rem;      /* 16 */
+  --space-6: 1.5rem;   /* 24 */
+  --space-8: 2rem;     /* 32 */
+  --space-12: 3rem;     /* 48 */
+  --space-16: 4rem;     /* 64 */
+  --radius-panel: 1rem;
+  --radius-button: 0.75rem;
+  --gold: #C6A95D;
+  --gold-hover: #B89B50;
+  --gold-muted: rgba(198, 169, 93, 0.15);
+  /* VDB Digital — Premium SaaS design system */
+  --ds-bg: #F4F6FB;
+  --ds-surface: #FFFFFF;
+  --ds-border: #E2E8F0;
+  --ds-text: #0F172A;
+  --ds-text-secondary: #64748B;
+  --ds-text-muted: #64748B;
+  --ds-primary: #4F46E5;
+  --ds-primary-hover: #4338CA;
+  --ds-accent: #7C3AED;
+  --ds-accent-hover: #6D28D9;
+}
+
+/* Premium SaaS utility classes */
+.saas-bg {
+  background-color: var(--ds-bg);
+}
+.saas-card {
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+}
+.saas-border {
+  border-color: var(--ds-border);
+}
+.saas-primary {
+  color: var(--ds-primary);
+}
+.saas-primary-bg {
+  background-color: var(--ds-primary);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0a0a0b;
+  color: rgb(250 250 250);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: rgba(198, 169, 93, 0.25);
+  color: #fafafa;
+}
+
+/* Typography hierarchy */
+.text-hero {
+  @apply text-4xl font-semibold tracking-tight md:text-5xl lg:text-6xl xl:text-display-xl text-white;
+  letter-spacing: -0.02em;
+}
+
+.text-section {
+  @apply text-2xl font-semibold tracking-tight md:text-3xl text-white;
+  letter-spacing: -0.01em;
+}
+
+.text-sub {
+  @apply text-base text-zinc-400 md:text-body-lg;
+}
+
+.text-label {
+  @apply text-xs font-medium uppercase tracking-wider text-zinc-500;
+}
+
+/* Light marketing theme (used inside SiteShell) — Design System aligned */
+.marketing .section-heading {
+  @apply text-marketing-textMuted;
+}
+.marketing .section-title {
+  @apply text-marketing-text;
+}
+.marketing .text-sub {
+  @apply text-marketing-textSecondary;
+}
+
+/* Inputs inside marketing: premium SaaS */
+.marketing input[type="text"],
+.marketing input[type="url"],
+.marketing input[type="email"],
+.marketing input[type="password"] {
+  @apply border border-gray-200 rounded-xl bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all;
+}
+.marketing label {
+  @apply text-slate-900;
+}
+
+/* Design System — container & section spacing */
+.ds-container {
+  @apply mx-auto max-w-7xl px-6;
+}
+
+/* Design System — cards */
+.ds-card {
+  @apply rounded-2xl border border-marketing-border bg-white p-8 shadow-ds-card transition-shadow hover:shadow-ds-card-hover;
+}
+
+/* Design System — buttons (supplement to Button component) */
+.ds-btn-primary {
+  @apply inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-white font-medium shadow-sm transition-all hover:bg-indigo-700 hover:scale-[1.02];
+}
+.ds-btn-secondary {
+  @apply inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-6 py-3 font-medium text-slate-900 transition-all hover:bg-gray-50 hover:scale-[1.02];
+}
+
+/* Design System — alternating section backgrounds */
+.ds-section-alt {
+  @apply bg-slate-50;
+}
+
+/* Glass panel */
+.glass-panel {
+  @apply rounded-2xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-xl;
+  box-shadow: 0 4px 24px -1px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+.panel-elevated {
+  @apply rounded-2xl border border-white/[0.06] bg-[#111113];
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+/* Buttons - use UI Button component; keep legacy classes for gradual migration */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-black transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  background: var(--gold);
+  box-shadow: 0 0 0 0 rgba(198, 169, 93, 0.4);
+}
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 0 24px 4px rgba(198, 169, 93, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-medium text-zinc-200 transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-white disabled:opacity-50;
+}
+
+.section-container {
+  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.section-heading {
+  @apply text-label text-zinc-500;
+}
+
+.section-title {
+  @apply text-section mt-2;
+}
+
+.input-base {
+  @apply w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder-zinc-500 transition-colors focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30;
+}
+
+.error-text {
+  @apply mt-2 text-sm text-red-400;
+}
+
+.success-text {
+  @apply mt-3 text-sm text-emerald-400;
+}
+
+@keyframes goldSweep {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-gold-sweep {
+  background-size: 200% auto;
+  animation: goldSweep 6s linear infinite;
+}
+
+/* Skeleton loading */
+.skeleton {
+  @apply animate-pulse rounded-lg bg-white/10;
+}

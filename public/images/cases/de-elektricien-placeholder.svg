@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+  <rect width="1280" height="720" fill="#0f0f0f"/>
+  <rect x="1" y="1" width="1278" height="718" stroke="rgba(255,255,255,0.1)" stroke-width="1" fill="none" rx="8"/>
+  <text x="640" y="320" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="system-ui,sans-serif" font-size="28" font-weight="600">De Elektricien</text>
+  <text x="640" y="360" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="system-ui,sans-serif" font-size="16">de-elektricien.nl</text>
+  <text x="640" y="420" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="system-ui,sans-serif" font-size="14">Voeg een screenshot toe aan public/images/cases/de-elektricien-preview.png</text>
+  <text x="640" y="455" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="system-ui,sans-serif" font-size="12">Of klik op de knop hieronder om de live site te openen</text>
+</svg>

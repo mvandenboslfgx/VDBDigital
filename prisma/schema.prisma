@@ -1,0 +1,586 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "binary"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum ProjectStatus {
+  draft
+  in_progress
+  review
+  completed
+}
+
+enum InvoiceStatus {
+  pending
+  paid
+  overdue
+  cancelled
+}
+
+enum WebsiteStatus {
+  draft
+  building
+  live
+}
+
+enum UserRole {
+  lead
+  customer
+  pro
+  admin
+  owner
+}
+
+enum MaintenanceType {
+  update
+  backup
+  security_check
+  fix
+}
+
+enum TaskStatus {
+  todo
+  in_progress
+  done
+  cancelled
+}
+
+enum CalculatorType {
+  roi
+  breakEven
+  priceIncrease
+  subscriptionVsOneTime
+  freelancerRate
+  discountImpact
+  financeCheck
+}
+
+model Lead {
+  id          String       @id @default(uuid())
+  name        String
+  email       String       @unique
+  company     String?
+  message     String
+  website     String?
+  source      String       @default("contact")
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  leadScore   Int?         @default(0)
+  convertedAt DateTime?
+  client        Client?       @relation("LeadToClient")
+  auditResult   AuditResult?
+  auditReports  AuditReport[]
+  createdAt     DateTime      @default(now())
+
+  @@index([email])
+  @@index([source])
+  @@index([convertedAt])
+  @@index([createdAt])
+  @@index([leadScore])
+}
+
+model Client {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  userId    String?   @unique
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  leadId    String?   @unique
+  lead      Lead?     @relation("LeadToClient", fields: [leadId], references: [id])
+  websites  Website[]
+  invoices  Invoice[]
+  projects  Project[]
+  createdAt DateTime  @default(now())
+
+  @@index([email])
+}
+
+model Website {
+  id             String           @id @default(uuid())
+  domain         String
+  previewUrl      String?
+  status         WebsiteStatus    @default(draft)
+  clientId       String
+  client         Client           @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  projectId      String?          @unique
+  project        Project?         @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  maintenanceLogs MaintenanceLog[]
+  createdAt      DateTime         @default(now())
+
+  @@index([clientId])
+}
+
+model AuditResult {
+  id              String   @id @default(uuid())
+  leadId          String   @unique
+  lead            Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  url             String
+  score           Int
+  seoIssues       Json     @default("[]")
+  uxIssues        Json     @default("[]")
+  speedIssues     Json     @default("[]")
+  recommendations Json    @default("[]")
+  createdAt       DateTime @default(now())
+
+  @@index([url])
+}
+
+model AuditReport {
+  id            String   @id @default(uuid())
+  leadId        String
+  lead          Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  url           String
+  seoScore      Int
+  perfScore     Int
+  uxScore       Int
+  convScore     Int
+  summary       String   @db.Text
+  shareSlug     String?  @unique
+  improvements  Json?    @default("[]")  // [{ text, aiFix? }]
+  technicalData Json?    // { h1Count, imagesMissingAlt, internalLinks, ... } for transparency
+  scanConfidence Int?    // 0-100, lower if fetch or PageSpeed failed
+  createdAt     DateTime @default(now())
+
+  @@index([leadId])
+  @@index([createdAt])
+  @@index([shareSlug])
+}
+
+model Invoice {
+  id          String        @id @default(uuid())
+  clientId    String
+  client      Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  amount      Int
+  currency    String        @default("eur")
+  status      InvoiceStatus @default(pending)
+  dueDate     DateTime?
+  description String?
+  createdAt   DateTime      @default(now())
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  name      String
+  rating    Int
+  content   String
+  createdAt DateTime @default(now())
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([projectId])
+}
+
+model Plan {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  price     Int
+  credits   Int?     // null = unlimited
+  features  Json?    @default("{}")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  users     User[]
+
+  @@index([active])
+}
+
+model User {
+  id                    String    @id
+  email                 String    @unique
+  password              String?
+  role                  UserRole  @default(lead)
+  newsletterOptIn       Boolean   @default(false)
+  planId                String?
+  plan                  Plan?     @relation(fields: [planId], references: [id], onDelete: SetNull)
+  credits               Int?
+  companyName           String?
+  industry              String?
+  onboardingCompleted   Boolean   @default(false)
+  onboardingStep        Int       @default(0)
+  auditCountCurrentMonth Int      @default(0)
+  lastAuditResetAt      DateTime?
+  stripeCustomerId      String?   @unique
+  stripeSubscriptionId  String?
+  disabledAt            DateTime?
+  client                Client?
+  websiteProjects       WebsiteProject[]
+  aiUsage               AIUsage[]
+  calculatorResults     CalculatorResult[]
+  leadScores            LeadScore[]
+  auditHistories        AuditHistory[]
+  usageEvents           UsageEvent[]
+  agencyBranding        AgencyBranding?
+  ownedTeams            Team[]
+  teamMemberships       TeamMember[]
+  createdAt             DateTime  @default(now())
+
+  @@index([planId])
+  @@index([role])
+}
+
+model AgencyBranding {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logoUrl     String?
+  companyName String?
+  primaryColor String?  @default("#C6A95D")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Team {
+  id        String        @id @default(uuid())
+  ownerId   String
+  owner     User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime      @default(now())
+  members   TeamMember[]
+  invites   TeamInvite[]
+
+  @@index([ownerId])
+}
+
+model TeamMember {
+  id        String   @id @default(uuid())
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   @default("member")  // owner | admin | member
+  createdAt DateTime @default(now())
+
+  @@unique([teamId, userId])
+  @@index([teamId])
+  @@index([userId])
+}
+
+model TeamInvite {
+  id        String   @id @default(uuid())
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  email     String
+  role      String   @default("member")
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([teamId])
+  @@index([token])
+}
+
+model LeadScore {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  website    String
+  score      Int
+  seoScore   Int
+  perfScore  Int
+  uxScore    Int
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model WebsiteProject {
+  id              String         @id @default(uuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  domain          String
+  createdAt       DateTime       @default(now())
+  auditHistories  AuditHistory[]
+
+  @@unique([userId, domain])
+  @@index([userId])
+}
+
+model AuditHistory {
+  id                String         @id @default(uuid())
+  userId            String
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  websiteProjectId  String?
+  websiteProject    WebsiteProject? @relation(fields: [websiteProjectId], references: [id], onDelete: SetNull)
+  website           String
+  seoScore          Int
+  perfScore         Int
+  uxScore           Int
+  convScore         Int
+  summary           String         @db.Text
+  improvements      Json?          @default("[]")
+  auditReportId     String?        @unique
+  createdAt         DateTime       @default(now())
+
+  @@index([userId])
+  @@index([websiteProjectId])
+  @@index([createdAt])
+}
+
+model UsageEvent {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  event     String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([event])
+  @@index([createdAt])
+}
+
+model AIUsage {
+  id         String   @id @default(uuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  tool       String
+  tokens     Int?
+  creditsUsed Int?    @default(0)
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([tool])
+  @@index([createdAt])
+}
+
+model CalculatorResult {
+  id        String         @id @default(uuid())
+  userId    String?
+  user      User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  type      CalculatorType
+  inputs    Json
+  result    Json
+  createdAt DateTime       @default(now())
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model RegistrationNewsletter {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  newsletterOptIn Boolean
+  createdAt      DateTime @default(now())
+
+  @@index([email])
+}
+
+model Project {
+  id           String          @id @default(uuid())
+  name         String
+  status       ProjectStatus   @default(draft)
+  showcase     Boolean         @default(false)
+  clientId     String
+  client       Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  website      Website?
+  tasks        Task[]
+  createdAt    DateTime        @default(now())
+  files        ProjectFile[]
+  requests     ProjectRequest[]
+  reviewTokens ReviewToken[]
+  reviews      Review[]
+  satisfaction Int?
+
+  @@index([clientId])
+  @@index([showcase])
+}
+
+model Task {
+  id          String     @id @default(uuid())
+  projectId   String
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  status      TaskStatus @default(todo)
+  dueDate     DateTime?
+  createdAt   DateTime   @default(now())
+
+  @@index([projectId])
+  @@index([status])
+}
+
+model MaintenanceLog {
+  id        String         @id @default(uuid())
+  websiteId String
+  website   Website        @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  type      MaintenanceType
+  note      String?
+  createdAt DateTime       @default(now())
+
+  @@index([websiteId])
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  source    String?  @default("website")
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
+model ProjectFile {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  filename  String
+  mimetype  String
+  size      Int
+  data      Bytes
+  createdAt DateTime @default(now())
+
+  @@index([projectId])
+}
+
+model ProjectRequest {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  type      String
+  message   String
+  createdAt DateTime @default(now())
+
+  @@index([projectId])
+  @@index([type])
+}
+
+model ReviewToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  usedAt    DateTime?
+  expiresAt DateTime?
+
+  @@index([projectId])
+  @@index([token])
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(uuid())
+  userId    String?
+  type      String
+  value     Int?
+  path      String?
+  metadata  Json?    @default("{}")
+  createdAt DateTime @default(now())
+
+  @@index([type, createdAt])
+  @@index([path])
+  @@index([userId])
+}
+
+model ContentBlock {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model PackageConfig {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  price       Int
+  description String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model AuditCache {
+  id        String   @id @default(cuid())
+  url       String   @unique
+  score     Int
+  result    Json
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model PublicAudit {
+  id        String   @id @default(cuid())
+  domain    String   @unique
+  score     Int
+  result    Json
+  createdAt DateTime @default(now())
+
+  @@index([domain])
+  @@index([createdAt])
+}
+
+model ProcessedStripeEvent {
+  id        String   @id
+  createdAt DateTime @default(now())
+
+  @@index([id])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  event     String
+  userId    String?
+  metadata  Json?    @default("{}")
+  createdAt DateTime @default(now())
+
+  @@index([event])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model ChatConversation {
+  id           String        @id @default(uuid())
+  visitorId    String?       // optional: User.id when logged in
+  visitorEmail String
+  visitorName  String?
+  subject      String?       @default("Chat")
+  status       String        @default("open") // open | closed
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  messages     ChatMessage[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model ChatMessage {
+  id             String           @id @default(uuid())
+  conversationId String
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  fromAdmin      Boolean          @default(false)
+  authorId       String?          // User.id when fromAdmin
+  body           String           @db.Text
+  readAt         DateTime?        // when admin read visitor message
+  createdAt      DateTime         @default(now())
+
+  @@index([conversationId])
+  @@index([createdAt])
+}
+
+model Article {
+  id            String    @id @default(uuid())
+  title         String
+  slug          String    @unique
+  content       String    @db.Text
+  category      String
+  publishedAt   DateTime?
+  author        String    @default("VDB Digital")
+  seoTitle      String?
+  seoDescription String?  @db.VarChar(500)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([category])
+  @@index([publishedAt])
+}

@@ -1,0 +1,17 @@
+# Local PostgreSQL for development and migration validation.
+# Run: docker compose up -d
+# Then set in .env: DATABASE_URL="postgresql://postgres:postgres@localhost:5432/vdbdigital"
+#                  DIRECT_URL="postgresql://postgres:postgres@localhost:5432/vdbdigital"
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: vdbdigital
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata: {}
