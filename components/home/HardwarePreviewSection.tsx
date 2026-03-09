@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 const PRODUCTS = [
-  { name: "Smart TV Box Pro", href: "/apparaten/smart-tv-box-pro", price: "€129" },
-  { name: "Streaming Box Mini", href: "/apparaten/streaming-box-mini", price: "€79" },
+  { name: "Android 14 Smart TV Box 8K", href: "/products/android-14-tv-box", price: "€89,00 excl. btw", image: "/products/tvbox1.jpg" },
+  { name: "Alle producten", href: "/products", price: "Bekijk het aanbod", image: null },
 ];
 
 export default function HardwarePreviewSection() {
@@ -45,18 +46,22 @@ export default function HardwarePreviewSection() {
             >
               <Link
                 href={product.href}
-                className="group block rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-shadow hover:border-indigo-200 hover:shadow-md"
+                className="group block rounded-2xl border border-gray-200 bg-surface p-8 shadow-sm transition-shadow hover:border-blue-200 hover:shadow-md"
               >
-                <div className="aspect-video rounded-xl bg-slate-100 flex items-center justify-center">
-                  <span className="text-sm text-marketing-textSecondary">Product</span>
+                <div className="aspect-video rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden">
+                  {product.image ? (
+                    <Image src={product.image} alt={product.name} width={400} height={225} className="h-full w-full object-contain" />
+                  ) : (
+                    <span className="text-sm text-marketing-textSecondary">Producten bekijken</span>
+                  )}
                 </div>
-                <h3 className="mt-4 text-xl font-semibold text-marketing-text group-hover:text-indigo-600 transition-colors">
+                <h3 className="mt-4 text-xl font-semibold text-marketing-text group-hover:text-blue-600 transition-colors">
                   {product.name}
                 </h3>
                 <p className="mt-2 text-lg font-medium text-marketing-textSecondary">
                   {product.price}
                 </p>
-                <span className="mt-4 inline-block text-sm font-medium text-gold">
+                <span className="mt-4 inline-block text-sm font-medium text-blue-600 group-hover:text-blue-700">
                   Bekijk product →
                 </span>
               </Link>
@@ -70,10 +75,10 @@ export default function HardwarePreviewSection() {
           className="mt-10 text-center"
         >
           <Link
-            href="/apparaten"
-            className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700"
+            href="/products"
+            className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
           >
-            Alle apparaten
+            Alle producten
           </Link>
         </motion.div>
       </div>

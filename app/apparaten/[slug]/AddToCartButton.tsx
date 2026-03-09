@@ -18,7 +18,7 @@ export function AddToCartButton({
     return (
       <Link
         href="/apparaten"
-        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-8 py-4 text-lg font-semibold text-marketing-text transition-colors hover:bg-slate-50"
+        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-surface px-8 py-4 text-lg font-semibold text-marketing-text transition-colors hover:bg-slate-50"
       >
         Bekijk accessoires
       </Link>
@@ -41,7 +41,7 @@ export function AddToCartButton({
       <button
         type="button"
         onClick={handleAdd}
-        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-8 py-4 text-lg font-semibold text-marketing-text transition-colors hover:bg-slate-50"
+        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-surface px-8 py-4 text-lg font-semibold text-marketing-text transition-colors hover:bg-slate-50"
       >
         {added ? "Toegevoegd ✓" : "In winkelwagen"}
       </button>

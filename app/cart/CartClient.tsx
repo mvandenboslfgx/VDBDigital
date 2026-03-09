@@ -27,7 +27,7 @@ export function CartClient() {
 
   if (!mounted) {
     return (
-      <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-12 text-center text-marketing-textSecondary">
+      <div className="mt-10 rounded-2xl border border-slate-200 bg-surface p-12 text-center text-marketing-textSecondary">
         Winkelwagen laden…
       </div>
     );
@@ -35,7 +35,7 @@ export function CartClient() {
 
   if (items.length === 0) {
     return (
-      <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-12 text-center">
+      <div className="mt-10 rounded-2xl border border-slate-200 bg-surface p-12 text-center">
         <p className="text-lg text-marketing-textSecondary">Je winkelwagen is leeg.</p>
         <Link
           href="/apparaten"
@@ -49,7 +49,7 @@ export function CartClient() {
 
   return (
     <div className="mt-10 space-y-6">
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-2xl border border-slate-200 bg-surface shadow-sm overflow-hidden">
         <ul className="divide-y divide-slate-200">
           {items.map((item) => (
             <li key={item.slug} className="flex items-center justify-between gap-4 p-6">

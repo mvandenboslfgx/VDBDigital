@@ -87,7 +87,7 @@ export default async function KennisbankSlugPage({
               <Link
                 key={article.title}
                 href={article.href}
-                className="block rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all hover:border-gold/30 hover:shadow-md"
+                className="block rounded-2xl border border-slate-200 bg-surface p-8 shadow-sm transition-all hover:border-gold/30 hover:shadow-md"
               >
                 <h2 className="text-xl font-semibold text-marketing-text">{article.title}</h2>
                 <p className="mt-2 text-lg text-marketing-textSecondary">{article.excerpt}</p>

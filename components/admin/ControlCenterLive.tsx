@@ -42,7 +42,7 @@ function ActivityRow({ item }: { item: ActivityItem }) {
     return (
       <div className="flex items-center justify-between gap-4 py-2 border-b border-white/5 last:border-0">
         <div className="flex items-center gap-3 min-w-0">
-          <span className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-600 text-xs font-medium">
+          <span className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-blue-600 text-xs font-medium">
             User
           </span>
           <span className="truncate text-sm text-white">{item.email}</span>

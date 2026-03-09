@@ -27,12 +27,12 @@ export default function ToolLandingSection({
 }: ToolLandingSectionProps) {
   return (
     <div className="space-y-10">
-      <section className="rounded-2xl border border-marketing-border bg-white p-6 shadow-marketing-card md:p-8">
+      <section className="rounded-2xl border border-marketing-border bg-surface p-6 shadow-marketing-card md:p-8">
         <h2 className="text-xl font-semibold text-marketing-text">Wat doet deze tool?</h2>
         <p className="mt-3 text-marketing-textSecondary leading-relaxed">{explanation}</p>
       </section>
 
-      <section className="rounded-2xl border border-marketing-border bg-white p-6 shadow-marketing-card md:p-8">
+      <section className="rounded-2xl border border-marketing-border bg-surface p-6 shadow-marketing-card md:p-8">
         <h2 className="text-xl font-semibold text-marketing-text">Voordelen</h2>
         <ul className="mt-4 list-disc space-y-2 pl-5 text-marketing-textSecondary">
           {benefits.map((b, i) => (
@@ -59,7 +59,7 @@ export default function ToolLandingSection({
       </section>
 
       {internalLinks.length > 0 && (
-        <nav className="rounded-2xl border border-marketing-border bg-white p-6" aria-label="Gerelateerde pagina&apos;s">
+        <nav className="rounded-2xl border border-marketing-border bg-surface p-6" aria-label="Gerelateerde pagina&apos;s">
           <h2 className="text-sm font-semibold text-marketing-textSecondary">Lees ook</h2>
           <ul className="mt-3 flex flex-wrap gap-4">
             {internalLinks.map((link) => (

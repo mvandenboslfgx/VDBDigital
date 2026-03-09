@@ -104,11 +104,11 @@ export default async function PublicAuditPage({
           </p>
         </header>
 
-        <section className="mt-10 rounded-2xl border border-gray-200 bg-white p-8 shadow-saas-card">
+        <section className="mt-10 rounded-2xl border border-gray-200 bg-surface p-8 shadow-saas-card">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500">
             Website score
           </h2>
-          <p className="mt-2 text-5xl font-bold text-indigo-600">{audit.score}/100</p>
+          <p className="mt-2 text-5xl font-bold text-blue-600">{audit.score}/100</p>
           {scores && (
             <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-600">
               <span>SEO {scores.seoScore}</span>
@@ -120,7 +120,7 @@ export default async function PublicAuditPage({
         </section>
 
         {recommendations.length > 0 && (
-          <section className="mt-8 rounded-2xl border border-gray-200 bg-white p-8 shadow-saas-card">
+          <section className="mt-8 rounded-2xl border border-gray-200 bg-surface p-8 shadow-saas-card">
             <h2 className="text-lg font-semibold text-slate-900">Belangrijkste aandachtspunten</h2>
             <ul className="mt-4 list-disc space-y-2 pl-5 text-slate-600">
               {recommendations.map((rec, i) => (
@@ -131,13 +131,13 @@ export default async function PublicAuditPage({
         )}
 
         {summary && (
-          <section className="mt-8 rounded-2xl border border-gray-200 bg-white p-8 shadow-saas-card">
+          <section className="mt-8 rounded-2xl border border-gray-200 bg-surface p-8 shadow-saas-card">
             <h2 className="text-lg font-semibold text-slate-900">Samenvatting</h2>
             <p className="mt-4 whitespace-pre-wrap text-slate-600">{summary}</p>
           </section>
         )}
 
-        <section className="mt-10 rounded-2xl border-2 border-indigo-200 bg-indigo-50/50 p-8 text-center">
+        <section className="mt-10 rounded-2xl border-2 border-blue-200 bg-blue-50/50 p-8 text-center">
           <h2 className="text-xl font-semibold text-slate-900">
             Controleer uw eigen website gratis
           </h2>
@@ -146,7 +146,7 @@ export default async function PublicAuditPage({
           </p>
           <Link
             href="/website-scan"
-            className="mt-6 inline-flex items-center justify-center rounded-xl bg-indigo-600 px-8 py-4 font-medium text-white shadow-sm transition hover:bg-indigo-700"
+            className="mt-6 inline-flex items-center justify-center rounded-xl bg-blue-600 px-8 py-4 font-medium text-white shadow-sm transition hover:bg-blue-700"
           >
             Controleer uw eigen website gratis
           </Link>

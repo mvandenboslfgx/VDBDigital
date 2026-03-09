@@ -201,7 +201,7 @@ export function ReportPublicClient({
           )}
 
           <nav className="mt-12 flex flex-wrap justify-center gap-4 text-center text-sm text-zinc-500" aria-label="Gerelateerde links">
-            <a href="/tools/website-audit" className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline">
+            <a href="/tools/website-audit" className="text-blue-600 font-medium hover:text-blue-700 hover:underline">
               Scan je eigen website
             </a>
             <a href="/kennis/seo" className="hover:text-zinc-300">Lees over SEO</a>

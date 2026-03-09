@@ -34,7 +34,7 @@ export default function CalculatorsPage() {
             <Link
               key={calc.slug}
               href={calc.href}
-              className="group rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all hover:border-gold/30 hover:shadow-md"
+              className="group rounded-2xl border border-slate-200 bg-surface p-8 shadow-sm transition-all hover:border-gold/30 hover:shadow-md"
             >
               <h2 className="text-xl font-semibold text-marketing-text group-hover:text-gold transition-colors">
                 {calc.title}

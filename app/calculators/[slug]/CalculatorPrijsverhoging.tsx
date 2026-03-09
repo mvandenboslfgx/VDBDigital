@@ -16,7 +16,7 @@ export function CalculatorPrijsverhoging() {
       : null;
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+    <div className="rounded-2xl border border-slate-200 bg-surface p-8 shadow-sm">
       <div className="space-y-4">
         <div>
           <label htmlFor="huidige" className="block text-sm font-medium text-marketing-text">

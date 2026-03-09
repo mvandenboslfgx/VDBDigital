@@ -46,23 +46,23 @@ export function ArticleLayout({ title, content, author, publishedAt }: ArticleLa
 
             {/* Internal links + CTA */}
             <nav
-              className="mt-14 rounded-2xl border border-slate-200 bg-white p-6 md:p-8"
+              className="mt-14 rounded-2xl border border-slate-200 bg-surface p-6 md:p-8"
               aria-label="Gerelateerde links"
             >
               <h2 className="text-lg font-semibold text-marketing-text">Meer ontdekken</h2>
               <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
                 <li>
-                  <Link href="/website-scan" className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline">
+                  <Link href="/website-scan" className="text-blue-600 font-medium hover:text-blue-700 hover:underline">
                     Website scan
                   </Link>
                 </li>
                 <li>
-                  <Link href="/tools" className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline">
+                  <Link href="/tools" className="text-blue-600 font-medium hover:text-blue-700 hover:underline">
                     Alle tools
                   </Link>
                 </li>
                 <li>
-                  <Link href="/calculators" className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline">
+                  <Link href="/calculators" className="text-blue-600 font-medium hover:text-blue-700 hover:underline">
                     Calculators
                   </Link>
                 </li>
@@ -70,7 +70,7 @@ export function ArticleLayout({ title, content, author, publishedAt }: ArticleLa
               <div className="mt-8">
                 <Link
                   href="/website-scan"
-                  className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700"
+                  className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
                 >
                   Start gratis website analyse
                 </Link>
@@ -80,7 +80,7 @@ export function ArticleLayout({ title, content, author, publishedAt }: ArticleLa
 
           {toc.length > 0 && (
             <aside className="hidden lg:block" aria-label="Inhoud">
-              <div className="sticky top-28 rounded-2xl border border-slate-200 bg-white p-6">
+              <div className="sticky top-28 rounded-2xl border border-slate-200 bg-surface p-6">
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-marketing-textSecondary">
                   Inhoud
                 </h2>
@@ -92,7 +92,7 @@ export function ArticleLayout({ title, content, author, publishedAt }: ArticleLa
                     >
                       <a
                         href={`#${item.id}`}
-                        className="text-sm text-marketing-textSecondary hover:text-indigo-600 transition-colors"
+                        className="text-sm text-marketing-textSecondary hover:text-blue-600 transition-colors"
                       >
                         {item.text}
                       </a>

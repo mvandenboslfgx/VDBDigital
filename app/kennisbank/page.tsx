@@ -46,7 +46,7 @@ export default async function KennisbankPage() {
             <Link
               key={cat.slug}
               href={cat.href}
-              className="group rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all hover:border-gold/30 hover:shadow-md"
+              className="group rounded-2xl border border-slate-200 bg-surface p-8 shadow-sm transition-all hover:border-gold/30 hover:shadow-md"
             >
               <h2 className="text-xl font-semibold text-marketing-text group-hover:text-gold transition-colors">
                 {cat.title}
@@ -66,7 +66,7 @@ export default async function KennisbankPage() {
                 <Link
                   key={a.slug}
                   href={`/kennisbank/${a.slug}`}
-                  className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-gold/30 hover:shadow-md"
+                  className="group rounded-2xl border border-slate-200 bg-surface p-6 shadow-sm transition-all hover:border-gold/30 hover:shadow-md"
                 >
                   <h3 className="text-lg font-semibold text-marketing-text group-hover:text-gold transition-colors">
                     {a.title}

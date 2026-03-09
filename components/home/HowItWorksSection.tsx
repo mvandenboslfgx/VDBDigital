@@ -38,7 +38,7 @@ export default function HowItWorksSection() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.45, delay: 0.1 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="rounded-2xl border border-marketing-border bg-white p-8 shadow-sm transition-shadow duration-300 hover:shadow-marketing-card-hover"
+              className="rounded-2xl border border-marketing-border bg-surface p-8 shadow-sm transition-shadow duration-300 hover:shadow-marketing-card-hover"
             >
               <motion.span
                 initial={{ scale: 0 }}

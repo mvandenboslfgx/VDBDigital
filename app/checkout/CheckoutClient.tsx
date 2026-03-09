@@ -19,7 +19,7 @@ export function CheckoutClient() {
 
   if (!mounted) {
     return (
-      <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-12 text-center text-marketing-textSecondary">
+      <div className="mt-10 rounded-2xl border border-slate-200 bg-surface p-12 text-center text-marketing-textSecondary">
         Laden…
       </div>
     );
@@ -27,7 +27,7 @@ export function CheckoutClient() {
 
   if (items.length === 0) {
     return (
-      <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-12 text-center">
+      <div className="mt-10 rounded-2xl border border-slate-200 bg-surface p-12 text-center">
         <p className="text-lg text-marketing-textSecondary">Geen producten om af te rekenen.</p>
         <Link
           href="/apparaten"
@@ -40,7 +40,7 @@ export function CheckoutClient() {
   }
 
   return (
-    <div className="mt-10 max-w-xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+    <div className="mt-10 max-w-xl rounded-2xl border border-slate-200 bg-surface p-8 shadow-sm">
       <ul className="space-y-3">
         {items.map((item) => (
           <li key={item.slug} className="flex justify-between text-marketing-text">

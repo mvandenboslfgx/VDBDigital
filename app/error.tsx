@@ -15,7 +15,7 @@ export default function RootError({
 }) {
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center px-4 py-16">
-      <div className="max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+      <div className="max-w-md rounded-2xl border border-slate-200 bg-surface p-8 text-center shadow-sm">
         <h1 className="text-xl font-semibold text-slate-900">Er is iets misgegaan</h1>
         <p className="mt-2 text-slate-600">
           We hebben een fout gemeld. Probeer de pagina te vernieuwen of ga terug naar de startpagina.

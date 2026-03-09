@@ -112,7 +112,7 @@ export default async function DashboardHomePage() {
 
   return (
     <div className="space-y-8">
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-saas-card md:p-8">
+      <div className="rounded-2xl border border-gray-200 bg-surface p-6 shadow-saas-card md:p-8">
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
           Welkom terug
         </h1>
@@ -149,7 +149,7 @@ export default async function DashboardHomePage() {
       )}
 
       {user.role === "lead" && (
-        <div className="rounded-2xl border border-indigo-200 bg-indigo-50/50 p-6">
+        <div className="rounded-2xl border border-blue-200 bg-blue-50/50 p-6">
           <h2 className="text-lg font-semibold text-slate-900">{t("dashboard.upgradeCta")}</h2>
           <p className="mt-2 text-sm text-slate-600">
             {t("dashboard.upgradeDesc")}
@@ -235,7 +235,7 @@ export default async function DashboardHomePage() {
       </DashboardWidget>
 
       {recentReports.length === 0 && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-saas-card md:p-12">
+        <div className="rounded-2xl border border-gray-200 bg-surface p-8 text-center shadow-saas-card md:p-12">
           <p className="text-lg font-medium text-slate-900">{t("dashboard.noWebsiteAnalyzed")}</p>
           <p className="mt-2 text-sm text-slate-600">
             {t("dashboard.startFirstScan")}
@@ -304,13 +304,13 @@ export default async function DashboardHomePage() {
           <Link
             key={card.href}
             href={card.href}
-            className="group rounded-2xl border border-gray-200 bg-white p-6 shadow-saas-card transition-all duration-300 hover:scale-[1.02] hover:shadow-saas-card-hover"
+            className="group rounded-2xl border border-gray-200 bg-surface p-6 shadow-saas-card transition-all duration-300 hover:scale-[1.02] hover:shadow-saas-card-hover"
           >
-            <h2 className="text-lg font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">
+            <h2 className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
               {card.title}
             </h2>
             <p className="mt-2 text-sm text-slate-600">{card.description}</p>
-            <span className="mt-4 inline-block text-sm font-medium text-indigo-600">
+            <span className="mt-4 inline-block text-sm font-medium text-blue-600">
               {card.cta} →
             </span>
           </Link>

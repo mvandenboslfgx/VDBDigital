@@ -119,7 +119,7 @@ export default async function PlatformSlugPage({
             </Link>
             <Link
               href="/platform"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-base font-semibold text-marketing-text transition-colors hover:bg-slate-50"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-surface px-6 py-3 text-base font-semibold text-marketing-text transition-colors hover:bg-slate-50"
             >
               Terug naar platform
             </Link>

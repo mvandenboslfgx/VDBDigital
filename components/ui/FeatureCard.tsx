@@ -29,7 +29,7 @@ export default function FeatureCard({
       transition={{ duration: 0.2 }}
       className={`rounded-2xl border p-6 transition-shadow ${
         isLight
-          ? "border-marketing-border bg-white shadow-marketing-card hover:shadow-marketing-card-hover"
+          ? "border-marketing-border bg-surface shadow-marketing-card hover:shadow-marketing-card-hover"
           : "border-white/[0.06] bg-[#111113]/80 hover:border-white/[0.1]"
       } ${className}`}
     >

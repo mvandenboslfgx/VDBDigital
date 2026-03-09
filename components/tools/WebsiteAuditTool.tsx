@@ -143,7 +143,7 @@ export default function WebsiteAuditTool() {
                 key={label}
                 animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
                 transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.15 }}
-                className="rounded-lg bg-indigo-100 px-3 py-2 text-sm font-medium text-indigo-700"
+                className="rounded-lg bg-blue-100 px-3 py-2 text-sm font-medium text-blue-700"
               >
                 {label}…
               </motion.div>
@@ -165,7 +165,7 @@ export default function WebsiteAuditTool() {
             className="space-y-8"
           >
             {/* Top: Website score + verbeterpunten + upgrade block */}
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
+            <div className="rounded-2xl border border-gray-200 bg-surface p-6 shadow-sm md:p-8">
               <h2 className="text-xl font-semibold text-slate-900">Website score</h2>
               <p className={`mt-2 text-4xl font-bold md:text-5xl ${getScoreColorClass(avg, "text")}`}>
                 {avg} <span className="text-2xl font-normal text-slate-500">/ 100</span>
@@ -188,7 +188,7 @@ export default function WebsiteAuditTool() {
                   ];
                 })()).map((text, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <span className="text-indigo-500 mt-0.5">•</span> {text}
+                    <span className="text-blue-500 mt-0.5">•</span> {text}
                   </li>
                 ))}
               </ul>
@@ -199,7 +199,7 @@ export default function WebsiteAuditTool() {
                 className="mt-8"
               />
 
-              <div className="mt-8 rounded-xl border border-indigo-100 bg-indigo-50/30 p-6">
+              <div className="mt-8 rounded-xl border border-blue-100 bg-blue-50/30 p-6">
                 <h3 className="font-semibold text-slate-900">Ontgrendel het volledige rapport</h3>
                 <ul className="mt-3 space-y-2 text-sm text-slate-600">
                   {[
@@ -226,7 +226,7 @@ export default function WebsiteAuditTool() {
               <ScoreBreakdown
                 totalScore={avg}
                 scores={result.scores}
-                className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+                className="rounded-2xl border border-gray-200 bg-surface p-6 shadow-sm"
               />
             </ResultPanel>
 

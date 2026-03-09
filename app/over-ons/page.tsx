@@ -27,14 +27,14 @@ export default function OverOnsPage() {
         </div>
 
         <div className="mx-auto mt-20 max-w-3xl space-y-10">
-          <section className="rounded-2xl border border-marketing-border bg-white p-8 shadow-marketing-card">
+          <section className="rounded-2xl border border-marketing-border bg-surface p-8 shadow-marketing-card">
             <h2 className="text-xl font-semibold text-marketing-text">Onze aanpak</h2>
             <p className="mt-4 text-lg leading-relaxed text-marketing-textSecondary">
               Wij zien uw website als cruciale infrastructuur voor uw bedrijf. Onze scans zijn gebaseerd op feitelijke data—SEO, prestaties, gebruikerservaring en conversie—zodat u weet waar u staat en wat u als eerste kunt verbeteren. Geen jargon, wel concrete verbeterpunten.
             </p>
           </section>
 
-          <section className="rounded-2xl border border-marketing-border bg-white p-8 shadow-marketing-card">
+          <section className="rounded-2xl border border-marketing-border bg-surface p-8 shadow-marketing-card">
             <h2 className="text-xl font-semibold text-marketing-text">Wat wij bieden</h2>
             <ul className="mt-4 list-disc space-y-2 pl-5 text-lg text-marketing-textSecondary">
               <li>Gratis website-scan met duidelijke scores</li>
@@ -44,7 +44,7 @@ export default function OverOnsPage() {
             </ul>
           </section>
 
-          <section className="rounded-2xl border border-marketing-border bg-white p-8 shadow-marketing-card">
+          <section className="rounded-2xl border border-marketing-border bg-surface p-8 shadow-marketing-card">
             <h2 className="text-xl font-semibold text-marketing-text">Contact</h2>
             <p className="mt-4 text-lg text-marketing-textSecondary">
               Heeft u vragen? Neem gerust contact met ons op.
@@ -87,7 +87,7 @@ export default function OverOnsPage() {
           </Link>
           <Link
             href="/contact"
-            className="rounded-xl border border-marketing-border bg-white px-8 py-4 text-lg font-semibold text-marketing-text shadow-marketing-card transition-colors hover:border-gold/30 hover:shadow-marketing-card-hover"
+            className="rounded-xl border border-marketing-border bg-surface px-8 py-4 text-lg font-semibold text-marketing-text shadow-marketing-card transition-colors hover:border-gold/30 hover:shadow-marketing-card-hover"
           >
             Contact
           </Link>

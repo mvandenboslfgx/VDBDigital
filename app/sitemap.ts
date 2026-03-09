@@ -28,6 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/kennisbank`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.9 },
     { url: `${base}/platform`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.9 },
     { url: `${base}/apparaten`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.9 },
+    { url: `${base}/products`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.9 },
     { url: `${base}/cart`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${base}/prijzen`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.9 },
     { url: `${base}/website-scan`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.9 },
@@ -98,5 +99,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // PublicAudit table may not exist yet
   }
 
-  return [...staticRoutes, ...workEntries, ...seoEntries, ...articleEntries, ...toolEntries, ...publicAuditEntries];
+  let productEntries: MetadataRoute.Sitemap = [];
+  try {
+    const products = await prisma.product.findMany({
+      select: { slug: true, updatedAt: true },
+    });
+    productEntries = products.map((p) => ({
+      url: `${base}/products/${p.slug}`,
+      lastModified: p.updatedAt.toISOString(),
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    }));
+  } catch {
+    // Product table may not exist yet
+  }
+
+  return [...staticRoutes, ...workEntries, ...seoEntries, ...articleEntries, ...toolEntries, ...publicAuditEntries, ...productEntries];
 }

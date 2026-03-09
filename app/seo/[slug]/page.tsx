@@ -58,7 +58,7 @@ export default async function SeoSlugPage({
         <div className="mx-auto mt-12 max-w-3xl space-y-10">
           {/* Short explanation */}
           <section
-            className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
+            className="rounded-2xl border border-slate-200 bg-surface p-6 shadow-sm md:p-8"
             aria-labelledby="uitleg-heading"
           >
             <h2 id="uitleg-heading" className="text-xl font-semibold text-marketing-text">
@@ -71,7 +71,7 @@ export default async function SeoSlugPage({
 
           {/* Benefits */}
           <section
-            className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
+            className="rounded-2xl border border-slate-200 bg-surface p-6 shadow-sm md:p-8"
             aria-labelledby="voordelen-heading"
           >
             <h2 id="voordelen-heading" className="text-xl font-semibold text-marketing-text">
@@ -92,7 +92,7 @@ export default async function SeoSlugPage({
 
           {/* Example analysis */}
           <section
-            className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
+            className="rounded-2xl border border-slate-200 bg-surface p-6 shadow-sm md:p-8"
             aria-labelledby="voorbeeld-heading"
           >
             <h2 id="voorbeeld-heading" className="text-xl font-semibold text-marketing-text">
@@ -124,7 +124,7 @@ export default async function SeoSlugPage({
 
           {/* Internal links – required: /tools, /website-scan, /kennisbank */}
           <nav
-            className="rounded-2xl border border-slate-200 bg-white p-6"
+            className="rounded-2xl border border-slate-200 bg-surface p-6"
             aria-label="Gerelateerde pagina’s"
           >
             <h2 className="text-sm font-semibold uppercase tracking-wider text-marketing-textSecondary">
@@ -152,7 +152,7 @@ export default async function SeoSlugPage({
           {/* FAQ – visible for users and in schema */}
           {config.faqs.length > 0 && (
             <section
-              className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8"
+              className="rounded-2xl border border-slate-200 bg-surface p-6 md:p-8"
               aria-labelledby="faq-heading"
             >
               <h2 id="faq-heading" className="text-xl font-semibold text-marketing-text">

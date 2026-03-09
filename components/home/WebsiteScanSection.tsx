@@ -76,7 +76,7 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.12 }}
             whileHover={{ scale: 1.02, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.05)" }}
-            className="mt-12 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-all duration-300"
+            className="mt-12 rounded-2xl border border-gray-200 bg-surface p-8 shadow-sm transition-all duration-300"
           >
             <p className="text-center text-sm font-medium text-slate-500">Voorbeeld scores</p>
             <div className="mt-6 flex flex-wrap justify-center gap-8 md:gap-12">
@@ -122,10 +122,10 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm max-w-2xl mx-auto"
+                  className="rounded-2xl border border-gray-200 bg-surface p-8 shadow-sm max-w-2xl mx-auto"
                 >
                   <div className="mb-6 flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-indigo-500 animate-pulse" />
+                    <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
                     <span className="text-base font-medium text-slate-600">
                       Analyseren van {url.replace(/^https?:\/\//, "").slice(0, 30)}…
                     </span>
@@ -139,7 +139,7 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
                           }`}
                         >
                           <motion.div
-                            className="h-full rounded-full bg-indigo-600"
+                            className="h-full rounded-full bg-blue-600"
                             initial={{ width: 0 }}
                             animate={{
                               width: i <= stepIndex ? "100%" : "0%",

@@ -69,15 +69,15 @@ export default async function RootLayout({
       : "nl";
 
   return (
-    <html lang={locale} className="bg-background">
+    <html lang={locale} className="bg-[#F5F7FB]">
       <body
-        className={`${inter.variable} ${playfair.variable} font-sans min-h-screen bg-background text-white antialiased`}
+        className={`${inter.variable} ${playfair.variable} font-sans min-h-screen bg-[#F5F7FB] text-slate-900 antialiased`}
       >
         <I18nProvider locale={locale}>
           <OrganizationStructuredData />
           <WebSiteStructuredData />
-          <div className="relative min-h-screen overflow-hidden bg-[#0a0a0b]">
-            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(198,169,93,0.06),transparent_50%)]" />
+          <div className="relative min-h-screen overflow-hidden bg-[#F5F7FB]">
+            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(37,99,235,0.06),transparent_50%)]" />
             {children}
           </div>
           <TawkToWidget />

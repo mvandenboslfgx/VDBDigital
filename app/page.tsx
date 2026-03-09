@@ -19,37 +19,37 @@ const FAQSection = dynamic(
 export default function HomePage() {
   return (
     <SiteShell>
-      <section className="bg-white" aria-label="Hero">
+      <section className="bg-surface" aria-label="Hero">
         <HeroSection />
       </section>
-      <section className="bg-slate-50" aria-label="Vertrouwen">
+      <section className="bg-[#EEF1F5]" aria-label="Vertrouwen">
         <TrustSection />
       </section>
-      <section className="bg-white" aria-label="Website scan">
+      <section className="bg-surface" aria-label="Website scan">
         <WebsiteScanSection />
       </section>
-      <section className="bg-slate-50" aria-label="Hoe het werkt">
+      <section className="bg-[#EEF1F5]" aria-label="Hoe het werkt">
         <HowItWorksSection />
       </section>
-      <section className="bg-white" aria-label="Rapport preview">
+      <section className="bg-surface" aria-label="Rapport preview">
         <ExampleReportSection />
       </section>
-      <section className="bg-slate-50" aria-label="Tools">
+      <section className="bg-[#EEF1F5]" aria-label="Tools">
         <ToolkitSection />
       </section>
-      <section className="bg-white" aria-label="Apparaten">
+      <section className="bg-surface" aria-label="Apparaten">
         <HardwarePreviewSection />
       </section>
-      <section className="bg-slate-50" aria-label="Kennisbank">
+      <section className="bg-[#EEF1F5]" aria-label="Kennisbank">
         <KnowledgeHubSection />
       </section>
-      <section className="bg-slate-50" aria-label="Prijzen">
+      <section className="bg-[#EEF1F5]" aria-label="Prijzen">
         <PricingStrip />
       </section>
-      <section className="bg-white" aria-label="FAQ">
+      <section className="bg-surface" aria-label="FAQ">
         <FAQSection />
       </section>
-      <section className="bg-slate-50" aria-label="CTA">
+      <section className="bg-[#EEF1F5]" aria-label="CTA">
         <FinalCtaSection />
       </section>
     </SiteShell>

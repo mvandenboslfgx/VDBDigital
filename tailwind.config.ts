@@ -15,8 +15,7 @@ const config: Config = {
         "30": "7.5rem",
       },
       colors: {
-        background: "#0a0a0b",
-        surface: "#111113",
+        /* Dashboard/dark areas */
         surfaceElevated: "#18181b",
         surfaceOverlay: "#1f1f23",
         border: "rgba(255,255,255,0.06)",
@@ -28,10 +27,16 @@ const config: Config = {
         goldSubtle: "rgba(198, 169, 93, 0.08)",
         muted: "#71717a",
         mutedForeground: "#a1a1aa",
-        /* VDB Digital — Professional SaaS (Stripe / Linear / Vercel style) */
+        /* VDB Digital — Luxury SaaS (primary palette) */
+        primary: "#2563EB",
+        primaryHover: "#1D4ED8",
+        background: "#F5F7FB",
+        surface: "#F5F7FB",
+        textPrimary: "#0F172A",
+        textSecondary: "#64748B",
         marketing: {
           bg: "#F5F7FB",
-          surface: "#FFFFFF",
+          surface: "#F5F7FB",
           border: "#E2E8F0",
           text: "#0F172A",
           textSecondary: "#64748B",
@@ -39,11 +44,11 @@ const config: Config = {
         },
         saas: {
           bg: "#F5F7FB",
-          surface: "#FFFFFF",
-          primary: "#4F46E5",
-          primaryHover: "#4338CA",
-          accent: "#6366F1",
-          accentHover: "#4F46E5",
+          surface: "#F5F7FB",
+          primary: "#2563EB",
+          primaryHover: "#1D4ED8",
+          accent: "#2563EB",
+          accentHover: "#1D4ED8",
           border: "#E2E8F0",
           textPrimary: "#0F172A",
           textSecondary: "#64748B",

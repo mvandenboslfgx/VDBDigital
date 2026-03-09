@@ -25,7 +25,7 @@ export default function DashboardWidget({
       transition={{ duration: 0.3 }}
       whileHover={{ boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.05)" }}
       className={
-        "rounded-2xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300 " +
+        "rounded-2xl border border-gray-200 bg-surface shadow-sm transition-shadow duration-300 " +
         className
       }
     >
@@ -39,7 +39,7 @@ export default function DashboardWidget({
         {action && (
           <Link
             href={action.href}
-            className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+            className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
           >
             {action.label} →
           </Link>

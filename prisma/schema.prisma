@@ -584,3 +584,23 @@ model Article {
   @@index([category])
   @@index([publishedAt])
 }
+
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  description   String   @db.Text
+  shortDescription String? @db.VarChar(500)
+  price         Float    // EUR
+  images        Json     @default("[]") // string[] paths e.g. ["/products/tvbox1.jpg"]
+  stock         Int      @default(0)
+  category      String   @default("")
+  specifications Json?   @default("{}") // { "RAM": "4GB", "Storage": "32GB" } for display
+  metaTitle     String?
+  metaDescription String? @db.VarChar(500)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([slug])
+  @@index([category])
+}

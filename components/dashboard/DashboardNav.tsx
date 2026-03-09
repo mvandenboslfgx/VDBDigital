@@ -121,11 +121,11 @@ export default function DashboardNav({ role }: { role: DashboardRole }) {
             key={item.href}
             href={item.href}
             className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
-              isActive ? "bg-white text-slate-900 shadow-sm border border-gray-200" : "text-slate-600 hover:bg-white/80 hover:text-slate-900"
+              isActive ? "bg-surface text-slate-900 shadow-sm border border-gray-200" : "text-slate-600 hover:bg-surface/80 hover:text-slate-900"
             }`}
             aria-current={isActive ? "page" : undefined}
           >
-            <span className={isActive ? "text-indigo-600" : "text-slate-500"} aria-hidden>
+            <span className={isActive ? "text-blue-600" : "text-slate-500"} aria-hidden>
               {getIcon(item.href)}
             </span>
             <span className="flex-1">{item.label}</span>

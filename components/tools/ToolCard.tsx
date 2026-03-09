@@ -23,7 +23,7 @@ export default function ToolCard({ href, title, description, icon, variant = "da
       transition={{ duration: 0.2 }}
       className={`group rounded-2xl border p-6 transition-shadow ${
         isLight
-          ? "border-marketing-border bg-white shadow-marketing-card hover:border-gold/30 hover:shadow-marketing-card-hover"
+          ? "border-marketing-border bg-surface shadow-marketing-card hover:border-gold/30 hover:shadow-marketing-card-hover"
           : "border-white/[0.06] bg-[#111113]/80 backdrop-blur-sm hover:border-white/[0.1] hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)]"
       }`}
     >

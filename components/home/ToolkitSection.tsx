@@ -48,7 +48,7 @@ export default function ToolkitSection() {
               <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.2 }}>
                 <Link
                   href={tool.href}
-                  className="group flex flex-col rounded-2xl border border-marketing-border bg-white p-8 shadow-marketing-card transition-all duration-300 hover:border-gold/30 hover:shadow-lg"
+                  className="group flex flex-col rounded-2xl border border-marketing-border bg-surface p-8 shadow-marketing-card transition-all duration-300 hover:border-gold/30 hover:shadow-lg"
                 >
                   <span className="text-lg font-semibold text-marketing-text">{tool.name}</span>
                   <span className="mt-2 text-lg text-marketing-textSecondary">{tool.desc}</span>

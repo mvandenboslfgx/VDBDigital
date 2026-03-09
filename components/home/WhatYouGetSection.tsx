@@ -58,7 +58,7 @@ export default function WhatYouGetSection() {
             >
               <Link
                 href={card.href}
-                className="block h-full rounded-2xl border border-marketing-border bg-white p-6 shadow-marketing-card transition-shadow hover:border-gold/30 hover:shadow-marketing-card-hover"
+                className="block h-full rounded-2xl border border-marketing-border bg-surface p-6 shadow-marketing-card transition-shadow hover:border-gold/30 hover:shadow-marketing-card-hover"
               >
                 <h3 className="text-lg font-semibold text-marketing-text">{card.title}</h3>
                 <p className="mt-2 text-sm text-marketing-textSecondary">{card.desc}</p>

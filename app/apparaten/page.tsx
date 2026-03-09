@@ -31,7 +31,7 @@ export default function ApparatenPage() {
             <Link
               key={product.slug}
               href={`/apparaten/${product.slug}`}
-              className="group rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:border-gold/30 hover:shadow-md"
+              className="group rounded-2xl border border-slate-200 bg-surface shadow-sm transition-all hover:border-gold/30 hover:shadow-md"
             >
               <div className="aspect-square rounded-t-2xl bg-slate-100 flex items-center justify-center">
                 <span className="text-sm text-marketing-textSecondary">Productafbeelding</span>

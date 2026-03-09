@@ -45,11 +45,10 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     label: "Apparaten",
-    href: "/apparaten",
+    href: "/products",
     children: [
-      { label: "Smart TV Box Pro", href: "/apparaten/smart-tv-box-pro" },
-      { label: "Streaming Box Mini", href: "/apparaten/streaming-box-mini" },
-      { label: "Accessoires", href: "/apparaten/accessoires" },
+      { label: "Android 14 Smart TV Box 8K", href: "/products/android-14-tv-box" },
+      { label: "Alle producten", href: "/products" },
     ],
   },
   {
@@ -151,7 +150,7 @@ export const Navbar = () => {
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="sticky top-0 flex items-center justify-between border-b border-gray-200 bg-white/80 px-4 py-3 backdrop-blur-lg md:px-6"
+          className="sticky top-0 flex items-center justify-between border-b border-gray-200 bg-surface/90 px-4 py-3 backdrop-blur md:px-6"
         >
           <Link
             href="/"
@@ -216,7 +215,7 @@ export const Navbar = () => {
                           onMouseEnter={clearDropdownTimeout}
                           onMouseLeave={handleDropdownLeave}
                         >
-                          <div className="min-w-[220px] rounded-xl border border-gray-200 bg-white py-2 shadow-md">
+                          <div className="min-w-[220px] rounded-xl border border-gray-200 bg-surface py-2 shadow-md">
 {item.children.map((child) => (
                                 <Link
                                   key={child.label}
@@ -250,7 +249,7 @@ export const Navbar = () => {
               <Link
                 href={dashboardHref}
                 className={`ml-2 inline-flex items-center rounded-lg px-3 py-2 transition-colors hover:text-marketing-text ${
-                  pathname.startsWith("/admin") || pathname.startsWith("/dashboard") ? "text-indigo-600 font-semibold" : ""
+                  pathname.startsWith("/admin") || pathname.startsWith("/dashboard") ? "text-blue-600 font-semibold" : ""
                 }`}
               >
                 {t("nav.dashboard")}
@@ -262,7 +261,7 @@ export const Navbar = () => {
           <div className="hidden items-center gap-3 md:flex">
             <Link
               href="/cart"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-marketing-text transition-colors hover:bg-slate-50 md:min-h-[40px]"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-surface px-4 py-2.5 text-sm font-medium text-marketing-text transition-colors hover:bg-slate-50 md:min-h-[40px]"
               aria-label="Winkelwagen"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
@@ -274,13 +273,13 @@ export const Navbar = () => {
               <>
                 <Link
                   href="/login"
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-marketing-textSecondary transition-colors hover:bg-slate-50 hover:text-marketing-text md:min-h-[40px]"
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-surface px-4 py-2.5 text-sm font-medium text-marketing-textSecondary transition-colors hover:bg-slate-50 hover:text-marketing-text md:min-h-[40px]"
                 >
                   Inloggen
                 </Link>
                 <Link
                   href="/create-account"
-                  className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-indigo-700 hover:scale-[1.02] md:min-h-[40px]"
+                  className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:scale-[1.02] md:min-h-[40px]"
                 >
                   Account maken
                 </Link>
@@ -288,7 +287,7 @@ export const Navbar = () => {
             ) : (
               <Link
                 href={dashboardHref}
-                className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-indigo-700 hover:scale-[1.02] md:min-h-[40px]"
+                className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:scale-[1.02] md:min-h-[40px]"
               >
                 {t("nav.dashboard")}
               </Link>
@@ -343,7 +342,7 @@ export const Navbar = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: "100%" }}
               transition={{ type: "tween", duration: 0.2 }}
-              className="fixed right-0 top-0 z-40 flex h-full w-full max-w-sm flex-col gap-0 border-l border-gray-200 bg-white p-6 pt-24 shadow-lg md:hidden"
+              className="fixed right-0 top-0 z-40 flex h-full w-full max-w-sm flex-col gap-0 border-l border-gray-200 bg-surface p-6 pt-24 shadow-lg md:hidden"
             >
               <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-marketing-textSecondary">
                 Navigatie
@@ -410,7 +409,7 @@ export const Navbar = () => {
                 <Link
                   href={dashboardHref}
                   onClick={() => setMobileOpen(false)}
-                  className="mt-2 flex items-center rounded-xl px-4 py-3 text-base font-medium text-indigo-600 transition-colors hover:bg-gray-50"
+                  className="mt-2 flex items-center rounded-xl px-4 py-3 text-base font-medium text-blue-600 transition-colors hover:bg-gray-50"
                 >
                   {t("nav.dashboard")}
                 </Link>
@@ -426,7 +425,7 @@ export const Navbar = () => {
                 <Link
                   href="/create-account"
                   onClick={() => setMobileOpen(false)}
-                  className="mt-6 flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-all hover:bg-indigo-700"
+                  className="mt-6 flex items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-all hover:bg-blue-700"
                 >
                   Account maken
                 </Link>
@@ -434,7 +433,7 @@ export const Navbar = () => {
                 <Link
                   href={dashboardHref}
                   onClick={() => setMobileOpen(false)}
-                  className="mt-6 flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-all hover:bg-indigo-700"
+                  className="mt-6 flex items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-all hover:bg-blue-700"
                 >
                   {t("nav.dashboard")}
                 </Link>

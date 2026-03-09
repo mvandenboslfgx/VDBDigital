@@ -8,13 +8,13 @@ type ButtonSize = "sm" | "md" | "lg";
 
 const variants: Record<ButtonVariant, string> = {
   primary:
-    "bg-indigo-600 text-white font-medium shadow-sm border-0 hover:bg-indigo-700 transition-all duration-200",
+    "bg-blue-600 text-white font-medium shadow-sm border-0 hover:bg-blue-700 transition-all duration-200",
   secondary:
-    "border border-gray-300 bg-white text-slate-900 hover:bg-gray-50 transition-all duration-200",
+    "border border-gray-300 bg-surface text-slate-900 hover:bg-gray-50 transition-all duration-200",
   ghost:
     "bg-transparent text-slate-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:text-slate-900 transition-all duration-200",
   outline:
-    "bg-transparent text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-50 hover:border-indigo-700 transition-all duration-200",
+    "bg-transparent text-blue-600 border-2 border-blue-600 hover:bg-blue-50 hover:border-blue-700 transition-all duration-200",
 };
 
 const sizes: Record<ButtonSize, string> = {

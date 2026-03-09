@@ -8,7 +8,7 @@ export default function FinalCtaSection() {
   return (
     <section className="relative py-24 md:py-32">
       <motion.div
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_50%_100%,rgba(79,70,229,0.06),transparent)]"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_50%_100%,rgba(37,99,235,0.06),transparent)]"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
@@ -21,7 +21,7 @@ export default function FinalCtaSection() {
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           whileHover={{ scale: 1.01 }}
-          className="mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-white p-12 md:p-16 text-center shadow-sm transition-shadow duration-300 hover:shadow-md"
+          className="mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-surface p-12 md:p-16 text-center shadow-sm transition-shadow duration-300 hover:shadow-md"
         >
           <h2 className="text-3xl font-semibold text-marketing-text md:text-4xl">
             Ontdek binnen 60 seconden hoe je website beter kan presteren

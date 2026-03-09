@@ -21,7 +21,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-[#F5F7FB]">
-      <header className="sticky top-0 z-30 border-b border-gray-200 bg-white/80 backdrop-blur-lg">
+      <header className="sticky top-0 z-30 border-b border-gray-200 bg-surface/90 backdrop-blur-lg">
         <div className="section-container flex h-16 items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-3">
             <Image
@@ -44,7 +44,7 @@ export default async function DashboardLayout({
             <span className="text-sm text-slate-600">{user.email}</span>
             <Link
               href="/logout"
-              className="text-sm text-slate-600 transition-colors hover:text-indigo-600"
+              className="text-sm text-slate-600 transition-colors hover:text-blue-600"
             >
               {t("dashboard.logout")}
             </Link>

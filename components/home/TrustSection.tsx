@@ -47,7 +47,7 @@ export default function TrustSection() {
               variants={item}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ scale: 1.03, boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.15)" }}
-              className="flex min-h-[5rem] w-full items-center justify-center rounded-2xl border border-gray-200 bg-white px-5 py-5 shadow-sm transition-shadow duration-300 md:min-h-[6rem] md:px-6"
+              className="flex min-h-[5rem] w-full items-center justify-center rounded-2xl border border-gray-200 bg-surface px-5 py-5 shadow-sm transition-shadow duration-300 md:min-h-[6rem] md:px-6"
               style={{ willChange: "transform" }}
             >
               <span className="text-center text-lg font-semibold text-slate-800 md:text-xl">
