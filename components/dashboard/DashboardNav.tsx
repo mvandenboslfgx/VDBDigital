@@ -121,7 +121,7 @@ export default function DashboardNav({ role }: { role: DashboardRole }) {
             key={item.href}
             href={item.href}
             className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
-              isActive ? "bg-white text-slate-900 shadow-saas-card border border-gray-200" : "text-slate-600 hover:bg-white/80 hover:text-slate-900"
+              isActive ? "bg-white text-slate-900 shadow-sm border border-gray-200" : "text-slate-600 hover:bg-white/80 hover:text-slate-900"
             }`}
             aria-current={isActive ? "page" : undefined}
           >

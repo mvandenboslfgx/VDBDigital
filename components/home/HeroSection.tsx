@@ -45,7 +45,7 @@ export default function HeroSection() {
             style={{ willChange: "transform" }}
             className="text-4xl font-semibold tracking-tight text-slate-900 md:text-5xl lg:text-6xl max-w-3xl mx-auto lg:mx-0"
           >
-            Gratis AI website analyse
+            Ontdek waarom uw website geen klanten oplevert
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
@@ -53,7 +53,7 @@ export default function HeroSection() {
             transition={{ duration: 0.7, delay: 0.1, ease: easeOut }}
             className="mt-6 max-w-xl mx-auto lg:mx-0 text-lg text-slate-600"
           >
-            Ontdek waarom uw website niet optimaal presteert. Onze AI analyseert uw website op SEO, snelheid en conversie en geeft direct concrete verbeterpunten.
+            Onze AI analyseert uw website op SEO, snelheid en conversie en laat direct zien wat u kunt verbeteren.
           </motion.p>
           <motion.form
             initial={{ opacity: 0, y: 30 }}
@@ -79,7 +79,7 @@ export default function HeroSection() {
                 size="lg"
                 className="min-h-[52px] w-full sm:w-auto px-8 py-4 text-lg font-medium"
               >
-                Start gratis website-analyse
+                Start gratis website scan
               </Button>
             </motion.div>
           </motion.form>
@@ -105,10 +105,10 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.25, ease: easeOut }}
           whileHover={{ scale: 1.03, boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.15)" }}
-          className="hidden lg:block rounded-2xl border border-gray-200 bg-white p-8 shadow-saas-card transition-all duration-300"
+          className="hidden lg:block rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-all duration-300"
           style={{ willChange: "transform" }}
         >
-          <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Dashboard preview</p>
+          <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Voorbeeld analyse</p>
           <p className="mt-1 text-lg font-semibold text-slate-900">voorbeeld.nl</p>
           <div className="mt-6 flex flex-wrap justify-center gap-6">
             {MOCK_SCORES.map((s) => (

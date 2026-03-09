@@ -216,7 +216,7 @@ export const Navbar = () => {
                           onMouseEnter={clearDropdownTimeout}
                           onMouseLeave={handleDropdownLeave}
                         >
-                          <div className="min-w-[220px] rounded-xl border border-marketing-border bg-white py-2 shadow-marketing-card-hover">
+                          <div className="min-w-[220px] rounded-xl border border-gray-200 bg-white py-2 shadow-md">
 {item.children.map((child) => (
                                 <Link
                                   key={child.label}
@@ -343,7 +343,7 @@ export const Navbar = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: "100%" }}
               transition={{ type: "tween", duration: 0.2 }}
-              className="fixed right-0 top-0 z-40 flex h-full w-full max-w-sm flex-col gap-0 border-l border-marketing-border bg-white p-6 pt-24 shadow-marketing-card-hover md:hidden"
+              className="fixed right-0 top-0 z-40 flex h-full w-full max-w-sm flex-col gap-0 border-l border-gray-200 bg-white p-6 pt-24 shadow-lg md:hidden"
             >
               <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-marketing-textSecondary">
                 Navigatie

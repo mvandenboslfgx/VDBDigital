@@ -27,7 +27,7 @@ export default function ImprovementSimulation({
   const potentialHex = getScoreColorHex(estimated);
 
   return (
-    <div className={`rounded-2xl border border-gray-200 bg-white p-6 shadow-saas-card ${className}`}>
+    <div className={`rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ${className}`}>
       <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500">
         Verbeterpotentieel
       </h3>

@@ -48,7 +48,7 @@ export default function KnowledgeHubSection() {
             >
               <Link
                 href={cat.href}
-                className="block rounded-2xl border border-marketing-border bg-white p-8 shadow-marketing-card text-center transition-all duration-300 hover:border-gold/30 hover:text-gold hover:shadow-marketing-card-hover"
+                className="block rounded-2xl border border-gray-200 bg-white p-8 shadow-sm text-center transition-all duration-300 hover:border-indigo-200 hover:shadow-md"
               >
                 <span className="text-lg font-semibold text-marketing-text">{cat.title}</span>
               </Link>
@@ -64,7 +64,7 @@ export default function KnowledgeHubSection() {
         >
           <Link
             href="/kennis"
-            className="group inline-flex items-center gap-1 text-lg font-medium text-gold transition-colors hover:text-goldHover"
+            className="group inline-flex items-center gap-1 text-lg font-medium text-indigo-600 transition-colors hover:text-indigo-700"
           >
             Alle artikelen in de kennisbank
             <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>

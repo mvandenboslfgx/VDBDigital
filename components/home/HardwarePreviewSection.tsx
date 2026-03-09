@@ -45,12 +45,12 @@ export default function HardwarePreviewSection() {
             >
               <Link
                 href={product.href}
-                className="group block rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-shadow hover:border-gold/30 hover:shadow-md"
+                className="group block rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-shadow hover:border-indigo-200 hover:shadow-md"
               >
                 <div className="aspect-video rounded-xl bg-slate-100 flex items-center justify-center">
                   <span className="text-sm text-marketing-textSecondary">Product</span>
                 </div>
-                <h3 className="mt-4 text-xl font-semibold text-marketing-text group-hover:text-gold transition-colors">
+                <h3 className="mt-4 text-xl font-semibold text-marketing-text group-hover:text-indigo-600 transition-colors">
                   {product.name}
                 </h3>
                 <p className="mt-2 text-lg font-medium text-marketing-textSecondary">
@@ -71,7 +71,7 @@ export default function HardwarePreviewSection() {
         >
           <Link
             href="/apparaten"
-            className="inline-flex items-center justify-center rounded-xl bg-gold px-8 py-4 text-lg font-semibold text-black transition-colors hover:bg-goldHover"
+            className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700"
           >
             Alle apparaten
           </Link>

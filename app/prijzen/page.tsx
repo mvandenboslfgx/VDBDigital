@@ -53,19 +53,24 @@ export default function PrijzenPage() {
           <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Prijzen</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 md:text-4xl">Eenvoudige plannen.</h1>
           <p className="mt-4 text-lg text-slate-600">
-            Kies een plan dat bij u past. Geen verborgen kosten.
+            Start gratis met een website analyse. Upgrade alleen als u meer inzichten wilt.
           </p>
         </div>
         <div className="mx-auto mt-16 grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`rounded-2xl border bg-white p-8 shadow-saas-card transition-all duration-300 hover:shadow-saas-card-hover ${
+              className={`rounded-2xl border bg-white p-8 shadow-sm transition-all duration-300 hover:shadow-md relative ${
                 plan.highlighted
                   ? "border-indigo-200 ring-2 ring-indigo-500/20 -translate-y-1"
                   : "border-gray-200 hover:-translate-y-1.5"
               }`}
             >
+              {plan.highlighted && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-indigo-600 px-3 py-1 text-xs font-semibold text-white">
+                  MEEST GEKOZEN
+                </span>
+              )}
               <h2 className="text-lg font-semibold text-slate-900">{plan.name}</h2>
               <p className="mt-6 text-3xl font-semibold tracking-tight text-slate-900">
                 {plan.price === 0 ? "Gratis" : `€${plan.price}`}

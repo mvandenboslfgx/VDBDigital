@@ -16,9 +16,9 @@ const playfair = Playfair_Display({
 
 const siteUrl = "https://www.vdbdigital.nl";
 const siteName = "VDB Digital";
-const siteTitle = "Gratis AI website analyse | VDB Digital";
+const siteTitle = "AI Website Analyse | VDB Digital";
 const siteDescription =
-  "Analyseer uw website gratis met AI. Ontdek waarom uw website niet optimaal presteert en ontvang direct concrete verbeterpunten voor SEO, snelheid en conversie.";
+  "Analyseer uw website gratis met AI en ontdek hoe u meer klanten uit uw website haalt.";
 
 export const viewport = {
   width: "device-width",

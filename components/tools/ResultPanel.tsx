@@ -17,7 +17,7 @@ export default function ResultPanel({ children, title, className = "" }: ResultP
       whileHover={{ boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.15)" }}
       style={{ willChange: "transform" }}
       className={
-        "rounded-2xl border border-gray-200 bg-white p-8 shadow-saas-card transition-shadow duration-300 " +
+        "rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-shadow duration-300 " +
         className
       }
     >

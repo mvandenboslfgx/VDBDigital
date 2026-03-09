@@ -5,6 +5,11 @@ import Script from "next/script";
 const TAWK_PROPERTY_ID = "69ae11eeddd7fc1c3485300b";
 const TAWK_WIDGET_ID = "1jj7vc302";
 
+/**
+ * Tawk.to chat widget.
+ * - Welcome message: Tawk Dashboard → Chat Widget → Triggers / Pre-chat form.
+ * - Widget/bubble color: Tawk Dashboard → Chat Widget → Widget appearance → set to #4F46E5 (primary) so it matches the site (professional SaaS, one accent).
+ */
 export function TawkToWidget() {
   return (
     <Script

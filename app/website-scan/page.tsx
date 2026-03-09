@@ -26,11 +26,25 @@ export default async function WebsiteScanPage({
       <div className="section-container py-28">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-3xl font-semibold tracking-tight text-slate-900 md:text-4xl">
-            Gratis Website Analyse met AI
+            Controleer direct de prestaties van uw website
           </h1>
           <p className="text-slate-600 mt-4 text-lg">
             Laat onze AI uw website analyseren op SEO, snelheid en conversie. Ontvang direct concrete verbeterpunten.
           </p>
+          <ul className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-slate-600">
+            <li className="flex items-center gap-2">
+              <span className="text-indigo-600 font-medium">✓</span> SEO analyse
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-indigo-600 font-medium">✓</span> Snelheid analyse
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-indigo-600 font-medium">✓</span> UX analyse
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-indigo-600 font-medium">✓</span> Conversie optimalisatie
+            </li>
+          </ul>
         </div>
         <div id="scan-form" className="mt-12">
           <WebsiteScanSection initialUrl={initialUrl} />

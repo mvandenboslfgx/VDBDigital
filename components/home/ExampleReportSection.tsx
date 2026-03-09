@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 
 const EXAMPLE_SCORES = [
-  { label: "SEO", value: 78 },
+  { label: "SEO score", value: 78 },
   { label: "Performance", value: 72 },
   { label: "UX", value: 84 },
-  { label: "Conversion", value: 69 },
+  { label: "Conversie", value: 69 },
 ];
 
 const RECOMMENDATIONS = [
@@ -29,7 +29,7 @@ export default function ExampleReportSection() {
           viewport={{ once: true }}
           className="text-center text-3xl font-semibold text-marketing-text md:text-4xl"
         >
-          Zo ziet je rapport eruit
+          Voorbeeld analyse
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 8 }}
@@ -38,7 +38,7 @@ export default function ExampleReportSection() {
           transition={{ delay: 0.05 }}
           className="mt-4 text-center text-lg text-marketing-textSecondary max-w-2xl mx-auto"
         >
-          Een voorbeeldanalyse met scores en aanbevelingen. Dit geeft vertrouwen.
+          Een voorbeeld van scores en aanbevelingen. Zo ziet uw rapport eruit.
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -46,7 +46,7 @@ export default function ExampleReportSection() {
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           whileHover={{ y: -4 }}
-          className="mx-auto mt-14 max-w-3xl rounded-2xl border border-marketing-border bg-white p-8 shadow-marketing-card transition-shadow duration-300 hover:shadow-marketing-card-hover"
+          className="mx-auto mt-14 max-w-3xl rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-shadow duration-300 hover:shadow-md"
         >
           <p className="text-center text-sm font-medium uppercase tracking-wider text-marketing-textSecondary">
             Totaalscore (voorbeeld)
@@ -62,19 +62,19 @@ export default function ExampleReportSection() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.35, delay: 0.15 + i * 0.06 }}
-                className="rounded-xl border border-marketing-border bg-marketing-surface p-6 text-center transition-transform duration-200 hover:scale-[1.02]"
+                className="rounded-xl border border-gray-200 bg-white p-6 text-center transition-transform duration-200 hover:scale-[1.02]"
               >
                 <p className="text-3xl font-semibold text-marketing-text">{s.value}</p>
                 <p className="mt-1 text-base text-marketing-textSecondary">{s.label}</p>
               </motion.div>
             ))}
           </div>
-          <div className="mt-8 pt-6 border-t border-marketing-border">
+          <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-sm font-semibold text-marketing-text">Aanbevelingen (voorbeeld)</p>
             <ul className="mt-3 space-y-2">
               {RECOMMENDATIONS.map((rec) => (
                 <li key={rec} className="flex items-center gap-2 text-lg text-marketing-textSecondary">
-                  <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
                   {rec}
                 </li>
               ))}

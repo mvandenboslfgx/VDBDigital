@@ -28,22 +28,22 @@ const config: Config = {
         goldSubtle: "rgba(198, 169, 93, 0.08)",
         muted: "#71717a",
         mutedForeground: "#a1a1aa",
-        /* VDB Digital — Premium SaaS design system */
+        /* VDB Digital — Professional SaaS (Stripe / Linear / Vercel style) */
         marketing: {
           bg: "#F5F7FB",
           surface: "#FFFFFF",
-          border: "#E5E7EB",
+          border: "#E2E8F0",
           text: "#0F172A",
           textSecondary: "#64748B",
           textMuted: "#64748B",
         },
         saas: {
-          bg: "#F4F6FB",
+          bg: "#F5F7FB",
           surface: "#FFFFFF",
           primary: "#4F46E5",
           primaryHover: "#4338CA",
-          accent: "#7C3AED",
-          accentHover: "#6D28D9",
+          accent: "#6366F1",
+          accentHover: "#4F46E5",
           border: "#E2E8F0",
           textPrimary: "#0F172A",
           textSecondary: "#64748B",

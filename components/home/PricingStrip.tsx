@@ -43,8 +43,8 @@ export default function PricingStrip() {
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
               className={`relative rounded-2xl border p-8 transition-shadow duration-300 ${
                 p.highlight
-                  ? "border-gold/40 bg-gold/5 shadow-marketing-card-hover hover:shadow-lg"
-                  : "border-marketing-border bg-white shadow-marketing-card hover:shadow-marketing-card-hover"
+                  ? "border-indigo-200 bg-indigo-50/50 shadow-md hover:shadow-lg"
+                  : "border-gray-200 bg-white shadow-sm hover:shadow-md"
               }`}
             >
               {p.badge && (
@@ -53,7 +53,7 @@ export default function PricingStrip() {
                   whileInView={{ scale: 1, opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.3 + i * 0.08 }}
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold px-3 py-1 text-xs font-semibold text-black"
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-indigo-600 px-3 py-1 text-xs font-semibold text-white"
                 >
                   {p.badge}
                 </motion.span>

@@ -39,7 +39,7 @@ export default function FAQSection() {
               viewport={{ once: true, margin: "-20px" }}
               transition={{ duration: 0.4, delay: 0.05 + i * 0.06, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ y: -4 }}
-              className="rounded-2xl border border-marketing-border bg-white p-8 shadow-marketing-card transition-shadow duration-300 hover:shadow-marketing-card-hover"
+              className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-shadow duration-300 hover:shadow-md"
             >
               <dt className="text-lg font-semibold text-marketing-text">{faq.q}</dt>
               <dd className="mt-3 text-lg text-marketing-textSecondary">{faq.a}</dd>

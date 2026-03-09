@@ -23,7 +23,7 @@ export default function MetricCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       className={
-        "rounded-2xl border border-gray-200 bg-white p-6 shadow-saas-card " +
+        "rounded-2xl border border-gray-200 bg-white p-6 shadow-sm " +
         className
       }
     >

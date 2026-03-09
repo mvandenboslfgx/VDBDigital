@@ -25,7 +25,7 @@ export default function DashboardWidget({
       transition={{ duration: 0.3 }}
       whileHover={{ boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.05)" }}
       className={
-        "rounded-2xl border border-gray-200 bg-white shadow-saas-card transition-shadow duration-300 " +
+        "rounded-2xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300 " +
         className
       }
     >

@@ -13,6 +13,24 @@ export interface ProgrammaticToolPage {
 
 export const programmaticPages: ProgrammaticToolPage[] = [
   {
+    slug: "seo-analyse",
+    title: "Gratis SEO analyse",
+    description:
+      "Controleer gratis de SEO van uw website met AI en ontvang direct verbeterpunten.",
+    benefits: [
+      "Controle van titel, meta en koppenstructuur",
+      "Technische SEO-inzicht",
+      "Concrete aanbevelingen voor betere vindbaarheid",
+      "Resultaat binnen een minuut",
+    ],
+    howItWorks: [
+      "Voer uw website-URL in",
+      "Onze tool analyseert uw pagina op SEO-criteria",
+      "Ontvang een score en een overzicht van verbeterpunten",
+      "Pas uw site aan en meet opnieuw",
+    ],
+  },
+  {
     slug: "seo-check",
     title: "Gratis SEO check",
     description:

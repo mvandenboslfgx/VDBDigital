@@ -8,6 +8,7 @@ import ResultPanel from "./ResultPanel";
 import TechnicalDataSection, { type TechnicalDataSummary } from "./TechnicalDataSection";
 import ScoreBreakdown from "@/components/audit/ScoreBreakdown";
 import ImprovementSimulation from "@/components/audit/ImprovementSimulation";
+import { getScoreColorClass } from "@/lib/scoreColor";
 
 type Scores = {
   seoScore: number;
@@ -130,6 +131,27 @@ export default function WebsiteAuditTool() {
           {loading ? "Scannen…" : "Start scan"}
         </Button>
       </form>
+      {loading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex flex-col items-center gap-4 py-12"
+        >
+          <div className="flex gap-2">
+            {["SEO", "Snelheid", "UX", "Conversie"].map((label, i) => (
+              <motion.div
+                key={label}
+                animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.15 }}
+                className="rounded-lg bg-indigo-100 px-3 py-2 text-sm font-medium text-indigo-700"
+              >
+                {label}…
+              </motion.div>
+            ))}
+          </div>
+          <p className="text-sm text-slate-600">Analyse wordt uitgevoerd</p>
+        </motion.div>
+      )}
       {error && (
         <p className="text-sm text-red-600">{error}</p>
       )}
@@ -142,11 +164,69 @@ export default function WebsiteAuditTool() {
             exit={{ opacity: 0 }}
             className="space-y-8"
           >
+            {/* Top: Website score + verbeterpunten + upgrade block */}
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
+              <h2 className="text-xl font-semibold text-slate-900">Website score</h2>
+              <p className={`mt-2 text-4xl font-bold md:text-5xl ${getScoreColorClass(avg, "text")}`}>
+                {avg} <span className="text-2xl font-normal text-slate-500">/ 100</span>
+              </p>
+              <p className="mt-3 text-sm text-slate-600">
+                Op basis van onze analyse hebben we verschillende verbeterpunten gevonden die de prestaties van uw website kunnen verhogen.
+              </p>
+              <p className="mt-6 text-sm font-medium text-slate-700">Belangrijkste verbeterpunten</p>
+              <ul className="mt-2 space-y-1.5 text-sm text-slate-600">
+                {(result.issues?.length ? result.issues.slice(0, 6).map((i) => i.message) : (() => {
+                  const bullets = result.summary
+                    .split(/\n|•|\./)
+                    .map((s) => s.trim())
+                    .filter((s) => s.length > 10)
+                    .slice(0, 4);
+                  return bullets.length > 0 ? bullets : [
+                    "Meta description ontbreekt",
+                    "Website laadt traag",
+                    "Call-to-action ontbreekt",
+                  ];
+                })()).map((text, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="text-indigo-500 mt-0.5">•</span> {text}
+                  </li>
+                ))}
+              </ul>
+
+              <ImprovementSimulation
+                currentScore={avg}
+                criticalCount={result.issues?.filter((i) => i.severity === "critical").length ?? 0}
+                className="mt-8"
+              />
+
+              <div className="mt-8 rounded-xl border border-indigo-100 bg-indigo-50/30 p-6">
+                <h3 className="font-semibold text-slate-900">Ontgrendel het volledige rapport</h3>
+                <ul className="mt-3 space-y-2 text-sm text-slate-600">
+                  {[
+                    "volledige SEO analyse",
+                    "UX verbeterpunten",
+                    "conversie optimalisatie",
+                    "technische fouten",
+                    "prioriteitenlijst",
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-2">
+                      <span className="text-slate-500" aria-hidden>✓</span> {item}
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/prijzen" className="mt-5 inline-block">
+                  <Button size="lg" className="w-full sm:w-auto">
+                    Upgrade naar Pro
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
             <ResultPanel title="Scores">
               <ScoreBreakdown
                 totalScore={avg}
                 scores={result.scores}
-                className="rounded-2xl border border-saas-border bg-saas-surface p-6 shadow-saas-card"
+                className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
               />
             </ResultPanel>
 
@@ -173,66 +253,6 @@ export default function WebsiteAuditTool() {
                   : "Op basis van onze analyse hebben we verschillende verbeterpunten gevonden die de prestaties van uw website kunnen verhogen."}
               </div>
             </ResultPanel>
-
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-saas-card md:p-8">
-              <h3 className="text-lg font-semibold text-slate-900">
-                Uw website score: {avg}/100
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Op basis van onze analyse hebben we verschillende verbeterpunten gevonden die de prestaties van uw website kunnen verhogen.
-              </p>
-              <p className="mt-3 text-sm font-medium text-slate-700">Belangrijkste aandachtspunten:</p>
-              <ul className="mt-1 list-disc space-y-0.5 pl-4 text-sm text-slate-600">
-                {(result.issues?.length ? result.issues.slice(0, 5).map((i) => i.message) : (() => {
-                  const bullets = result.summary
-                    .split(/\n|•|\./)
-                    .map((s) => s.trim())
-                    .filter((s) => s.length > 10)
-                    .slice(0, 4);
-                  return bullets.length > 0 ? bullets : [
-                    "SEO- en technische verbeterpunten",
-                    "Performance en laadsnelheid",
-                    "UX en conversie-optimalisatie",
-                    "Concreet actieplan",
-                  ];
-                })()).map((text, i) => (
-                  <li key={i}>{text}</li>
-                ))}
-              </ul>
-
-              <ImprovementSimulation
-                currentScore={avg}
-                criticalCount={result.issues?.filter((i) => i.severity === "critical").length ?? 0}
-                className="mt-8"
-              />
-
-              <div className="mt-6 rounded-xl border border-indigo-100 bg-indigo-50/50 p-5">
-                <p className="font-semibold text-indigo-700">
-                  Ontgrendel het volledige rapport
-                </p>
-                <p className="mt-1 text-sm text-slate-600">
-                  Krijg toegang tot een uitgebreide analyse met concrete verbeterpunten voor SEO, gebruikerservaring en conversieoptimalisatie.
-                </p>
-                <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                  {[
-                    "Volledige SEO analyse",
-                    "UX verbeterpunten",
-                    "Conversie optimalisatie",
-                    "Technische fouten",
-                    "Prioriteitenlijst",
-                  ].map((item) => (
-                    <li key={item} className="flex items-center gap-2">
-                      <span className="text-slate-500" aria-hidden>🔒</span> {item}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/prijzen" className="mt-5 inline-block">
-                  <Button size="lg" className="w-full sm:w-auto">
-                    Upgrade naar Pro
-                  </Button>
-                </Link>
-              </div>
-            </div>
 
             <div className="flex flex-wrap gap-3">
               <Button
