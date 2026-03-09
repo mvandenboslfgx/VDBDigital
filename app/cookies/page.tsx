@@ -2,6 +2,8 @@ import SiteShell from "@/components/SiteShell";
 import Link from "next/link";
 import { pageMetadata } from "@/lib/metadata";
 
+export const dynamic = "force-static";
+
 export const metadata = pageMetadata({
   title: "Cookiebeleid",
   description: "Cookiebeleid van VDB Digital. Welke cookies wij gebruiken en hoe u deze kunt beheren.",

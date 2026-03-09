@@ -3,6 +3,8 @@ import Link from "next/link";
 import { pageMetadata } from "@/lib/metadata";
 import { COMPANY_EMAIL, COMPANY_EMAIL_MAILTO } from "@/lib/company";
 
+export const dynamic = "force-static";
+
 export const metadata = pageMetadata({
   title: "Privacybeleid",
   description: "Privacybeleid van VDB Digital. Welke persoonsgegevens wij verzamelen en hoe wij deze gebruiken.",

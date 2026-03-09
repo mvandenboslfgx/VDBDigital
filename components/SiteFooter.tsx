@@ -13,6 +13,7 @@ export default function SiteFooter() {
               alt="VDB Digital"
               width={220}
               height={72}
+              sizes="220px"
               className="h-16 w-auto object-contain md:h-[4.5rem]"
             />
           </Link>
@@ -21,7 +22,7 @@ export default function SiteFooter() {
           </p>
           <a
             href={COMPANY_EMAIL_MAILTO}
-            className="text-sm text-blue-600 font-medium hover:text-blue-700 transition-colors block mt-2"
+            className="text-sm text-indigo-600 font-medium hover:text-indigo-700 transition-colors block mt-2"
           >
             {COMPANY_EMAIL}
           </a>
@@ -52,7 +53,7 @@ export default function SiteFooter() {
                 href={LINKEDIN_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-gray-200 bg-surface text-slate-700 text-xs transition-all hover:border-blue-300 hover:text-blue-600 hover:scale-105"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-gray-200 bg-surface text-slate-700 text-xs transition-all hover:border-indigo-300 hover:text-indigo-600 hover:scale-105"
                 aria-label="VDB Digital op LinkedIn"
               >
                 in
@@ -61,7 +62,7 @@ export default function SiteFooter() {
                 href={INSTAGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-gray-200 bg-surface text-slate-700 text-xs transition-all hover:border-blue-300 hover:text-blue-600 hover:scale-105"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-gray-200 bg-surface text-slate-700 text-xs transition-all hover:border-indigo-300 hover:text-indigo-600 hover:scale-105"
                 aria-label="VDB Digital op Instagram"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>

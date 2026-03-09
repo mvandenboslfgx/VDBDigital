@@ -61,22 +61,22 @@ export default async function DashboardBillingPage() {
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {planConfig.features.aiTools && (
-              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
+              <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-700">
                 {t("dashboard.aiTools")}
               </span>
             )}
             {planConfig.features.calculators && (
-              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
+              <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-700">
                 {t("dashboard.calculatorsTitle")}
               </span>
             )}
             {planConfig.features.audits && (
-              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
+              <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-700">
                 {t("billing.audits")}
               </span>
             )}
             {planConfig.features.crm && (
-              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
+              <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-700">
                 CRM
               </span>
             )}
@@ -157,8 +157,8 @@ export default async function DashboardBillingPage() {
       </div>
 
       {(planName === "free" || !planName) && (
-        <div className="rounded-2xl border border-blue-200 bg-blue-50/50 p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-blue-700">
+        <div className="rounded-2xl border border-indigo-200 bg-indigo-50/50 p-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-indigo-700">
             {t("billing.upgradeTitle")}
           </h2>
           <p className="mt-2 text-sm text-slate-600">

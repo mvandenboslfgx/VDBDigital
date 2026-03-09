@@ -1,14 +1,22 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import DashboardWidget from "@/components/ui/DashboardWidget";
 import MetricCard from "@/components/ui/MetricCard";
 import { Button } from "@/components/ui";
 import { getUsage } from "@/lib/usage";
-import DashboardOnboarding from "@/components/onboarding/DashboardOnboarding";
 import { UsageDashboard } from "@/components/dashboard/UsageDashboard";
+import { DashboardBentoGrid } from "@/components/dashboard/DashboardBentoGrid";
+import { RecommendedStack } from "@/components/dashboard/RecommendedStack";
+import { getRelevantAds } from "@/lib/ads";
 import { getOrSet, dashboardCacheKey } from "@/lib/cache";
 import { getTranslations } from "@/lib/i18n";
+
+const DashboardOnboarding = dynamic(
+  () => import("@/components/onboarding/DashboardOnboarding").then((m) => ({ default: m.default })),
+  { ssr: true }
+);
 
 export default async function DashboardHomePage() {
   const t = getTranslations("nl");
@@ -17,10 +25,15 @@ export default async function DashboardHomePage() {
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { onboardingCompleted: true, auditCountCurrentMonth: true },
+    select: {
+      onboardingCompleted: true,
+      auditCountCurrentMonth: true,
+      plan: { select: { name: true } },
+    },
   });
   const showOnboarding = dbUser && !dbUser.onboardingCompleted;
   const auditCount = dbUser?.auditCountCurrentMonth ?? 0;
+  const planName = dbUser?.plan?.name ?? "Gratis";
 
   const client = await prisma.client.findFirst({ where: { userId: user.id } });
 
@@ -32,6 +45,15 @@ export default async function DashboardHomePage() {
       where: { lead: { email: user.email } },
       orderBy: { createdAt: "desc" },
       take: 5,
+      select: {
+        id: true,
+        url: true,
+        createdAt: true,
+        seoScore: true,
+        perfScore: true,
+        uxScore: true,
+        convScore: true,
+      },
     }).then((reports) => reports.map((report) => ({ report }))),
     getUsage(user.id),
     prisma.aIUsage.groupBy({
@@ -51,6 +73,10 @@ export default async function DashboardHomePage() {
   ]),
     45_000
   );
+
+  const totalScans = await prisma.auditReport.count({
+    where: { lead: { email: user.email } },
+  });
 
   const allCards = [
     {
@@ -110,6 +136,52 @@ export default async function DashboardHomePage() {
     ? Math.round((lastReport.seoScore + lastReport.perfScore + lastReport.uxScore + lastReport.convScore) / 4)
     : null;
 
+  const seoAvg =
+    recentReports.length > 0
+      ? Math.round(
+          recentReports.reduce((s, r) => s + r.report.seoScore, 0) / recentReports.length
+        )
+      : null;
+
+  const bentoStats = [
+    { label: "Totaal scans", value: totalScans, subtext: "Alle rapporten" },
+    { label: "Jouw plan", value: planName, subtext: "Huidig abonnement" },
+    {
+      label: "SEO-gemiddelde",
+      value: seoAvg != null ? `${seoAvg}/100` : "—",
+      subtext: "Van laatste scans",
+    },
+  ];
+
+  const quickActions: Array<{ label: string; href: string; icon?: string }> = [
+    { label: t("dashboard.startScan"), href: "/dashboard/audits", icon: "▶" },
+    { label: "Exporteer rapport", href: recentReports[0] ? `/dashboard/reports/${recentReports[0].report.id}` : "/dashboard/reports", icon: "↓" },
+    { label: t("dashboard.settings"), href: "/dashboard/settings", icon: "⚙" },
+  ];
+
+  const metricLabels: Record<string, string> = {
+    SEO: "SEO",
+    PERF: "snelheid",
+    UX: "gebruiksvriendelijkheid",
+    CONV: "conversie",
+  };
+  const relevantAds =
+    lastReport != null
+      ? await getRelevantAds(
+          {
+            seoScore: lastReport.seoScore,
+            perfScore: lastReport.perfScore,
+            uxScore: lastReport.uxScore,
+            convScore: lastReport.convScore,
+          },
+          3
+        )
+      : [];
+  const lowestMetricLabel =
+    relevantAds.length > 0
+      ? metricLabels[relevantAds[0].targetMetric] ?? relevantAds[0].targetMetric
+      : "";
+
   return (
     <div className="space-y-8">
       <div className="rounded-2xl border border-gray-200 bg-surface p-6 shadow-saas-card md:p-8">
@@ -123,23 +195,22 @@ export default async function DashboardHomePage() {
               ? t("dashboard.customerIntro")
               : t("dashboard.proIntro")}
         </p>
-        <div className="mt-6 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl border border-gray-100 bg-slate-50/80 px-4 py-3">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Laatste analyse</p>
-            <p className="mt-1 text-lg font-semibold text-slate-900">
-              {lastReport ? new Date(lastReport.createdAt).toLocaleDateString("nl-NL") : "—"}
-            </p>
-          </div>
-          <div className="rounded-xl border border-gray-100 bg-slate-50/80 px-4 py-3">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Website score</p>
-            <p className="mt-1 text-lg font-semibold text-slate-900">{lastScore != null ? `${lastScore}/100` : "—"}</p>
-          </div>
-          <div className="rounded-xl border border-gray-100 bg-slate-50/80 px-4 py-3">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Gebruik deze maand</p>
-            <p className="mt-1 text-lg font-semibold text-slate-900">{auditCount} scans</p>
-          </div>
+        <div className="mt-6">
+          <DashboardBentoGrid
+            stats={bentoStats}
+            recentActivity={recentActivity}
+            quickActions={quickActions}
+            recentReports={recentReports}
+            lastScore={lastScore}
+            userRole={user.role}
+            t={t}
+          />
         </div>
       </div>
+
+      {relevantAds.length > 0 && (
+        <RecommendedStack ads={relevantAds} lowestMetricLabel={lowestMetricLabel} />
+      )}
 
       {showOnboarding && (
         <section>
@@ -149,7 +220,7 @@ export default async function DashboardHomePage() {
       )}
 
       {user.role === "lead" && (
-        <div className="rounded-2xl border border-blue-200 bg-blue-50/50 p-6">
+        <div className="rounded-2xl border border-indigo-200 bg-indigo-50/50 p-6">
           <h2 className="text-lg font-semibold text-slate-900">{t("dashboard.upgradeCta")}</h2>
           <p className="mt-2 text-sm text-slate-600">
             {t("dashboard.upgradeDesc")}
@@ -306,11 +377,11 @@ export default async function DashboardHomePage() {
             href={card.href}
             className="group rounded-2xl border border-gray-200 bg-surface p-6 shadow-saas-card transition-all duration-300 hover:scale-[1.02] hover:shadow-saas-card-hover"
           >
-            <h2 className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+            <h2 className="text-lg font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">
               {card.title}
             </h2>
             <p className="mt-2 text-sm text-slate-600">{card.description}</p>
-            <span className="mt-4 inline-block text-sm font-medium text-blue-600">
+            <span className="mt-4 inline-block text-sm font-medium text-indigo-600">
               {card.cta} →
             </span>
           </Link>

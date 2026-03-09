@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ReportPublicClient } from "@/components/report/ReportPublicClient";
 import { ReportStructuredData } from "@/components/report/ReportStructuredData";
+import { getRelevantAd } from "@/lib/ads";
 import type { Metadata } from "next";
 
 const SITE_URL = "https://vdb.digital";
@@ -59,6 +60,20 @@ export default async function ReportPublicPage({ params }: PageProps) {
   );
   const topInsights = report.summary.split(/\n/).filter(Boolean).slice(0, 5);
 
+  const relevantAd = await getRelevantAd({
+    seoScore: report.seoScore,
+    perfScore: report.perfScore,
+    uxScore: report.uxScore,
+    convScore: report.convScore,
+  });
+  const metricLabels: Record<string, string> = {
+    SEO: "SEO-optimalisatie",
+    PERF: "snelheidstimalisatie",
+    UX: "gebruiksvriendelijkheid",
+    CONV: "conversie",
+  };
+  const recommendedToolsMetric = relevantAd ? metricLabels[relevantAd.targetMetric] ?? relevantAd.targetMetric : undefined;
+
   return (
     <>
       <ReportStructuredData
@@ -90,6 +105,8 @@ export default async function ReportPublicPage({ params }: PageProps) {
           : undefined
       }
       scanConfidence={report.scanConfidence ?? undefined}
+      recommendedAd={relevantAd}
+      recommendedToolsMetric={recommendedToolsMetric}
     />
     </>
   );

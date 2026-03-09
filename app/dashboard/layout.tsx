@@ -20,7 +20,7 @@ export default async function DashboardLayout({
   const dashboardRole: DashboardRole = user.role;
 
   return (
-    <div className="min-h-screen bg-[#F5F7FB]">
+    <div className="min-h-screen bg-slate-50">
       <header className="sticky top-0 z-30 border-b border-gray-200 bg-surface/90 backdrop-blur-lg">
         <div className="section-container flex h-16 items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-3">
@@ -29,6 +29,8 @@ export default async function DashboardLayout({
               alt="VDB Digital"
               width={220}
               height={72}
+              sizes="220px"
+              priority
               className="h-16 w-auto object-contain"
             />
             <span className="text-sm font-medium text-slate-500">{t("dashboard.title")}</span>
@@ -44,7 +46,7 @@ export default async function DashboardLayout({
             <span className="text-sm text-slate-600">{user.email}</span>
             <Link
               href="/logout"
-              className="text-sm text-slate-600 transition-colors hover:text-blue-600"
+              className="text-sm text-slate-600 transition-colors hover:text-indigo-600"
             >
               {t("dashboard.logout")}
             </Link>

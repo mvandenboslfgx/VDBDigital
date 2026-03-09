@@ -14,6 +14,8 @@ export type SeoPageConfig = {
   faqs: { question: string; answer: string }[];
   /** Optional city name for location pages */
   city?: string;
+  /** Optional extra internal links for growth (platform-specific cross-linking) */
+  relatedLinks?: { label: string; href: string }[];
 };
 
 /** Base content per category; city pages override intro/title/description */
@@ -272,6 +274,86 @@ function buildSeoPages(): Record<string, SeoPageConfig> {
     ...pages["seo-audit"],
     title: "SEO audit gratis",
     description: "Gratis SEO audit: voer een eerste controle van je website uit en ontvang verbeterpunten.",
+  };
+
+  // —— Platform-specific: SEO analyse per platform (growth engine) ——
+  pages["seo-analyse-webshop"] = {
+    ...WEBSITE_ANALYSE_BASE,
+    title: "SEO analyse webshop",
+    description:
+      "SEO analyse voor webshops: ontdek hoe je online winkel scoort op vindbaarheid, snelheid en conversie. Gratis scan voor WooCommerce, Shopify en meer.",
+    intro:
+      "Een webshop heeft specifieke SEO-uitdagingen: productpagina's, categorieën, filters en checkout-flow. Onze SEO analyse voor webshops kijkt naar titels, meta's, structuur, snelheid en conversie-elementen. Of je nu WooCommerce, Shopify of een custom oplossing gebruikt: krijg inzicht in verbeterpunten die direct meer bezoekers en verkopen opleveren.",
+    benefits: [
+      "Specifiek voor webshop-structuur en productpagina's",
+      "Inzicht in categorie- en filter-SEO",
+      "Snelheid en Core Web Vitals voor e-commerce",
+      "Conversie-optimalisatie voor checkout",
+    ],
+    faqs: [
+      ...WEBSITE_ANALYSE_BASE.faqs,
+      {
+        question: "Werkt de SEO analyse voor mijn webshop?",
+        answer:
+          "Ja. Onze tool analyseert elke website, inclusief webshops op WooCommerce, Shopify, Magento of custom platforms. Je krijgt scores en verbeterpunten specifiek voor e-commerce.",
+      },
+    ],
+    relatedLinks: [
+      { label: "SEO analyse WordPress", href: "/seo/seo-analyse-wordpress" },
+      { label: "SEO analyse Shopify", href: "/seo/seo-analyse-shopify" },
+    ],
+  };
+  pages["seo-analyse-wordpress"] = {
+    ...WEBSITE_ANALYSE_BASE,
+    title: "SEO analyse WordPress",
+    description:
+      "SEO analyse voor WordPress-websites: controleer je site op vindbaarheid, snelheid en technische SEO. Gratis scan voor WP-sites.",
+    intro:
+      "WordPress is populair maar heeft specifieke SEO-uitdagingen: plugins, thema's, permalinks en laadsnelheid. Onze SEO analyse voor WordPress kijkt naar je titels, meta's, structuur, afbeeldingen en performance. Ontdek waar je WordPress-site scoort en wat je kunt verbeteren voor betere rankings.",
+    benefits: [
+      "Specifiek voor WordPress-structuur",
+      "Controle van plugins en thema-impact",
+      "Permalink- en sitemap-advies",
+      "Snelheidsoptimalisatie voor WP",
+    ],
+    faqs: [
+      ...WEBSITE_ANALYSE_BASE.faqs,
+      {
+        question: "Is de analyse geschikt voor WordPress?",
+        answer:
+          "Ja. Onze tool analyseert elke website, inclusief WordPress. We kijken naar SEO, snelheid en technische aspecten die voor WP-sites relevant zijn.",
+      },
+    ],
+    relatedLinks: [
+      { label: "SEO analyse webshop", href: "/seo/seo-analyse-webshop" },
+      { label: "SEO analyse Shopify", href: "/seo/seo-analyse-shopify" },
+    ],
+  };
+  pages["seo-analyse-shopify"] = {
+    ...WEBSITE_ANALYSE_BASE,
+    title: "SEO analyse Shopify",
+    description:
+      "SEO analyse voor Shopify-webshops: ontdek hoe je online store scoort op SEO, snelheid en conversie. Gratis scan voor Shopify-stores.",
+    intro:
+      "Shopify heeft een eigen structuur en technische setup. Onze SEO analyse voor Shopify kijkt naar je productpagina's, collecties, meta's, snelheid en conversie-elementen. Krijg concrete verbeterpunten om meer organisch verkeer en verkopen te genereren uit je Shopify-store.",
+    benefits: [
+      "Specifiek voor Shopify-structuur",
+      "Product- en collectie-SEO",
+      "Snelheid en Core Web Vitals",
+      "Conversie-optimalisatie voor Shopify",
+    ],
+    faqs: [
+      ...WEBSITE_ANALYSE_BASE.faqs,
+      {
+        question: "Werkt de analyse voor Shopify?",
+        answer:
+          "Ja. Onze tool analyseert elke website, inclusief Shopify-webshops. Je krijgt scores en verbeterpunten die je direct in je Shopify-admin kunt toepassen.",
+      },
+    ],
+    relatedLinks: [
+      { label: "SEO analyse webshop", href: "/seo/seo-analyse-webshop" },
+      { label: "SEO analyse WordPress", href: "/seo/seo-analyse-wordpress" },
+    ],
   };
 
   // —— City-based pages: website-analyse-[city] ——

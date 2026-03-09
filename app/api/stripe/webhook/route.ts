@@ -8,6 +8,8 @@ import { runInBackground } from "@/lib/runInBackground";
 import { logger } from "@/lib/logger";
 import { resolvePlanFromPriceId } from "@/lib/stripe/resolvePlanFromPriceId";
 import { trackEvent } from "@/lib/analytics";
+import { rateLimitSensitive, getClientKey } from "@/lib/rateLimit";
+import { isBodyOverLimit, MAX_BODY_BYTES_STRIPE_WEBHOOK } from "@/lib/requestSafety";
 
 const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -16,6 +18,17 @@ export async function POST(request: Request) {
   if (!stripe || !webhookSecret) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 503 });
   }
+
+  const key = `stripe:webhook:${getClientKey(request)}`;
+  const { ok } = rateLimitSensitive(key);
+  if (!ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
+  if (isBodyOverLimit(request, MAX_BODY_BYTES_STRIPE_WEBHOOK, true)) {
+    return NextResponse.json({ error: "Payload too large" }, { status: 413 });
+  }
+
   const body = await request.text();
   const headersList = await headers();
   const sig = headersList.get("stripe-signature");

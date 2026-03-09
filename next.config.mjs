@@ -5,7 +5,7 @@ const ContentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.tawk.to https://cdn.jsdelivr.net",
   "img-src 'self' data: blob: https: https://pageshot.site https://*.tawk.to https://tawk.link https://s3.amazonaws.com",
   "font-src 'self' data: https://fonts.gstatic.com https://*.tawk.to",
-  "connect-src 'self' ws: wss: https: wss://*.tawk.to https://api.stripe.com",
+  "connect-src 'self' ws: wss: https: wss://*.tawk.to https://api.stripe.com https://*.supabase.co",
   "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://embed.tawk.to https://*.tawk.to",
   "frame-ancestors 'self'",
   "base-uri 'self'",
@@ -35,17 +35,38 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
+  compress: true,
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**" },
       { protocol: "http", hostname: "localhost" },
     ],
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+  },
+  experimental: {
+    optimizePackageImports: ["framer-motion"],
   },
   async headers() {
     return [
+      { source: "/(.*)", headers: securityHeaders },
       {
-        source: "/(.*)",
-        headers: securityHeaders,
+        source: "/logo-vdb.png",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
+        source: "/products/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
+      {
+        source: "/_next/static/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
+        source: "/favicon.ico",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400" }],
       },
     ];
   },

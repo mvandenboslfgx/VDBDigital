@@ -8,10 +8,14 @@ node_modules
 .env
 .env.*
 !.env.example
+.env wissel
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.production
+*.env
+!.env.example
 coverage
 dist
 *.log
@@ -19,4 +23,6 @@ dist
 /stripe
 pnpm-lock.yaml
 yarn.lock
+# Vercel
+.vercel
 

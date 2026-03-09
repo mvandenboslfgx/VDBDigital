@@ -148,7 +148,7 @@ export function ProductForm({ className = "", productId, initialData }: ProductF
             value={name}
             onChange={(e) => handleNameChange(e.target.value)}
             required
-            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
+            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none"
           />
         </div>
         <div>
@@ -160,7 +160,7 @@ export function ProductForm({ className = "", productId, initialData }: ProductF
             pattern="^[a-z0-9-]+$"
             placeholder="bijv. android-tv-box"
             required
-            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
+            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none"
           />
         </div>
       </div>
@@ -174,7 +174,7 @@ export function ProductForm({ className = "", productId, initialData }: ProductF
             value={price || ""}
             onChange={(e) => setPrice(e.target.value ? Number(e.target.value) : 0)}
             required
-            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
+            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-indigo-500 focus:outline-none"
           />
         </div>
         <div>
@@ -184,7 +184,7 @@ export function ProductForm({ className = "", productId, initialData }: ProductF
             min="0"
             value={stock}
             onChange={(e) => setStock(Number(e.target.value) || 0)}
-            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
+            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-indigo-500 focus:outline-none"
           />
         </div>
       </div>
@@ -195,7 +195,7 @@ export function ProductForm({ className = "", productId, initialData }: ProductF
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           placeholder="bijv. TV Box"
-          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none"
         />
       </div>
       <div className="mt-4">
@@ -205,7 +205,7 @@ export function ProductForm({ className = "", productId, initialData }: ProductF
           value={shortDescription}
           onChange={(e) => setShortDescription(e.target.value)}
           maxLength={500}
-          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none"
         />
       </div>
       <div className="mt-4">
@@ -215,7 +215,7 @@ export function ProductForm({ className = "", productId, initialData }: ProductF
           onChange={(e) => setDescription(e.target.value)}
           required
           rows={5}
-          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none"
         />
       </div>
       <div className="mt-4">
@@ -243,7 +243,7 @@ export function ProductForm({ className = "", productId, initialData }: ProductF
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="rounded-lg border border-dashed border-white/20 px-3 py-2 text-sm text-gray-400 hover:border-blue-500 hover:text-blue-400 disabled:opacity-50"
+            className="rounded-lg border border-dashed border-white/20 px-3 py-2 text-sm text-gray-400 hover:border-indigo-500 hover:text-indigo-400 disabled:opacity-50"
           >
             {uploading ? "Uploaden…" : "+ Upload"}
           </button>
@@ -257,7 +257,7 @@ export function ProductForm({ className = "", productId, initialData }: ProductF
           onChange={(e) => setSpecsText(e.target.value)}
           rows={4}
           placeholder={"RAM: 4GB\nOpslag: 32GB"}
-          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none"
         />
       </div>
       <div className="mt-4">
@@ -266,7 +266,7 @@ export function ProductForm({ className = "", productId, initialData }: ProductF
           type="text"
           value={metaTitle}
           onChange={(e) => setMetaTitle(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-indigo-500 focus:outline-none"
         />
       </div>
       <div className="mt-4">
@@ -276,14 +276,14 @@ export function ProductForm({ className = "", productId, initialData }: ProductF
           value={metaDescription}
           onChange={(e) => setMetaDescription(e.target.value)}
           maxLength={500}
-          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-indigo-500 focus:outline-none"
         />
       </div>
       <div className="mt-8 flex gap-4">
         <button
           type="submit"
           disabled={saving}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
         >
           {saving ? "Opslaan…" : productId ? "Bijwerken" : "Product aanmaken"}
         </button>

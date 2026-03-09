@@ -2,31 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design system spacing: 4 / 8 / 16 / 24 / 32 / 48 / 64 */
+/* Design system — Premium SaaS "Shopify" look */
 :root {
-  --space-1: 0.25rem;   /* 4 */
-  --space-2: 0.5rem;    /* 8 */
-  --space-4: 1rem;      /* 16 */
-  --space-6: 1.5rem;   /* 24 */
-  --space-8: 2rem;     /* 32 */
-  --space-12: 3rem;     /* 48 */
-  --space-16: 4rem;     /* 64 */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
   --radius-panel: 1rem;
   --radius-button: 0.75rem;
+  --radius-form: 0.75rem; /* rounded-xl */
   --gold: #C6A95D;
   --gold-hover: #B89B50;
   --gold-muted: rgba(198, 169, 93, 0.15);
-  /* VDB Digital — Luxury SaaS (calm blue) */
-  --ds-bg: #F5F7FB;
-  --ds-surface: #F5F7FB;
-  --ds-border: #E2E8F0;
-  --ds-text: #0F172A;
-  --ds-text-secondary: #64748B;
-  --ds-text-muted: #64748B;
-  --ds-primary: #2563EB;
-  --ds-primary-hover: #1D4ED8;
-  --ds-accent: #2563EB;
-  --ds-accent-hover: #1D4ED8;
+  /* Midnight — deep text */
+  --midnight: #0f172a;
+  --midnight-muted: #1e293b;
+  /* Slate — soft backgrounds */
+  --slate-bg: #f8fafc;
+  --slate-surface: #f1f5f9;
+  --slate-border: #e2e8f0;
+  --slate-muted: #94a3b8;
+  /* Indigo / Violet — primary action */
+  --primary: #4F46E5;
+  --primary-hover: #4338CA;
+  --accent: #7C3AED;
+  --accent-hover: #6D28D9;
+  /* Legacy DS aliases */
+  --ds-bg: var(--slate-bg);
+  --ds-surface: var(--slate-surface);
+  --ds-border: var(--slate-border);
+  --ds-text: var(--midnight);
+  --ds-text-secondary: #64748b;
+  --ds-text-muted: var(--slate-muted);
+  --ds-primary: var(--primary);
+  --ds-primary-hover: var(--primary-hover);
+  --ds-accent: var(--accent);
+  --ds-accent-hover: var(--accent-hover);
+  /* Consistent shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
 }
 
 /* Premium SaaS utility classes */
@@ -59,15 +76,17 @@ html {
 }
 
 body {
-  background-color: #0a0a0b;
-  color: rgb(250 250 250);
+  background-color: var(--ds-bg);
+  color: var(--midnight);
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background-color: rgba(198, 169, 93, 0.25);
-  color: #fafafa;
+  background-color: rgba(79, 70, 229, 0.2);
+  color: var(--ds-text);
 }
 
 /* Typography hierarchy */
@@ -100,15 +119,15 @@ body {
   @apply text-marketing-textSecondary;
 }
 
-/* Inputs inside marketing: premium SaaS */
+/* Inputs — consistent: soft borders, focus ring primary, rounded-xl */
 .marketing input[type="text"],
 .marketing input[type="url"],
 .marketing input[type="email"],
 .marketing input[type="password"] {
-  @apply border border-gray-200 rounded-xl bg-surface px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all;
+  @apply border border-slate-200 rounded-xl bg-white px-4 py-3 text-midnight placeholder-slate-400 shadow-sm transition-all focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20;
 }
 .marketing label {
-  @apply text-slate-900;
+  @apply text-midnight font-medium;
 }
 
 /* Design System — container & section spacing */
@@ -116,17 +135,23 @@ body {
   @apply mx-auto max-w-7xl px-6;
 }
 
-/* Design System — cards (professional SaaS) */
+/* Design System — cards (rounded-xl, consistent shadows) */
 .ds-card {
-  @apply rounded-2xl border border-gray-200 bg-surface p-6 shadow-sm transition-shadow hover:shadow-md;
+  @apply rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md;
 }
 
 /* Design System — buttons (premium SaaS) */
 .ds-btn-primary {
-  @apply inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-white font-medium shadow-sm transition-all hover:bg-blue-700;
+  @apply inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-white font-medium shadow-sm transition-all hover:bg-indigo-700;
 }
 .ds-btn-secondary {
   @apply inline-flex items-center justify-center rounded-xl border border-gray-200 bg-surface px-6 py-3 font-medium text-slate-900 transition-all hover:bg-gray-100;
+}
+
+/* Core Web Vitals: reduce layout shift for images */
+img {
+  height: auto;
+  max-width: 100%;
 }
 
 /* Design System — alternating section backgrounds */
@@ -148,7 +173,7 @@ body {
 /* Buttons - blue primary, gold for accent links */
 .btn-primary {
   @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
-  @apply bg-blue-600 hover:bg-blue-700 shadow-sm;
+  @apply bg-indigo-600 hover:bg-indigo-700 shadow-sm;
 }
 
 .btn-ghost {
@@ -171,9 +196,9 @@ body {
   @apply w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder-zinc-500 transition-colors focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30;
 }
 
-/* Light-theme inputs (auth, forms on surface background) */
+/* Light-theme inputs — soft borders, focus ring primary */
 .input-light {
-  @apply w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20;
+  @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-midnight placeholder-slate-400 shadow-sm transition-all focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20;
 }
 
 .error-text {
@@ -197,4 +222,13 @@ body {
 /* Skeleton loading */
 .skeleton {
   @apply animate-pulse rounded-lg bg-white/10;
+}
+
+/* Marquee — scrollende reviews */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 40s linear infinite;
 }

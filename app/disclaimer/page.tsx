@@ -2,6 +2,8 @@ import SiteShell from "@/components/SiteShell";
 import Link from "next/link";
 import { pageMetadata } from "@/lib/metadata";
 
+export const dynamic = "force-static";
+
 export const metadata = pageMetadata({
   title: "Disclaimer",
   description: "Disclaimer van VDB Digital over het gebruik van analyses en rapporten.",

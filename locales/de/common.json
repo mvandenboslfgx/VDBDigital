@@ -128,7 +128,8 @@
     "createAccount": "Konto erstellen",
     "loginErrorLockout": "Zu viele Fehlversuche. Bitte in 15 Minuten erneut versuchen.",
     "invalidCredentials": "Ungültige E-Mail oder Passwort.",
-    "loginErrorGeneric": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
+    "loginErrorGeneric": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+    "signInWithGoogle": "Mit Google anmelden"
   },
   "common": {
     "open": "Öffnen",
@@ -186,6 +187,8 @@
     "leads": "Leads",
     "projects": "Projekte",
     "invoices": "Rechnungen",
+    "ads": "Anzeigen",
+    "emailConfig": "E-Mail-Konfiguration",
     "clients": "Kunden",
     "newsletter": "Newsletter",
     "maintenance": "Wartung",

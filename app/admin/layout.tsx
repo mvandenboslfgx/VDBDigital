@@ -27,6 +27,8 @@ const navKeys: { key: string; href: string }[] = [
   { key: "admin.websites", href: "/admin/websites" },
   { key: "admin.invoices", href: "/admin/invoices" },
   { key: "admin.products", href: "/admin/products" },
+  { key: "admin.ads", href: "/admin/ads" },
+  { key: "admin.emailConfig", href: "/admin/email-config" },
   { key: "admin.reviews", href: "/admin/reviews" },
   { key: "admin.newsletter", href: "/admin/newsletter" },
   { key: "admin.maintenance", href: "/admin/maintenance" },

@@ -88,7 +88,7 @@ export default async function DashboardAuditsPage() {
                           {h.auditReportId ? (
                             <Link
                               href={`/dashboard/reports/${h.auditReportId}`}
-                              className="font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                              className="font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
                             >
                               Rapport bekijken
                             </Link>

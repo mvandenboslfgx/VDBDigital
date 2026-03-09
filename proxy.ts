@@ -105,6 +105,15 @@ export async function proxy(request: NextRequest) {
     });
   }
 
+  // Cache hints for static marketing paths
+  const staticPaths = ["/privacy", "/voorwaarden", "/cookies", "/disclaimer", "/contact", "/about", "/over-ons", "/help", "/services"];
+  if (staticPaths.some((p) => path === p || path.startsWith(p + "/"))) {
+    response.headers.set("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
+  }
+  if (path.startsWith("/seo/") || path.startsWith("/tools/")) {
+    response.headers.set("Cache-Control", "public, s-maxage=1800, stale-while-revalidate=86400");
+  }
+
   return response;
 }
 

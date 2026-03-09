@@ -6,6 +6,7 @@ import {
 } from "@/lib/mailer";
 import { rateLimitSensitive, getClientKey } from "@/lib/rateLimit";
 import { validateOrigin, sanitizeString, sanitizeEmail } from "@/lib/apiSecurity";
+import { isBodyOverLimit, MAX_BODY_BYTES_DEFAULT } from "@/lib/requestSafety";
 import { contactBodySchema, safeParse } from "@/lib/validation";
 import { validateCsrf } from "@/lib/csrf";
 import { verifyTurnstileToken, isTurnstileEnabled } from "@/lib/turnstile";
@@ -25,6 +26,10 @@ export async function POST(request: Request) {
     const { ok } = rateLimitSensitive(key);
     if (!ok) {
       return safeJsonError("Te veel aanvragen. Probeer het later opnieuw.", 429);
+    }
+
+    if (isBodyOverLimit(request, MAX_BODY_BYTES_DEFAULT, true)) {
+      return safeJsonError("Verzoek te groot.", 413);
     }
 
     const body = (await request.json().catch(() => ({}))) as {

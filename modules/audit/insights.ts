@@ -6,11 +6,19 @@
 import { openai } from "@/lib/openai";
 import type { CrawlSignals, AuditScores, TechnicalDataSummary } from "./types";
 
+export interface ActiveAdContext {
+  title: string;
+  description: string;
+  url: string;
+  targetMetric?: string;
+}
+
 export async function generateAiInsights(
   signals: CrawlSignals,
   scores: AuditScores,
   technical: TechnicalDataSummary,
-  fullReport: boolean
+  fullReport: boolean,
+  activeAd?: ActiveAdContext | null
 ): Promise<{ summary: string; summaryShort?: string }> {
   const input = {
     signals: {
@@ -31,7 +39,19 @@ export async function generateAiInsights(
     },
     scores,
     technical,
+    ...(activeAd && {
+      partnerTool: {
+        title: activeAd.title,
+        description: activeAd.description,
+        url: activeAd.url,
+        targetMetric: activeAd.targetMetric,
+      },
+    }),
   };
+
+  const systemPrompt = activeAd
+    ? "Je bent een conversie-expert. Schrijf alleen op basis van de gegeven data. Geen scores berekenen of verzinnen. Als er een partner-tool wordt meegegeven in de context, verweef deze dan subtiel in je advies als dé oplossing voor het specifieke probleem (bijv. SEO of Snelheid). Wees natuurlijk en niet commercieel opdringerig."
+    : "Je bent een senior webstrateeg. Schrijf alleen op basis van de gegeven data. Geen scores berekenen of verzinnen.";
 
   const prompt = fullReport
     ? `Je bent een webstrateeg. Op basis van onderstaande TECHNISCHE DATA (geen schattingen) schrijf een kort auditrapport in het Nederlands. Gebruik EXACT deze koppen:
@@ -53,10 +73,7 @@ Schrijf in het Nederlands. Wees bondig en actiegericht.`
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        {
-          role: "system",
-          content: "Je bent een senior webstrateeg. Schrijf alleen op basis van de gegeven data. Geen scores berekenen of verzinnen.",
-        },
+        { role: "system", content: systemPrompt },
         { role: "user", content: prompt },
       ],
     });

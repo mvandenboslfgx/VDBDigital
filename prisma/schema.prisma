@@ -151,6 +151,7 @@ model AuditReport {
   @@index([leadId])
   @@index([createdAt])
   @@index([shareSlug])
+  @@index([leadId, createdAt])
 }
 
 model Invoice {
@@ -519,11 +520,60 @@ model PublicAudit {
   @@index([createdAt])
 }
 
+enum AdTargetMetric {
+  SEO
+  PERF
+  UX
+  CONV
+}
+
+model AdCampaign {
+  id          String      @id @default(cuid())
+  companyName String
+  totalBudget Float       // total budget (e.g. euros)
+  spent       Float       @default(0)
+  cpc         Float       // cost per click
+  active      Boolean     @default(true)
+  createdAt   DateTime   @default(now())
+  partnerAds  PartnerAd[]
+
+  @@index([active])
+}
+
+model PartnerAd {
+  id           String         @id @default(cuid())
+  campaignId   String?
+  campaign     AdCampaign?    @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  title        String
+  description  String         @db.Text
+  ctaText      String         @default("Bekijk aanbieding")
+  url          String
+  image        String?
+  targetMetric AdTargetMetric
+  clicks       Int            @default(0)
+  active       Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+
+  @@index([targetMetric])
+  @@index([active])
+  @@index([campaignId])
+}
+
 model ProcessedStripeEvent {
   id        String   @id
   createdAt DateTime @default(now())
 
   @@index([id])
+}
+
+/// Admin: source email → target email (forwarding/verzameldomein)
+model SiteEmailConfig {
+  id           String   @id @default(cuid())
+  sourceEmail  String   // e.g. security@vdbdigital.nl
+  targetEmail  String   // e.g. verzamelvdbdigital@gmail.com
+  createdAt    DateTime @default(now())
+
+  @@index([sourceEmail])
 }
 
 model AuditLog {

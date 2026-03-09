@@ -14,7 +14,15 @@ export async function GET(request: Request) {
       );
     }
     const plans = await getActivePlans();
-    return NextResponse.json({ success: true, plans }, { status: 200 });
+    return NextResponse.json(
+      { success: true, plans },
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        },
+      }
+    );
   } catch (error) {
     return handleApiError(error, "Plans");
   }

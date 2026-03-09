@@ -33,16 +33,16 @@ export default async function WebsiteScanPage({
           </p>
           <ul className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-slate-600">
             <li className="flex items-center gap-2">
-              <span className="text-blue-600 font-medium">✓</span> SEO analyse
+              <span className="text-indigo-600 font-medium">✓</span> SEO analyse
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-blue-600 font-medium">✓</span> Snelheid analyse
+              <span className="text-indigo-600 font-medium">✓</span> Snelheid analyse
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-blue-600 font-medium">✓</span> UX analyse
+              <span className="text-indigo-600 font-medium">✓</span> UX analyse
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-blue-600 font-medium">✓</span> Conversie optimalisatie
+              <span className="text-indigo-600 font-medium">✓</span> Conversie optimalisatie
             </li>
           </ul>
         </div>

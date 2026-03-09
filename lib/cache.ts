@@ -83,3 +83,8 @@ export const ADMIN_METRICS_CACHE_KEY = "admin:metrics";
 
 /** Cache key for health check. */
 export const HEALTH_CACHE_KEY = "health";
+
+/** Cache key for audit result (L1). URL-normalized key. TTL should match or be less than DB cache. */
+export function auditResultCacheKey(normalizedUrl: string): string {
+  return `audit:result:${normalizedUrl}`;
+}

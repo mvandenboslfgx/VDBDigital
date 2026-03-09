@@ -162,6 +162,7 @@ export const Navbar = () => {
               alt="VDB Digital"
               width={220}
               height={72}
+              sizes="220px"
               className="h-14 w-auto max-h-16 object-contain object-left md:h-16 md:max-h-[4.5rem]"
               priority
             />
@@ -249,7 +250,7 @@ export const Navbar = () => {
               <Link
                 href={dashboardHref}
                 className={`ml-2 inline-flex items-center rounded-lg px-3 py-2 transition-colors hover:text-marketing-text ${
-                  pathname.startsWith("/admin") || pathname.startsWith("/dashboard") ? "text-blue-600 font-semibold" : ""
+                  pathname.startsWith("/admin") || pathname.startsWith("/dashboard") ? "text-indigo-600 font-semibold" : ""
                 }`}
               >
                 {t("nav.dashboard")}
@@ -279,7 +280,7 @@ export const Navbar = () => {
                 </Link>
                 <Link
                   href="/create-account"
-                  className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:scale-[1.02] md:min-h-[40px]"
+                  className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-indigo-700 hover:scale-[1.02] md:min-h-[40px]"
                 >
                   Account maken
                 </Link>
@@ -287,7 +288,7 @@ export const Navbar = () => {
             ) : (
               <Link
                 href={dashboardHref}
-                className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:scale-[1.02] md:min-h-[40px]"
+                className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-indigo-700 hover:scale-[1.02] md:min-h-[40px]"
               >
                 {t("nav.dashboard")}
               </Link>
@@ -409,7 +410,7 @@ export const Navbar = () => {
                 <Link
                   href={dashboardHref}
                   onClick={() => setMobileOpen(false)}
-                  className="mt-2 flex items-center rounded-xl px-4 py-3 text-base font-medium text-blue-600 transition-colors hover:bg-gray-50"
+                  className="mt-2 flex items-center rounded-xl px-4 py-3 text-base font-medium text-indigo-600 transition-colors hover:bg-gray-50"
                 >
                   {t("nav.dashboard")}
                 </Link>
@@ -425,7 +426,7 @@ export const Navbar = () => {
                 <Link
                   href="/create-account"
                   onClick={() => setMobileOpen(false)}
-                  className="mt-6 flex items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-all hover:bg-blue-700"
+                  className="mt-6 flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-all hover:bg-indigo-700"
                 >
                   Account maken
                 </Link>
@@ -433,7 +434,7 @@ export const Navbar = () => {
                 <Link
                   href={dashboardHref}
                   onClick={() => setMobileOpen(false)}
-                  className="mt-6 flex items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-all hover:bg-blue-700"
+                  className="mt-6 flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm transition-all hover:bg-indigo-700"
                 >
                   {t("nav.dashboard")}
                 </Link>

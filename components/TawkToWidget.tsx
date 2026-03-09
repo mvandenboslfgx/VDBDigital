@@ -9,7 +9,7 @@ const TAWK_SCRIPT_URL = `https://embed.tawk.to/${TAWK_PROPERTY_ID}/${TAWK_WIDGET
 /**
  * Tawk.to chat widget – bubble rechtsonder op elke pagina.
  * Stel welkomstbericht in via Tawk Dashboard → Chat Widget.
- * Kleur: gebruik #2563EB (primary) in Tawk Dashboard zodat de chat matcht met de site.
+ * Kleur: gebruik #4F46E5 (primary) in Tawk Dashboard zodat de chat matcht met de site.
  * Zie je de bubble niet? Controleer: Tawk Dashboard → Widget visibility aan;
  * adblocker uitzetten; browserconsole op CSP/scriptfouten.
  */

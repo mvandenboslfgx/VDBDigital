@@ -39,7 +39,7 @@ export default function DashboardWidget({
         {action && (
           <Link
             href={action.href}
-            className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+            className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
           >
             {action.label} →
           </Link>

@@ -129,7 +129,7 @@ export default function RegisterForm() {
                 type="checkbox"
                 checked={newsletterOptIn}
                 onChange={(e) => setNewsletterOptIn(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
               />
               <span className="text-sm text-slate-700">Ontvang updates van VDB Digital</span>
             </label>
@@ -146,12 +146,15 @@ export default function RegisterForm() {
               />
             </div>
             <button type="submit" disabled={loading} className="btn-primary w-full">
-              {loading ? "Creating account…" : "Create account"}
+              {loading ? "Account aanmaken…" : "Account aanmaken"}
             </button>
             {error && <p className="error-text text-red-600">{error}</p>}
           </form>
           <p className="mt-4 text-xs text-slate-500">
-            Heb je al een account? <Link href="/login" className="text-[#B89B50] font-medium hover:text-[#C6A95D] hover:underline">Inloggen</Link>
+            Heb je al een account?{" "}
+            <Link href="/login" className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline">
+              Inloggen
+            </Link>
           </p>
         </div>
       </div>

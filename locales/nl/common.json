@@ -128,7 +128,8 @@
     "createAccount": "Account aanmaken",
     "loginErrorLockout": "Te veel mislukte pogingen. Probeer het over 15 minuten opnieuw.",
     "invalidCredentials": "Ongeldig e-mailadres of wachtwoord.",
-    "loginErrorGeneric": "Er ging iets mis. Probeer het opnieuw."
+    "loginErrorGeneric": "Er ging iets mis. Probeer het opnieuw.",
+    "signInWithGoogle": "Inloggen met Google"
   },
   "common": {
     "open": "Openen",
@@ -187,6 +188,8 @@
     "projects": "Projecten",
     "invoices": "Facturen",
     "products": "Producten",
+    "ads": "Advertenties",
+    "emailConfig": "E-mailconfiguratie",
     "clients": "Klanten",
     "newsletter": "Nieuwsbrief",
     "maintenance": "Onderhoud",

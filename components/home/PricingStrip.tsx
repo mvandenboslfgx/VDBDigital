@@ -43,7 +43,7 @@ export default function PricingStrip() {
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
               className={`relative rounded-2xl border p-8 transition-shadow duration-300 ${
                 p.highlight
-                  ? "border-blue-200 bg-blue-50/50 shadow-md hover:shadow-lg"
+                  ? "border-indigo-200 bg-indigo-50/50 shadow-md hover:shadow-lg"
                   : "border-gray-200 bg-surface shadow-sm hover:shadow-md"
               }`}
             >

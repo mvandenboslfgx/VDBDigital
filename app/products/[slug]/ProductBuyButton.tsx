@@ -44,7 +44,7 @@ export function ProductBuyButton({
         type="button"
         onClick={handleCheckout}
         disabled={loading}
-        className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-sm transition-all hover:bg-blue-700 disabled:opacity-50"
+        className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 disabled:opacity-50"
       >
         {loading ? "Bezig…" : "Bestel nu"}
       </button>

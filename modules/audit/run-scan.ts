@@ -3,6 +3,7 @@
  * Deterministic: same URL/same HTML → same scores. AI only for explanations.
  */
 
+import { getRelevantAd } from "@/lib/ads";
 import { collectSignals } from "./crawler";
 import { fetchPerformanceData } from "./performance";
 import { buildTechnicalSummary } from "./scoring";
@@ -55,11 +56,21 @@ export async function runScan(
   let aiInsights: string | undefined;
   let aiInsightsShort: string | undefined;
   if (!skipAi) {
+    const adScores = {
+      seoScore: scores.seoScore,
+      perfScore: scores.performanceScore,
+      uxScore: scores.uxScore,
+      convScore: scores.conversionScore,
+    };
+    const activeAd = await getRelevantAd(adScores).then((ad) =>
+      ad ? { title: ad.title, description: ad.description, url: ad.url, targetMetric: ad.targetMetric } : null
+    );
     const { summary, summaryShort } = await generateAiInsights(
       signals,
       scores,
       technicalSummary,
-      fullReport
+      fullReport,
+      activeAd ?? undefined
     );
     aiInsights = summary;
     aiInsightsShort = summaryShort;

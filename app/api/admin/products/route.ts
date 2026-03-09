@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminOrOwner } from "@/lib/auth";
+import { requireAdminOrOwner, validateCsrf } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { safeJsonError, handleApiError } from "@/lib/apiSafeResponse";
 import { z } from "zod";
@@ -38,6 +38,7 @@ export async function POST(request: Request) {
   try {
     const user = await requireAdminOrOwner();
     if (!user) return safeJsonError("Unauthorized", 403);
+    if (!(await validateCsrf(request))) return safeJsonError("Invalid request", 403);
 
     let body: unknown;
     try {

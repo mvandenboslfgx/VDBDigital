@@ -3,16 +3,41 @@ import SiteShell from "@/components/SiteShell";
 import HeroSection from "@/components/home/HeroSection";
 import TrustSection from "@/components/home/TrustSection";
 import WebsiteScanSection from "@/components/home/WebsiteScanSection";
-import HowItWorksSection from "@/components/home/HowItWorksSection";
-import ExampleReportSection from "@/components/home/ExampleReportSection";
-import ToolkitSection from "@/components/home/ToolkitSection";
-import HardwarePreviewSection from "@/components/home/HardwarePreviewSection";
-import KnowledgeHubSection from "@/components/home/KnowledgeHubSection";
-import PricingStrip from "@/components/home/PricingStrip";
-import FinalCtaSection from "@/components/home/FinalCtaSection";
 
+const HowItWorksSection = dynamic(
+  () => import("@/components/home/HowItWorksSection").then((m) => ({ default: m.default })),
+  { ssr: true }
+);
+const ExampleReportSection = dynamic(
+  () => import("@/components/home/ExampleReportSection").then((m) => ({ default: m.default })),
+  { ssr: true }
+);
+const ToolkitSection = dynamic(
+  () => import("@/components/home/ToolkitSection").then((m) => ({ default: m.default })),
+  { ssr: true }
+);
+const HardwarePreviewSection = dynamic(
+  () => import("@/components/home/HardwarePreviewSection").then((m) => ({ default: m.default })),
+  { ssr: true }
+);
+const KnowledgeHubSection = dynamic(
+  () => import("@/components/home/KnowledgeHubSection").then((m) => ({ default: m.default })),
+  { ssr: true }
+);
+const PricingStrip = dynamic(
+  () => import("@/components/home/PricingStrip").then((m) => ({ default: m.default })),
+  { ssr: true }
+);
 const FAQSection = dynamic(
   () => import("@/components/home/FAQSection").then((m) => ({ default: m.default })),
+  { ssr: true }
+);
+const FinalCtaSection = dynamic(
+  () => import("@/components/home/FinalCtaSection").then((m) => ({ default: m.default })),
+  { ssr: true }
+);
+const Reviews = dynamic(
+  () => import("@/components/home/Reviews").then((m) => ({ default: m.default })),
   { ssr: true }
 );
 
@@ -45,6 +70,9 @@ export default function HomePage() {
       </section>
       <section className="bg-[#EEF1F5]" aria-label="Prijzen">
         <PricingStrip />
+      </section>
+      <section className="bg-slate-50" aria-label="Reviews">
+        <Reviews />
       </section>
       <section className="bg-surface" aria-label="FAQ">
         <FAQSection />

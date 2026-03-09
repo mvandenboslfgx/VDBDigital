@@ -74,7 +74,7 @@ export default function ExampleReportSection() {
             <ul className="mt-3 space-y-2">
               {RECOMMENDATIONS.map((rec) => (
                 <li key={rec} className="flex items-center gap-2 text-lg text-marketing-textSecondary">
-                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
                   {rec}
                 </li>
               ))}

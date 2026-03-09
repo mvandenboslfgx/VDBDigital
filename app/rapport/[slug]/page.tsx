@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ReportPublicClient, type ReportPublicClientProps } from "@/components/report/ReportPublicClient";
+import { getRelevantAd } from "@/lib/ads";
 import type { Metadata } from "next";
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -49,6 +50,20 @@ export default async function RapportPage({ params }: PageProps) {
   );
   const topInsights = report.summary.split(/\n/).filter(Boolean).slice(0, 5);
 
+  const relevantAd = await getRelevantAd({
+    seoScore: report.seoScore,
+    perfScore: report.perfScore,
+    uxScore: report.uxScore,
+    convScore: report.convScore,
+  });
+  const metricLabels: Record<string, string> = {
+    SEO: "SEO-optimalisatie",
+    PERF: "snelheidstimalisatie",
+    UX: "gebruiksvriendelijkheid",
+    CONV: "conversie",
+  };
+  const recommendedToolsMetric = relevantAd ? metricLabels[relevantAd.targetMetric] ?? relevantAd.targetMetric : undefined;
+
   return (
     <ReportPublicClient
       reportId={report.id}
@@ -69,6 +84,8 @@ export default async function RapportPage({ params }: PageProps) {
           : undefined
       }
       scanConfidence={report.scanConfidence ?? undefined}
+      recommendedAd={relevantAd}
+      recommendedToolsMetric={recommendedToolsMetric}
     />
   );
 }

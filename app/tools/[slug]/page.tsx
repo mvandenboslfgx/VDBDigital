@@ -73,7 +73,7 @@ export default async function ProgrammaticToolPage({
           </ol>
         </section>
 
-        <section className="rounded-2xl border-2 border-blue-200 bg-blue-50/50 p-6 md:p-8">
+        <section className="rounded-2xl border-2 border-indigo-200 bg-indigo-50/50 p-6 md:p-8">
           <h2 className="text-lg font-semibold text-slate-900">Start de analyse</h2>
           <p className="mt-2 text-sm text-slate-600">
             Vul uw website-URL in en ontvang binnen een minuut een rapport met scores en verbeterpunten.
@@ -96,23 +96,23 @@ export default async function ProgrammaticToolPage({
               .slice(0, 6)
               .map((p) => (
                 <li key={p.slug}>
-                  <Link href={`/tools/${p.slug}`} className="text-blue-600 hover:underline">
+                  <Link href={`/tools/${p.slug}`} className="text-indigo-600 hover:underline">
                     {p.title}
                   </Link>
                 </li>
               ))}
             <li>
-              <Link href="/tools/website-audit" className="text-blue-600 hover:underline">
+              <Link href="/tools/website-audit" className="text-indigo-600 hover:underline">
                 Website-audit
               </Link>
             </li>
             <li>
-              <Link href="/website-scan" className="text-blue-600 hover:underline">
+              <Link href="/website-scan" className="text-indigo-600 hover:underline">
                 Website scan
               </Link>
             </li>
             <li>
-              <Link href="/prijzen" className="text-blue-600 hover:underline">
+              <Link href="/prijzen" className="text-indigo-600 hover:underline">
                 Prijzen
               </Link>
             </li>

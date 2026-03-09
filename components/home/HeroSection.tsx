@@ -32,7 +32,7 @@ export default function HeroSection() {
   return (
     <section className="relative flex min-h-[90vh] items-center overflow-hidden px-4 py-28">
       <motion.div
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(37,99,235,0.06),transparent_50%)]"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(79,70,229,0.06),transparent_50%)]"
         animate={{ opacity: [0.8, 1, 0.8] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -69,7 +69,7 @@ export default function HeroSection() {
                 placeholder="https://uwwebsite.nl"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                className="w-full rounded-xl border border-gray-200 bg-surface px-4 py-4 text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-base transition-all"
+                className="w-full rounded-xl border border-gray-200 bg-surface px-4 py-4 text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-base transition-all"
                 aria-label="Website-URL"
               />
             </motion.div>
@@ -90,13 +90,13 @@ export default function HeroSection() {
             className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-1 text-sm text-slate-600"
           >
             <span className="inline-flex items-center gap-1.5">
-              <span className="text-blue-600 font-medium">✓</span> Gratis analyse
+              <span className="text-indigo-600 font-medium">✓</span> Gratis analyse
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="text-blue-600 font-medium">✓</span> Geen account nodig
+              <span className="text-indigo-600 font-medium">✓</span> Geen account nodig
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="text-blue-600 font-medium">✓</span> Resultaat binnen 30 seconden
+              <span className="text-indigo-600 font-medium">✓</span> Resultaat binnen 30 seconden
             </span>
           </motion.p>
         </div>

@@ -102,3 +102,32 @@ export function FAQStructuredData({
     />
   );
 }
+
+/** JSON-LD for SoftwareApplication — VDB Digital (homepage SEO) */
+const softwareApplicationSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "VDB Digital",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  description:
+    "AI-gestuurde website-analyse en SEO-audit. Analyseer uw website gratis op snelheid, SEO, UX en conversie. Ontvang concrete verbeterpunten.",
+  url: siteUrl,
+  publisher: { "@id": `${siteUrl}/#organization` },
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "EUR",
+  },
+};
+
+export function SoftwareApplicationStructuredData() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(softwareApplicationSchema),
+      }}
+    />
+  );
+}

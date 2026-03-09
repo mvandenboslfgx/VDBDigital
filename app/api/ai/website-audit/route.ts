@@ -5,6 +5,7 @@ import { captureAuditLead } from "@/modules/leads/auditLead";
 import { addAuditJob, isAuditQueueAvailable } from "@/modules/audit/queue";
 import { validateOrigin, sanitizeString, sanitizeEmail, sanitizeWebsiteUrl, validateEmailFormat, containsPromptInjection } from "@/lib/apiSecurity";
 import { rateLimitAi, rateLimitAuditPerHour, getClientKey } from "@/lib/rateLimit";
+import { isBodyOverLimit, MAX_BODY_BYTES_DEFAULT } from "@/lib/requestSafety";
 import { logger } from "@/lib/logger";
 import { handleApiError } from "@/lib/apiSafeResponse";
 import { getCurrentUser } from "@/lib/auth";
@@ -41,6 +42,13 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { success: false, message: "U heeft het maximum van 10 scans per uur bereikt. Probeer het later opnieuw." },
         { status: 429 }
+      );
+    }
+
+    if (isBodyOverLimit(request, MAX_BODY_BYTES_DEFAULT, true)) {
+      return NextResponse.json(
+        { success: false, message: "Verzoek te groot." },
+        { status: 413 }
       );
     }
 

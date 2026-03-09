@@ -46,22 +46,33 @@ export default function HardwarePreviewSection() {
             >
               <Link
                 href={product.href}
-                className="group block rounded-2xl border border-gray-200 bg-surface p-8 shadow-sm transition-shadow hover:border-blue-200 hover:shadow-md"
+                className="group block rounded-2xl border border-gray-200 bg-surface p-8 shadow-sm transition-shadow hover:border-indigo-200 hover:shadow-md"
               >
                 <div className="aspect-video rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden">
                   {product.image ? (
-                    <Image src={product.image} alt={product.name} width={400} height={225} className="h-full w-full object-contain" />
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      width={400}
+                      height={225}
+                      sizes="(max-width: 640px) 100vw, 400px"
+                      className="h-full w-full object-contain"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/products/placeholder.svg";
+                      }}
+                    />
                   ) : (
                     <span className="text-sm text-marketing-textSecondary">Producten bekijken</span>
                   )}
                 </div>
-                <h3 className="mt-4 text-xl font-semibold text-marketing-text group-hover:text-blue-600 transition-colors">
+                <h3 className="mt-4 text-xl font-semibold text-marketing-text group-hover:text-indigo-600 transition-colors">
                   {product.name}
                 </h3>
                 <p className="mt-2 text-lg font-medium text-marketing-textSecondary">
                   {product.price}
                 </p>
-                <span className="mt-4 inline-block text-sm font-medium text-blue-600 group-hover:text-blue-700">
+                <span className="mt-4 inline-block text-sm font-medium text-indigo-600 group-hover:text-indigo-700">
                   Bekijk product →
                 </span>
               </Link>
@@ -76,7 +87,7 @@ export default function HardwarePreviewSection() {
         >
           <Link
             href="/products"
-            className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
+            className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700"
           >
             Alle producten
           </Link>

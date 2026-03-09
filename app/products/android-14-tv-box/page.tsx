@@ -124,7 +124,7 @@ export default function Android14TvBoxPage() {
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
             {FEATURES.map((f) => (
               <li key={f} className="flex items-center gap-3 text-marketing-textSecondary">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" aria-hidden />
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" aria-hidden />
                 {f}
               </li>
             ))}
@@ -158,7 +158,7 @@ export default function Android14TvBoxPage() {
         </section>
 
         {/* Bottom CTA */}
-        <section className="mt-16 md:mt-24 rounded-2xl border border-blue-100 bg-blue-50/30 p-6 md:p-8 text-center">
+        <section className="mt-16 md:mt-24 rounded-2xl border border-indigo-100 bg-indigo-50/30 p-6 md:p-8 text-center">
           <h2 className="text-lg font-semibold text-marketing-text">
             Android 14 Smart TV Box 8K
           </h2>

@@ -62,12 +62,12 @@ export default function PrijzenPage() {
               key={plan.name}
               className={`rounded-2xl border bg-surface p-8 shadow-sm transition-all duration-300 hover:shadow-md relative ${
                 plan.highlighted
-                  ? "border-blue-200 ring-2 ring-blue-500/20 -translate-y-1"
+                  ? "border-indigo-200 ring-2 ring-indigo-500/20 -translate-y-1"
                   : "border-gray-200 hover:-translate-y-1.5"
               }`}
             >
               {plan.highlighted && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-indigo-600 px-3 py-1 text-xs font-semibold text-white shadow-sm">
                   MEEST GEKOZEN
                 </span>
               )}
@@ -97,9 +97,9 @@ export default function PrijzenPage() {
         </div>
         <p className="mt-12 text-center text-sm text-slate-600">
           Heeft u al een account?{" "}
-          <Link href="/login" className="text-blue-600 font-medium hover:underline">Inloggen</Link>
+          <Link href="/login" className="text-indigo-600 font-medium hover:underline">Inloggen</Link>
           {" · "}
-          <Link href="/dashboard" className="text-blue-600 font-medium hover:underline">Dashboard</Link>
+          <Link href="/dashboard" className="text-indigo-600 font-medium hover:underline">Dashboard</Link>
         </p>
       </div>
     </SiteShell>

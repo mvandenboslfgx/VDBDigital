@@ -125,7 +125,7 @@ export default function DashboardNav({ role }: { role: DashboardRole }) {
             }`}
             aria-current={isActive ? "page" : undefined}
           >
-            <span className={isActive ? "text-blue-600" : "text-slate-500"} aria-hidden>
+            <span className={isActive ? "text-indigo-600" : "text-slate-500"} aria-hidden>
               {getIcon(item.href)}
             </span>
             <span className="flex-1">{item.label}</span>

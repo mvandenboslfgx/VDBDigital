@@ -108,7 +108,7 @@ export default async function PublicAuditPage({
           <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500">
             Website score
           </h2>
-          <p className="mt-2 text-5xl font-bold text-blue-600">{audit.score}/100</p>
+          <p className="mt-2 text-5xl font-bold text-indigo-600">{audit.score}/100</p>
           {scores && (
             <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-600">
               <span>SEO {scores.seoScore}</span>
@@ -137,7 +137,7 @@ export default async function PublicAuditPage({
           </section>
         )}
 
-        <section className="mt-10 rounded-2xl border-2 border-blue-200 bg-blue-50/50 p-8 text-center">
+        <section className="mt-10 rounded-2xl border-2 border-indigo-200 bg-indigo-50/50 p-8 text-center">
           <h2 className="text-xl font-semibold text-slate-900">
             Controleer uw eigen website gratis
           </h2>
@@ -146,7 +146,7 @@ export default async function PublicAuditPage({
           </p>
           <Link
             href="/website-scan"
-            className="mt-6 inline-flex items-center justify-center rounded-xl bg-blue-600 px-8 py-4 font-medium text-white shadow-sm transition hover:bg-blue-700"
+            className="mt-6 inline-flex items-center justify-center rounded-xl bg-indigo-600 px-8 py-4 font-medium text-white shadow-sm transition hover:bg-indigo-700"
           >
             Controleer uw eigen website gratis
           </Link>

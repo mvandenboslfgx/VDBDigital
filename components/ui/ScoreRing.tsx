@@ -79,7 +79,7 @@ export default function ScoreRing({
           />
         </svg>
         <div
-          className="absolute inset-0 flex items-center justify-center font-semibold text-white"
+          className="absolute inset-0 flex items-center justify-center font-bold text-slate-900 drop-shadow-sm"
           style={{ fontSize: size === "lg" ? "1.5rem" : size === "md" ? "1.25rem" : "1rem" }}
         >
           {displayScore}

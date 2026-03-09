@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminOrOwner } from "@/lib/auth";
+import { requireAdminOrOwner, validateCsrf } from "@/lib/auth";
 import { safeJsonError, handleApiError } from "@/lib/apiSafeResponse";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
@@ -16,6 +16,7 @@ export async function POST(request: Request) {
   try {
     const user = await requireAdminOrOwner();
     if (!user) return safeJsonError("Unauthorized", 403);
+    if (!(await validateCsrf(request))) return safeJsonError("Invalid request", 403);
 
     const formData = await request.formData();
     const file = formData.get("file") as File | null;

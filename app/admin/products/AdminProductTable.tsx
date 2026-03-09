@@ -28,7 +28,7 @@ export function AdminProductTable({ products }: { products: Product[] }) {
   if (products.length === 0) {
     return (
       <div className="rounded-xl border border-white/10 bg-white/5 p-8 text-center text-gray-400">
-        Nog geen producten. <Link href="/admin/products/new" className="text-blue-400 hover:underline">Eerste product toevoegen</Link>
+        Nog geen producten. <Link href="/admin/products/new" className="text-indigo-400 hover:underline">Eerste product toevoegen</Link>
       </div>
     );
   }
@@ -58,7 +58,7 @@ export function AdminProductTable({ products }: { products: Product[] }) {
             <td className="py-3 pr-4">
               <Link
                 href={`/admin/products/${p.id}`}
-                className="text-blue-400 hover:underline"
+                className="text-indigo-400 hover:underline"
               >
                 Bewerken
               </Link>

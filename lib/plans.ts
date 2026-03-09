@@ -124,6 +124,7 @@ export async function getActivePlans(): Promise<PlanPublic[]> {
   const rows = await prisma.plan.findMany({
     where: { active: true },
     orderBy: { price: "asc" },
+    select: { id: true, name: true, price: true, credits: true, features: true },
   });
   return rows.map((p) => ({
     id: p.id,
@@ -137,6 +138,7 @@ export async function getActivePlans(): Promise<PlanPublic[]> {
 export async function getPlanById(id: string): Promise<PlanPublic | null> {
   const plan = await prisma.plan.findUnique({
     where: { id, active: true },
+    select: { id: true, name: true, price: true, credits: true, features: true },
   });
   if (!plan) return null;
   return {

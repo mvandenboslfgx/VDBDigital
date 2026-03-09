@@ -83,7 +83,7 @@ export default async function SeoSlugPage({
                   key={i}
                   className="flex items-start gap-3 text-marketing-textSecondary"
                 >
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" aria-hidden />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-600" aria-hidden />
                   <span>{benefit}</span>
                 </li>
               ))}
@@ -105,7 +105,7 @@ export default async function SeoSlugPage({
 
           {/* CTA – link to /website-scan */}
           <section
-            className="rounded-2xl border border-gold/30 bg-gold/5 p-6 md:p-8"
+            className="rounded-2xl border border-indigo-200 bg-indigo-50/30 p-6 md:p-8"
             aria-labelledby="cta-heading"
           >
             <h2 id="cta-heading" className="text-lg font-semibold text-marketing-text">
@@ -132,20 +132,27 @@ export default async function SeoSlugPage({
             </h2>
             <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
               <li>
-                <Link href="/website-scan" className="text-gold hover:text-goldHover hover:underline">
+                <Link href="/website-scan" className="text-indigo-600 hover:text-indigo-700 hover:underline">
                   Website scan
                 </Link>
               </li>
               <li>
-                <Link href="/tools" className="text-gold hover:text-goldHover hover:underline">
+                <Link href="/tools" className="text-indigo-600 hover:text-indigo-700 hover:underline">
                   Alle tools
                 </Link>
               </li>
               <li>
-                <Link href="/kennisbank" className="text-gold hover:text-goldHover hover:underline">
+                <Link href="/kennisbank" className="text-indigo-600 hover:text-indigo-700 hover:underline">
                   Kennisbank
                 </Link>
               </li>
+              {config.relatedLinks?.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-indigo-600 hover:text-indigo-700 hover:underline">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
 

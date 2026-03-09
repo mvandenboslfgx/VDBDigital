@@ -129,6 +129,23 @@ Of deployen naar bijvoorbeeld Vercel.
 
 ---
 
+## 6b) Deploy op Vercel
+
+1. **Project koppelen**: Vercel → Import Git repo → Framework: Next.js (auto).
+2. **Environment variables** (Vercel → Project → Settings → Environment Variables) voor **Production** (en evt. Preview):
+   - `DATABASE_URL` (PostgreSQL connection string, bijv. Supabase pooler)
+   - `DIRECT_URL` (direct connection voor Prisma migrations)
+   - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+   - `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+   - `STRIPE_PRICE_ID_STARTER`, `STRIPE_PRICE_ID_GROWTH`, `STRIPE_PRICE_ID_AGENCY`
+   - `OPENAI_API_KEY`, `JWT_SECRET`, `SITE_URL` (bijv. `https://www.vdbdigital.nl`)
+   - Optioneel: `RESEND_API_KEY`, `REDIS_URL`, `SENTRY_DSN`
+3. **Build**: Vercel gebruikt `npm run build`; `postinstall` draait `prisma generate` (placeholders als DATABASE_URL ontbreekt tijdens build).
+4. **Migraties**: Na eerste deploy, lokaal of via CI: `npx prisma migrate deploy` met productie-DATABASE_URL, of gebruik Vercel’s “Run Command” / externe CI.
+5. **Node**: Project gebruikt `engines.node: "20.x"`; Vercel kiest doorgaans de juiste runtime. `vercel.json` kan regio instellen (bijv. `ams1`).
+
+---
+
 ## 7) Snelle functionele test
 
 Doorloop deze flow:

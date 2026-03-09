@@ -5,12 +5,15 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const OWNER_NAV = [
+  { label: "Site Beheer", href: "/admin/site" },
   { label: "Control Center", href: "/admin/control-center" },
   { label: "Accounts", href: "/admin/users" },
   { label: "Betalingen", href: "/admin/betalingen" },
   { label: "Leads", href: "/admin/leads" },
   { label: "Content Generator", href: "/admin/content-generator" },
   { label: "Products", href: "/admin/products" },
+  { label: "Ads", href: "/admin/ads" },
+  { label: "E-mailconfiguratie", href: "/admin/email-config" },
   { label: "Orders", href: "/admin/orders" },
   { label: "Finance", href: "/admin/finance" },
   { label: "AI Usage", href: "/admin/ai-usage" },
@@ -30,7 +33,7 @@ export function OwnerSidebar({ userEmail }: OwnerSidebarProps) {
 
   return (
     <aside className="sticky top-20 h-fit rounded-2xl border border-amber-500/20 bg-black/90 p-5 backdrop-blur-xl">
-      <Link href="/admin/control-center" className="inline-block">
+      <Link href="/admin/site" className="inline-block">
         <Image
           src="/logo-vdb.png"
           alt="VDB Digital"

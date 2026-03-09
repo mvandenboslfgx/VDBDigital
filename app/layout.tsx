@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
-import "@/styles/globals.css";
+import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,6 +40,7 @@ export const metadata: Metadata = {
     siteName,
     type: "website",
     locale: "nl_NL",
+    images: [{ url: `${siteUrl}/og-default.png`, width: 1200, height: 630, alt: siteName }],
   },
   twitter: {
     card: "summary_large_image",
@@ -49,10 +50,12 @@ export const metadata: Metadata = {
 };
 
 import { cookies } from "next/headers";
-import { OrganizationStructuredData, WebSiteStructuredData } from "@/components/StructuredData";
+import { OrganizationStructuredData, WebSiteStructuredData, SoftwareApplicationStructuredData } from "@/components/StructuredData";
 import { I18nProvider } from "@/components/I18nProvider";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { TawkToWidget } from "@/components/TawkToWidget";
+import { CommandPalette } from "@/components/CommandPalette";
 import type { Locale } from "@/lib/i18n";
 
 const VALID_LOCALES: Locale[] = ["nl", "en", "de"];
@@ -70,19 +73,22 @@ export default async function RootLayout({
       : "nl";
 
   return (
-    <html lang={locale} className="bg-[#F5F7FB]">
+    <html lang={locale} className="bg-slate-50">
       <body
-        className={`${inter.variable} ${playfair.variable} font-sans min-h-screen bg-[#F5F7FB] text-slate-900 antialiased`}
+        className={`${inter.variable} ${playfair.variable} font-sans min-h-screen bg-slate-50 text-midnight antialiased`}
       >
         <I18nProvider locale={locale}>
           <OrganizationStructuredData />
           <WebSiteStructuredData />
-          <div className="relative min-h-screen overflow-hidden bg-[#F5F7FB]">
-            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(37,99,235,0.06),transparent_50%)]" />
+          <SoftwareApplicationStructuredData />
+          <div className="relative min-h-screen overflow-hidden bg-slate-50">
+            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(79,70,229,0.06),transparent_50%)]" />
             {children}
           </div>
           <TawkToWidget />
+          <CommandPalette />
           <Analytics />
+          <SpeedInsights />
         </I18nProvider>
       </body>
     </html>

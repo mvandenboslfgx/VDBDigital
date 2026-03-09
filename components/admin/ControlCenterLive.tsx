@@ -42,7 +42,7 @@ function ActivityRow({ item }: { item: ActivityItem }) {
     return (
       <div className="flex items-center justify-between gap-4 py-2 border-b border-white/5 last:border-0">
         <div className="flex items-center gap-3 min-w-0">
-          <span className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-blue-600 text-xs font-medium">
+          <span className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-600 text-xs font-medium">
             User
           </span>
           <span className="truncate text-sm text-white">{item.email}</span>
@@ -225,6 +225,18 @@ export default function ControlCenterLive({ initialData }: ControlCenterLiveProp
           </h2>
           <div className="mt-4 flex flex-col gap-2">
             <Link
+              href="/admin/site"
+              className="rounded-lg bg-amber-500/20 px-4 py-2.5 text-sm font-medium text-amber-400 hover:bg-amber-500/30 transition-colors"
+            >
+              Site Beheer (alles)
+            </Link>
+            <Link
+              href="/admin/products"
+              className="rounded-lg bg-white/10 px-4 py-2.5 text-sm text-white hover:bg-white/20 transition-colors"
+            >
+              Producten
+            </Link>
+            <Link
               href="/admin/users"
               className="rounded-lg bg-white/10 px-4 py-2.5 text-sm text-white hover:bg-white/20 transition-colors"
             >
@@ -235,6 +247,12 @@ export default function ControlCenterLive({ initialData }: ControlCenterLiveProp
               className="rounded-lg bg-white/10 px-4 py-2.5 text-sm text-white hover:bg-white/20 transition-colors"
             >
               Leads
+            </Link>
+            <Link
+              href="/admin/betalingen"
+              className="rounded-lg bg-white/10 px-4 py-2.5 text-sm text-white hover:bg-white/20 transition-colors"
+            >
+              Betalingen
             </Link>
             <Link
               href="/admin/finance"

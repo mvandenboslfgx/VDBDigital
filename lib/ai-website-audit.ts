@@ -6,8 +6,11 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { getOrSet, auditResultCacheKey } from "@/lib/cache";
 import { runScan } from "@/modules/audit/run-scan";
+import { generateAiInsights, type ActiveAdContext } from "@/modules/audit/insights";
 import type { CrawlSignals, ScanResult, TechnicalDataSummary } from "@/modules/audit/types";
+import type { AuditScores as EngineAuditScores } from "@/modules/audit/types";
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -95,39 +98,49 @@ function crawlSignalsToLegacy(signals: CrawlSignals, scanConfidence: number, tec
   };
 }
 
+const AUDIT_L1_TTL_MS = 60 * 60 * 1000; // 1 hour L1 (Redis/memory); DB remains 24h
+
 /**
- * Run full website audit. Uses cache if entry exists and is < 24h old; otherwise runs scan and stores result.
+ * Run full website audit. L1: getOrSet (Redis/memory) for sub-second repeat hits.
+ * L2: AuditCache in DB (24h). Then run scan and store.
  */
 export async function runFullWebsiteAudit(rawUrl: string, fullReport: boolean): Promise<FullAuditResult> {
   const cacheKey = normalizeUrlForCache(rawUrl);
-  const cached = await prisma.auditCache.findUnique({
-    where: { url: cacheKey },
-    select: { score: true, result: true, createdAt: true },
-  }).catch(() => null);
 
-  if (cached && cached.result && typeof cached.result === "object") {
-    const age = Date.now() - new Date(cached.createdAt).getTime();
-    if (age < CACHE_TTL_MS) {
-      return cached.result as unknown as FullAuditResult;
-    }
-  }
+  return getOrSet(
+    auditResultCacheKey(cacheKey),
+    async () => {
+      const cached = await prisma.auditCache.findUnique({
+        where: { url: cacheKey },
+        select: { score: true, result: true, createdAt: true },
+      }).catch(() => null);
 
-  const result = await runScan(rawUrl, { fullReport, skipAi: false });
-  const fullResult = mapToFullAuditResult(result);
-  const overallScore =
-    result.totalScore ??
-    Math.round(
-      (fullResult.scores.seoScore + fullResult.scores.perfScore + fullResult.scores.uxScore + fullResult.scores.convScore) / 4
-    );
+      if (cached && cached.result && typeof cached.result === "object") {
+        const age = Date.now() - new Date(cached.createdAt).getTime();
+        if (age < CACHE_TTL_MS) {
+          return cached.result as unknown as FullAuditResult;
+        }
+      }
 
-  const resultJson = JSON.parse(JSON.stringify(fullResult));
-  await prisma.auditCache.upsert({
-    where: { url: cacheKey },
-    create: { url: cacheKey, score: overallScore, result: resultJson },
-    update: { score: overallScore, result: resultJson },
-  }).catch(() => {});
+      const result = await runScan(rawUrl, { fullReport, skipAi: false });
+      const fullResult = mapToFullAuditResult(result);
+      const overallScore =
+        result.totalScore ??
+        Math.round(
+          (fullResult.scores.seoScore + fullResult.scores.perfScore + fullResult.scores.uxScore + fullResult.scores.convScore) / 4
+        );
 
-  return fullResult;
+      const resultJson = JSON.parse(JSON.stringify(fullResult));
+      await prisma.auditCache.upsert({
+        where: { url: cacheKey },
+        create: { url: cacheKey, score: overallScore, result: resultJson },
+        update: { score: overallScore, result: resultJson },
+      }).catch(() => {});
+
+      return fullResult;
+    },
+    AUDIT_L1_TTL_MS
+  );
 }
 
 const FALLBACK_INSIGHTS =
@@ -174,6 +187,20 @@ function mapToFullAuditResult(result: ScanResult): FullAuditResult {
 export function computeLeadScore(scores: AuditScores): number {
   const avg = (scores.seoScore + scores.perfScore + scores.uxScore + scores.convScore) / 4;
   return Math.max(0, Math.min(100, Math.round(100 - avg)));
+}
+
+/**
+ * Generate AI audit summary from signals and scores. Optional activeAd is passed to the AI context
+ * so the model can weave the partner tool into the advice (e.g. as the solution for SEO or speed).
+ */
+export async function generateAuditSummary(
+  signals: CrawlSignals,
+  scores: EngineAuditScores,
+  technical: TechnicalDataSummary,
+  fullReport: boolean,
+  activeAd?: ActiveAdContext | null
+): Promise<{ summary: string; summaryShort?: string }> {
+  return generateAiInsights(signals, scores, technical, fullReport, activeAd ?? undefined);
 }
 
 /** Re-export for backward compatibility: fetch + parse only (Layer 1). */

@@ -128,7 +128,8 @@
     "createAccount": "Create account",
     "loginErrorLockout": "Too many failed attempts. Try again in 15 minutes.",
     "invalidCredentials": "Invalid email or password.",
-    "loginErrorGeneric": "Something went wrong. Please try again."
+    "loginErrorGeneric": "Something went wrong. Please try again.",
+    "signInWithGoogle": "Sign in with Google"
   },
   "common": {
     "open": "Open",
@@ -187,6 +188,8 @@
     "projects": "Projects",
     "invoices": "Invoices",
     "products": "Products",
+    "ads": "Ads",
+    "emailConfig": "Email config",
     "clients": "Clients",
     "newsletter": "Newsletter",
     "maintenance": "Maintenance",

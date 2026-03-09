@@ -27,14 +27,14 @@ export function ProductOrderButton() {
       <button
         type="button"
         onClick={handleAdd}
-        className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-white font-medium shadow-sm transition-colors hover:bg-blue-700"
+        className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-white font-medium shadow-sm transition-colors hover:bg-indigo-700"
       >
         {added ? "Toegevoegd aan winkelwagen ✓" : "Bestel nu"}
       </button>
       {added && (
         <Link
           href="/cart"
-          className="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-blue-50 px-6 py-3 text-blue-700 font-medium transition-colors hover:bg-blue-100"
+          className="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-6 py-3 text-indigo-700 font-medium transition-colors hover:bg-indigo-100"
         >
           Naar winkelwagen
         </Link>

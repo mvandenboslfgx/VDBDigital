@@ -36,20 +36,20 @@ export default async function ProductsPage() {
           {products.length === 0 ? (
             <div className="col-span-full rounded-2xl border border-gray-200 bg-surface p-12 text-center text-marketing-textSecondary">
               Er staan nog geen producten in de webshop. Beheer producten in het{" "}
-              <Link href="/admin/products" className="text-blue-600 hover:underline">admin dashboard</Link>.
+              <Link href="/admin/products" className="text-indigo-600 hover:underline">admin dashboard</Link>.
             </div>
           ) : (
             products.map((product) => (
               <Link
                 key={product.id}
                 href={`/products/${product.slug}`}
-                className="group rounded-2xl border border-gray-200 bg-surface p-6 shadow-sm transition-all hover:border-blue-200 hover:shadow-md"
+                className="group rounded-2xl border border-gray-200 bg-surface p-6 shadow-sm transition-all hover:border-indigo-200 hover:shadow-md"
               >
                 <div className="aspect-square rounded-xl bg-slate-100 flex items-center justify-center">
                   <span className="text-sm text-marketing-textSecondary">Product</span>
                 </div>
                 <div className="mt-6">
-                  <h2 className="text-xl font-semibold text-marketing-text group-hover:text-blue-600 transition-colors">
+                  <h2 className="text-xl font-semibold text-marketing-text group-hover:text-indigo-600 transition-colors">
                     {product.name}
                   </h2>
                   <p className="mt-2 text-marketing-textSecondary line-clamp-2">
@@ -59,7 +59,7 @@ export default async function ProductsPage() {
                     €{product.price.toFixed(2)}{" "}
                     <span className="text-sm font-normal text-slate-500">excl. btw</span>
                   </p>
-                  <span className="mt-4 inline-block text-sm font-medium text-blue-600">
+                  <span className="mt-4 inline-block text-sm font-medium text-indigo-600">
                     Bekijk product →
                   </span>
                 </div>

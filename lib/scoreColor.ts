@@ -2,11 +2,11 @@
  * Map audit score (0–100) to semantic color names for UI.
  */
 
-export type ScoreColorName = "green" | "blue" | "orange" | "red";
+export type ScoreColorName = "green" | "indigo" | "orange" | "red";
 
 export function getScoreColor(score: number): ScoreColorName {
   if (score >= 90) return "green";
-  if (score >= 70) return "blue";
+  if (score >= 70) return "indigo";
   if (score >= 50) return "orange";
   return "red";
 }
@@ -16,7 +16,7 @@ export function getScoreColorClass(score: number, prefix: "text" | "bg" | "borde
   const color = getScoreColor(score);
   const shades: Record<ScoreColorName, string> = {
     green: "600",
-    blue: "600",
+    indigo: "600",
     orange: "600",
     red: "600",
   };
@@ -26,7 +26,7 @@ export function getScoreColorClass(score: number, prefix: "text" | "bg" | "borde
 
 const SCORE_COLOR_HEX: Record<ScoreColorName, string> = {
   green: "#22c55e",
-  blue: "#2563EB",
+  indigo: "#4F46E5",
   orange: "#f97316",
   red: "#ef4444",
 };

@@ -114,5 +114,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Product table may not exist yet
   }
 
-  return [...staticRoutes, ...workEntries, ...seoEntries, ...articleEntries, ...toolEntries, ...publicAuditEntries, ...productEntries];
+  let reportEntries: MetadataRoute.Sitemap = [];
+  try {
+    const reports = await prisma.auditReport.findMany({
+      where: { shareSlug: { not: null } },
+      take: 500,
+      orderBy: { createdAt: "desc" },
+      select: { shareSlug: true, createdAt: true },
+    });
+    reportEntries = reports
+      .filter((r): r is { shareSlug: string; createdAt: Date } => r.shareSlug != null)
+      .map((r) => ({
+        url: `${base}/report/${encodeURIComponent(r.shareSlug)}`,
+        lastModified: r.createdAt.toISOString(),
+        changeFrequency: "weekly" as const,
+        priority: 0.5,
+      }));
+  } catch {
+    // AuditReport table may not exist yet
+  }
+
+  return [...staticRoutes, ...workEntries, ...seoEntries, ...articleEntries, ...toolEntries, ...publicAuditEntries, ...productEntries, ...reportEntries];
 }

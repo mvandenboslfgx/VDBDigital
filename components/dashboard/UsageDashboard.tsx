@@ -22,7 +22,20 @@ export function UsageDashboard() {
       .catch(() => {});
   }, []);
 
-  if (!stats) return null;
+  if (!stats) {
+    return (
+      <DashboardWidget title="Gebruik deze maand" subtitle="Scans, rapporten en AI-tools">
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="rounded-xl border border-gray-100 bg-slate-50/80 px-4 py-3 animate-pulse">
+              <div className="h-3 w-24 rounded bg-slate-200" />
+              <div className="mt-2 h-6 w-16 rounded bg-slate-200" />
+            </div>
+          ))}
+        </div>
+      </DashboardWidget>
+    );
+  }
 
   const scansLabel = stats.scansLimit != null
     ? `${stats.scansUsed} / ${stats.scansLimit} scans`
