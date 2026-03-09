@@ -1,18 +1,12 @@
 import OpenAI from "openai";
-import { env } from "@/lib/env";
 
 /**
- * Gedeelde OpenAI-client voor alle AI-functies op de site:
- * - Website-audit (/audit)
- * - AI Copy (/ai-copy)
- * - AI Website Builder (/builder)
- * - Competitor Analyzer (/competitor-analyzer)
- * - Funnel Builder (/funnel-builder)
- *
- * Zet OPENAI_API_KEY in je .env (zie .env.example) om deze functies te laten werken.
+ * Gedeelde OpenAI-client voor alle AI-functies op de site.
+ * Gebruik een placeholder-key wanneer OPENAI_API_KEY ontbreekt (bv. tijdens Vercel build),
+ * zodat de module niet crasht; bij echte requests is de key in Vercel wél gezet.
  */
 export const openai = new OpenAI({
-  apiKey: env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY || "sk-dummy-build",
 });
 
 /** Default model for structured JSON responses (cost-effective, fast). */
