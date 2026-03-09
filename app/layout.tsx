@@ -51,7 +51,7 @@ export const metadata: Metadata = {
 import { cookies } from "next/headers";
 import { OrganizationStructuredData, WebSiteStructuredData } from "@/components/StructuredData";
 import { I18nProvider } from "@/components/I18nProvider";
-import { ChatWidgetLazy } from "@/components/chat/ChatWidgetLazy";
+import { TawkToWidget } from "@/components/TawkToWidget";
 import type { Locale } from "@/lib/i18n";
 
 const VALID_LOCALES: Locale[] = ["nl", "en", "de"];
@@ -80,7 +80,7 @@ export default async function RootLayout({
             <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(198,169,93,0.06),transparent_50%)]" />
             {children}
           </div>
-          <ChatWidgetLazy />
+          <TawkToWidget />
         </I18nProvider>
       </body>
     </html>

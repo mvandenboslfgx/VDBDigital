@@ -1,12 +1,12 @@
 // CSP: strict; Next.js hydration may require 'unsafe-inline' for scripts in dev. Prefer nonces in production.
 const ContentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://embed.tawk.to",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https: https://pageshot.site",
   "font-src 'self' data:",
   "connect-src 'self' ws: wss: https: https://api.stripe.com",
-  "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
+  "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://embed.tawk.to",
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self' https://api.stripe.com",

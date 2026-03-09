@@ -46,34 +46,43 @@ function LoginForm() {
         } catch {
           // ignore
         }
+        const m = signInError.message ?? "";
         const msg =
-          signInError.message === "Invalid login credentials"
+          m === "Invalid login credentials" || m.toLowerCase().includes("invalid login")
             ? t("auth.invalidCredentials")
-            : signInError.message === "Email not confirmed"
+            : m === "Email not confirmed" || m.toLowerCase().includes("email not confirmed")
               ? "Bevestig eerst uw e-mailadres via de link in uw inbox."
-              : t("auth.loginErrorGeneric");
+              : m
+                ? `${t("auth.loginErrorGeneric")} (${m})`
+                : t("auth.loginErrorGeneric");
         setError(msg);
         setLoading(false);
         return;
       }
       if (data.user) {
-        // Korte pauze zodat Supabase de sessie-cookie kan zetten voordat de server deze leest
-        await new Promise((r) => setTimeout(r, 200));
+        // Wacht tot Supabase de sessie-cookie heeft gezet; server moet die kunnen lezen
+        await new Promise((r) => setTimeout(r, 600));
         let meData: { success?: boolean; user?: { role?: string } } = {};
-        for (let attempt = 0; attempt < 2; attempt++) {
-          const meRes = await fetch("/api/auth/me");
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const meRes = await fetch("/api/auth/me", { credentials: "include" });
           meData = (await meRes.json()) as { success?: boolean; user?: { role?: string } };
           if (meRes.ok && meData?.success) break;
-          if (attempt === 0) await new Promise((r) => setTimeout(r, 300));
+          await new Promise((r) => setTimeout(r, 400));
         }
         const role = meData?.user?.role ?? "lead";
         const next = searchParams.get("next");
         const target = role === "admin" || role === "owner" ? "/admin" : getSafeRedirect(next);
+        // Bij 401 na inloggen: hard redirect zodat cookie bij volgende request wél meegaat (domein/cookie-sync)
+        if (!meData?.success && (typeof window !== "undefined")) {
+          window.location.href = target;
+          return;
+        }
         router.push(target);
         router.refresh();
       }
     } catch (err) {
-      setError(t("auth.loginErrorGeneric"));
+      const detail = err instanceof Error ? err.message : String(err);
+      setError(detail ? `${t("auth.loginErrorGeneric")} (${detail})` : t("auth.loginErrorGeneric"));
     } finally {
       setLoading(false);
     }

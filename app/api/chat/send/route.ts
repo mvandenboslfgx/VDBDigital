@@ -15,9 +15,17 @@ const sendSchema = z.object({
   conversationId: z.string().uuid().optional(),
 });
 
+const CHAT_ERROR_MESSAGE =
+  "We kunnen je bericht nu niet ontvangen. Gebruik het contactformulier op de contactpagina of mail naar algemeen@vdbdigital.nl.";
+
 export async function POST(request: Request) {
   try {
-    const user = await getCurrentUser();
+    let user = null;
+    try {
+      user = await getCurrentUser();
+    } catch {
+      // Ongelogde bezoeker mag ook bericht achterlaten
+    }
     const body = await request.json();
     const parsed = sendSchema.safeParse(body);
     if (!parsed.success) {
@@ -55,6 +63,19 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
-    return handleApiError(error, "Chat/Send");
+    const res = handleApiError(error, "Chat/Send");
+    // Stuur een begrijpelijke boodschap voor de chat-widget (blijft 500)
+    try {
+      const body = await res.clone().json();
+      if (body?.message && body.message === "Er is iets misgegaan. Probeer het later opnieuw.") {
+        return NextResponse.json(
+          { success: false, message: CHAT_ERROR_MESSAGE },
+          { status: 503 }
+        );
+      }
+    } catch {
+      // fallback: originele response
+    }
+    return res;
   }
 }
