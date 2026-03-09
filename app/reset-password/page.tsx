@@ -39,12 +39,12 @@ export default function ResetPasswordPage() {
 
   if (sent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F7FB]">
         <div className="section-container">
-          <div className="mx-auto max-w-md rounded-3xl border border-white/10 bg-black/80 p-8 text-center">
-            <h1 className="text-2xl font-serif text-white">Check your email</h1>
-            <p className="mt-3 text-gray-400">Als er een account bij dit e-mailadres hoort, ontvang je een link om je wachtwoord te resetten.</p>
-            <Link href="/login" className="mt-6 inline-block btn-primary">Back to sign in</Link>
+          <div className="mx-auto max-w-md rounded-2xl border border-gray-200 bg-surface p-8 text-center shadow-sm">
+            <h1 className="text-2xl font-semibold text-slate-900">Check je e-mail</h1>
+            <p className="mt-3 text-slate-600">Als er een account bij dit e-mailadres hoort, ontvang je een link om je wachtwoord te resetten.</p>
+            <Link href="/login" className="mt-6 inline-block btn-primary">Terug naar inloggen</Link>
           </div>
         </div>
       </div>
@@ -52,24 +52,24 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="min-h-screen flex items-center justify-center bg-[#F5F7FB]">
       <div className="section-container">
-        <div className="mx-auto max-w-md rounded-3xl border border-white/10 bg-black/80 p-8">
-          <h1 className="text-xs font-semibold tracking-[0.25em] uppercase text-gray-400">VDB Digital</h1>
-          <h2 className="mt-3 text-2xl font-serif text-white">Reset password</h2>
-          <p className="mt-2 text-sm text-gray-400">Enter your email and we’ll send you a reset link.</p>
+        <div className="mx-auto max-w-md rounded-2xl border border-gray-200 bg-surface p-8 shadow-sm">
+          <h1 className="text-xs font-semibold tracking-[0.25em] uppercase text-slate-500">VDB Digital</h1>
+          <h2 className="mt-3 text-2xl font-semibold text-slate-900">Wachtwoord resetten</h2>
+          <p className="mt-2 text-sm text-slate-600">Vul je e-mail in en we sturen je een resetlink.</p>
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
-              <label className="block text-xs font-medium text-gray-300">Email</label>
-              <input type="email" className="input-base mt-1" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <label className="block text-xs font-medium text-slate-700">E-mail</label>
+              <input type="email" className="input-light mt-1" value={email} onChange={(e) => setEmail(e.target.value)} required />
             </div>
             <button type="submit" disabled={loading} className="btn-primary w-full">
-              {loading ? "Sending..." : "Send reset link"}
+              {loading ? "Bezig..." : "Stuur resetlink"}
             </button>
-            {error && <p className="error-text">{error}</p>}
+            {error && <p className="error-text text-red-600">{error}</p>}
           </form>
-          <p className="mt-4 text-sm">
-            <Link href="/login" className="text-gold hover:underline">Back to sign in</Link>
+          <p className="mt-4 text-sm text-slate-600">
+            <Link href="/login" className="text-[#B89B50] font-medium hover:text-[#C6A95D] hover:underline">Terug naar inloggen</Link>
           </p>
         </div>
       </div>

@@ -145,16 +145,10 @@ body {
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04);
 }
 
-/* Buttons - use UI Button component; keep legacy classes for gradual migration */
+/* Buttons - blue primary, gold for accent links */
 .btn-primary {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-black transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
-  background: var(--gold);
-  box-shadow: 0 0 0 0 rgba(198, 169, 93, 0.4);
-}
-
-.btn-primary:hover:not(:disabled) {
-  box-shadow: 0 0 24px 4px rgba(198, 169, 93, 0.5);
-  transform: translateY(-1px);
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply bg-blue-600 hover:bg-blue-700 shadow-sm;
 }
 
 .btn-ghost {
@@ -175,6 +169,11 @@ body {
 
 .input-base {
   @apply w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder-zinc-500 transition-colors focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30;
+}
+
+/* Light-theme inputs (auth, forms on surface background) */
+.input-light {
+  @apply w-full rounded-xl border border-gray-200 bg-surface px-4 py-3 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20;
 }
 
 .error-text {

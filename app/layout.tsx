@@ -51,6 +51,7 @@ export const metadata: Metadata = {
 import { cookies } from "next/headers";
 import { OrganizationStructuredData, WebSiteStructuredData } from "@/components/StructuredData";
 import { I18nProvider } from "@/components/I18nProvider";
+import { Analytics } from "@vercel/analytics/next";
 import { TawkToWidget } from "@/components/TawkToWidget";
 import type { Locale } from "@/lib/i18n";
 
@@ -81,6 +82,7 @@ export default async function RootLayout({
             {children}
           </div>
           <TawkToWidget />
+          <Analytics />
         </I18nProvider>
       </body>
     </html>

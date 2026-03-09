@@ -27,7 +27,7 @@ function isProtectedPath(path: string): boolean {
   return PROTECTED_PREFIXES.some((prefix) => path.startsWith(prefix));
 }
 
-/** Fetch current user role from API (role lives in DB; middleware runs on Edge). */
+/** Fetch current user role from API (role lives in DB; proxy runs on Edge). */
 async function getRoleFromApi(request: NextRequest): Promise<string | null> {
   try {
     const origin = request.nextUrl.origin;
@@ -45,7 +45,7 @@ async function getRoleFromApi(request: NextRequest): Promise<string | null> {
 
 const CANONICAL_HOST = "www.vdbdigital.nl";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const host = request.nextUrl.hostname.toLowerCase();
   if (host === "vdbdigital.nl") {
     const canonical = new URL(request.nextUrl.pathname + request.nextUrl.search, `https://${CANONICAL_HOST}`);

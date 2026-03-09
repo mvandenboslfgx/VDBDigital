@@ -53,7 +53,7 @@ export default function PricingStrip() {
                   whileInView={{ scale: 1, opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.3 + i * 0.08 }}
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white"
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#C6A95D] px-3 py-1 text-xs font-semibold text-white shadow-sm"
                 >
                   {p.badge}
                 </motion.span>

@@ -80,40 +80,40 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background pt-24">
+    <div className="min-h-screen flex items-center justify-center bg-[#F5F7FB] pt-24">
       <div className="section-container">
-        <div className="mx-auto max-w-md rounded-2xl border border-white/[0.06] bg-[#111113] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.95)]">
+        <div className="mx-auto max-w-md rounded-2xl border border-gray-200 bg-surface p-8 shadow-sm">
           <Link href="/" className="inline-block">
             <Image
               src="/logo-vdb.png"
               alt="VDB Digital"
               width={220}
               height={72}
-              className="h-16 w-auto object-contain brightness-105 contrast-105 md:h-[4.5rem]"
+              className="h-16 w-auto object-contain md:h-[4.5rem]"
             />
           </Link>
-          <h2 className="mt-6 text-2xl font-semibold tracking-tight text-white">
+          <h2 className="mt-6 text-2xl font-semibold tracking-tight text-slate-900">
             {t("auth.login")}
           </h2>
-          <p className="mt-2 text-sm text-zinc-400">
+          <p className="mt-2 text-sm text-slate-600">
             {t("auth.loginSubtitle")}
           </p>
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
-              <label className="block text-xs font-medium text-zinc-300">{t("auth.emailLabel")}</label>
+              <label className="block text-xs font-medium text-slate-700">{t("auth.emailLabel")}</label>
               <input
                 type="email"
-                className="input-base mt-1"
+                className="input-light mt-1"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-zinc-300">{t("auth.passwordLabel")}</label>
+              <label className="block text-xs font-medium text-slate-700">{t("auth.passwordLabel")}</label>
               <input
                 type="password"
-                className="input-base mt-1"
+                className="input-light mt-1"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -122,16 +122,16 @@ function LoginForm() {
             <button type="submit" disabled={loading} className="btn-primary w-full">
               {loading ? t("auth.loggingIn") : t("auth.login")}
             </button>
-            {error && <p className="error-text">{error}</p>}
+            {error && <p className="error-text text-red-600">{error}</p>}
           </form>
-          <p className="mt-4 text-sm text-gray-400">
-            <Link href="/reset-password" className="text-gold hover:underline">
+          <p className="mt-4 text-sm text-slate-600">
+            <Link href="/reset-password" className="text-[#B89B50] font-medium hover:text-[#C6A95D] hover:underline">
               {t("auth.forgotPassword")}
             </Link>
           </p>
-          <p className="mt-2 text-xs text-gray-500">
+          <p className="mt-2 text-xs text-slate-500">
             {t("auth.noAccount")}{" "}
-            <Link href="/register" className="text-gold hover:underline">
+            <Link href="/register" className="text-[#B89B50] font-medium hover:text-[#C6A95D] hover:underline">
               {t("auth.createAccount")}
             </Link>
             .
@@ -145,13 +145,13 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-background pt-24">
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F7FB] pt-24">
         <div className="section-container">
-          <div className="mx-auto max-w-md rounded-2xl border border-white/[0.06] bg-[#111113] p-8 animate-pulse">
-            <div className="h-8 w-24 bg-white/10 rounded" />
-            <div className="mt-6 h-8 bg-white/10 rounded w-3/4" />
-            <div className="mt-4 h-4 bg-white/10 rounded w-full" />
-            <div className="mt-6 h-12 bg-white/10 rounded w-full" />
+          <div className="mx-auto max-w-md rounded-2xl border border-gray-200 bg-surface p-8 animate-pulse">
+            <div className="h-8 w-24 bg-slate-200 rounded" />
+            <div className="mt-6 h-8 bg-slate-200 rounded w-3/4" />
+            <div className="mt-4 h-4 bg-slate-200 rounded w-full" />
+            <div className="mt-6 h-12 bg-slate-200 rounded w-full" />
           </div>
         </div>
       </div>
