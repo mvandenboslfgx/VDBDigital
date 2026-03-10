@@ -68,6 +68,14 @@ const nextConfig = {
         source: "/favicon.ico",
         headers: [{ key: "Cache-Control", value: "public, max-age=86400" }],
       },
+      {
+        source: "/seo/:path*",
+        headers: [{ key: "Cache-Control", value: "public, s-maxage=1800, stale-while-revalidate=86400" }],
+      },
+      {
+        source: "/website-scan",
+        headers: [{ key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=86400" }],
+      },
     ];
   },
   async redirects() {
@@ -84,6 +92,7 @@ const nextConfig = {
       { source: "/seo-analyse-wordpress", destination: "/seo/seo-analyse-wordpress", permanent: true },
       { source: "/seo-analyse-shopify", destination: "/seo/seo-analyse-shopify", permanent: true },
       { source: "/seo-analyse-saas", destination: "/seo/seo-analyse-saas", permanent: true },
+      { source: "/website-audit-gratis", destination: "/seo/website-analyse-gratis", permanent: true },
     ];
   },
 };
