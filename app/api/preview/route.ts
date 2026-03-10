@@ -2,47 +2,14 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendPreviewRequestAdminNotification } from "@/lib/mailer";
 import { logger } from "@/lib/logger";
-
-const RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000;
-const RATE_LIMIT_MAX_REQUESTS = 10;
-
-const rateLimitStore = new Map<
-  string,
-  { count: number; firstRequestTimestamp: number }
->();
-
-const sanitize = (value: string) => value.replace(/[<>]/g, "").trim();
-
-const getClientIdentifier = (request: Request) => {
-  const forwarded =
-    request.headers.get("x-forwarded-for") ??
-    request.headers.get("x-real-ip") ??
-    "";
-  return forwarded.split(",")[0].trim() || "anonymous";
-};
-
-const isRateLimited = (key: string) => {
-  const now = Date.now();
-  const entry = rateLimitStore.get(key);
-  if (!entry) {
-    rateLimitStore.set(key, { count: 1, firstRequestTimestamp: now });
-    return false;
-  }
-  if (now - entry.firstRequestTimestamp > RATE_LIMIT_WINDOW_MS) {
-    rateLimitStore.set(key, { count: 1, firstRequestTimestamp: now });
-    return false;
-  }
-  entry.count += 1;
-  if (entry.count > RATE_LIMIT_MAX_REQUESTS) {
-    return true;
-  }
-  return false;
-};
+import { rateLimitSensitive, getClientKey } from "@/lib/rateLimit";
+import { sanitizeString } from "@/lib/apiSecurity";
 
 export async function POST(request: Request) {
   try {
-    const clientId = getClientIdentifier(request);
-    if (isRateLimited(`preview:${clientId}`)) {
+    const key = `preview:${getClientKey(request)}`;
+    const { ok } = rateLimitSensitive(key);
+    if (!ok) {
       return NextResponse.json(
         { success: false, message: "Too many preview requests. Please pause." },
         { status: 429 }
@@ -68,10 +35,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const businessName = sanitize(body.businessName ?? "");
-    const industry = sanitize(body.industry ?? "");
-    const colorPreference = sanitize(body.colorPreference ?? "");
-    const style = sanitize(body.style ?? "Luxury");
+    const businessName = sanitizeString(body.businessName ?? "", 120);
+    const industry = sanitizeString(body.industry ?? "", 120);
+    const colorPreference = sanitizeString(body.colorPreference ?? "", 120);
+    const style = sanitizeString(body.style ?? "Luxury", 40);
 
     if (!businessName || !industry) {
       return NextResponse.json(

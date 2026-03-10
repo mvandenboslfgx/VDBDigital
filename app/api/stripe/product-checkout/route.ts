@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { handleApiError } from "@/lib/apiSafeResponse";
 import { rateLimitSensitive, getRateLimitKey } from "@/lib/rateLimit";
+import { getBaseUrl } from "@/lib/siteUrl";
 import Stripe from "stripe";
 import { z } from "zod";
 
@@ -50,10 +51,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Product niet gevonden" }, { status: 404 });
     }
 
-    const baseUrl =
-      process.env.SITE_URL ||
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
-      "http://localhost:3000";
+    const baseUrl = getBaseUrl();
     const origin = request.headers.get("origin") || baseUrl;
 
     const images: string[] = Array.isArray(product.images) ? (product.images as string[]) : [];

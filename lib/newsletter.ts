@@ -1,12 +1,11 @@
 import * as jose from "jose";
 import { env } from "./env";
+import { getBaseUrl } from "./siteUrl";
 
 const UNSUB_EXPIRY = "30d";
 
 export async function getUnsubscribeUrl(email: string): Promise<string> {
-  const base =
-    process.env.SITE_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+  const base = getBaseUrl();
   const token = await getUnsubscribeToken(email);
   return `${base}/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
 }

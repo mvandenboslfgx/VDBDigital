@@ -5,6 +5,7 @@ import Stripe from "stripe";
 import { handleApiError, safeJsonError } from "@/lib/apiSafeResponse";
 import { rateLimitSensitive, getRateLimitKey } from "@/lib/rateLimit";
 import { logger } from "@/lib/logger";
+import { getBaseUrl } from "@/lib/siteUrl";
 
 const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 
@@ -36,10 +37,7 @@ export async function POST(request: Request) {
       return safeJsonError("Geen Stripe-klant gevonden. Upgrade eerst een plan.", 400);
     }
 
-    const baseUrl =
-      process.env.SITE_URL ||
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-    const returnUrl = `${baseUrl}/dashboard/billing`;
+    const returnUrl = `${getBaseUrl()}/dashboard/billing`;
 
     const session = await stripe.billingPortal.sessions.create({
       customer: dbUser.stripeCustomerId,

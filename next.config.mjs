@@ -79,6 +79,11 @@ const nextConfig = {
       { source: "/cookie-policy", destination: "/cookies", permanent: true },
       { source: "/pricing", destination: "/prijzen", permanent: true },
       { source: "/gratis-website-scan", destination: "/website-scan", permanent: true },
+      { source: "/website-scan-gratis", destination: "/website-scan", permanent: true },
+      { source: "/seo-analyse-webshop", destination: "/seo/seo-analyse-webshop", permanent: true },
+      { source: "/seo-analyse-wordpress", destination: "/seo/seo-analyse-wordpress", permanent: true },
+      { source: "/seo-analyse-shopify", destination: "/seo/seo-analyse-shopify", permanent: true },
+      { source: "/seo-analyse-saas", destination: "/seo/seo-analyse-saas", permanent: true },
     ];
   },
 };

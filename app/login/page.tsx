@@ -6,13 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useTranslations } from "@/components/I18nProvider";
-
-function getSafeRedirect(next: string | null): string {
-  if (!next || typeof next !== "string") return "/dashboard";
-  const t = next.trim();
-  if (!t || !/^\/(?!\/)[\w\-\/.]*$/.test(t)) return "/dashboard";
-  return t;
-}
+import { getSafeRedirectUrl } from "@/lib/safeRedirect";
 
 function LoginForm() {
   const { t } = useTranslations();
@@ -92,7 +86,7 @@ function LoginForm() {
         }
         const role = meData?.user?.role ?? "lead";
         const next = searchParams.get("next");
-        const target = role === "admin" || role === "owner" ? "/admin" : getSafeRedirect(next);
+        const target = role === "admin" || role === "owner" ? "/admin" : getSafeRedirectUrl(next, "/dashboard");
         router.push(target);
         router.refresh();
       }

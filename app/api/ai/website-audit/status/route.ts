@@ -5,10 +5,17 @@
 
 import { NextResponse } from "next/server";
 import { getAuditQueue } from "@/modules/audit/queue";
+import { rateLimitSensitive, getRateLimitKey } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
 export async function GET(request: Request) {
+  const key = getRateLimitKey(request);
+  const { ok } = rateLimitSensitive(key);
+  if (!ok) {
+    return NextResponse.json({ status: "error", message: "Too many requests" }, { status: 429 });
+  }
+
   const queue = getAuditQueue();
   if (!queue) {
     return NextResponse.json(
@@ -55,9 +62,9 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json(response);
-  } catch (e) {
+  } catch {
     return NextResponse.json(
-      { status: "error", message: String(e) },
+      { status: "error", message: "Internal error" },
       { status: 500 }
     );
   }

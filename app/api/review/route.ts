@@ -1,42 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
-
-const RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000;
-const RATE_LIMIT_MAX_REQUESTS = 8;
-
-const rateLimitStore = new Map<
-  string,
-  { count: number; firstRequestTimestamp: number }
->();
-
-const sanitize = (value: string) => value.replace(/[<>]/g, "").trim();
-
-const getClientIdentifier = (request: Request) => {
-  const forwarded =
-    request.headers.get("x-forwarded-for") ??
-    request.headers.get("x-real-ip") ??
-    "";
-  return forwarded.split(",")[0].trim() || "anonymous";
-};
-
-const isRateLimited = (key: string) => {
-  const now = Date.now();
-  const entry = rateLimitStore.get(key);
-  if (!entry) {
-    rateLimitStore.set(key, { count: 1, firstRequestTimestamp: now });
-    return false;
-  }
-  if (now - entry.firstRequestTimestamp > RATE_LIMIT_WINDOW_MS) {
-    rateLimitStore.set(key, { count: 1, firstRequestTimestamp: now });
-    return false;
-  }
-  entry.count += 1;
-  if (entry.count > RATE_LIMIT_MAX_REQUESTS) {
-    return true;
-  }
-  return false;
-};
+import { rateLimitSensitive, getClientKey } from "@/lib/rateLimit";
+import { sanitizeString } from "@/lib/apiSecurity";
 
 export async function GET() {
   try {
@@ -59,8 +25,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const clientId = getClientIdentifier(request);
-    if (isRateLimited(`review:${clientId}`)) {
+    const key = `review:${getClientKey(request)}`;
+    const { ok } = rateLimitSensitive(key);
+    if (!ok) {
       return NextResponse.json(
         { success: false, message: "Too many reviews from this source." },
         { status: 429 }
@@ -96,8 +63,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const name = sanitize(body.name ?? "");
-    const content = sanitize(body.content ?? "");
+    const name = sanitizeString(body.name ?? "", 80);
+    const content = sanitizeString(body.content ?? "", 2000);
     const rating = Number(body.rating ?? 0);
 
     if (!name || !content || Number.isNaN(rating)) {

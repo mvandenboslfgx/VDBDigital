@@ -1,5 +1,6 @@
 /**
  * Resolve Plan and role from Stripe price ID. Single source of truth for webhook handlers.
+ * Plans are cached to avoid N+1 on webhook bursts.
  */
 
 import { prisma } from "@/lib/prisma";
@@ -8,6 +9,16 @@ export interface ResolvedPlan {
   planId: string;
   planName: "starter" | "growth" | "agency";
   role: "pro" | "customer";
+}
+
+let plansCache: Awaited<ReturnType<typeof prisma.plan.findMany>> | null = null;
+
+async function getPlans() {
+  if (plansCache) return plansCache;
+  plansCache = await prisma.plan.findMany({
+    where: { name: { in: ["starter", "growth", "agency", "pro", "business"] } },
+  });
+  return plansCache;
 }
 
 /**
@@ -19,10 +30,9 @@ export async function resolvePlanFromPriceId(
   priceId: string
 ): Promise<ResolvedPlan | null> {
   const env = process.env;
-  const plans = await prisma.plan.findMany({
-    where: { name: { in: ["starter", "growth", "agency", "pro", "business"] } },
-  });
-  const starterPlan = plans.find((p) => p.name === "starter") ?? plans.find((p) => p.name === "pro");
+  const plans = await getPlans();
+  const starterPlan =
+    plans.find((p) => p.name === "starter") ?? plans.find((p) => p.name === "pro");
   const growthPlan = plans.find((p) => p.name === "growth") ?? plans.find((p) => p.name === "business");
   const agencyPlan = plans.find((p) => p.name === "agency");
 

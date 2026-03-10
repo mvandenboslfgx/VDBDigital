@@ -3,6 +3,7 @@ import { openai } from "@/lib/openai";
 import { validateOrigin, sanitizeString } from "@/lib/apiSecurity";
 import { rateLimitAi, getClientKey } from "@/lib/rateLimit";
 import { handleApiError, safeJsonError } from "@/lib/apiSafeResponse";
+import { withRetry } from "@/lib/retry";
 
 export const runtime = "nodejs";
 
@@ -26,23 +27,25 @@ export async function POST(request: Request) {
       );
     }
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      response_format: { type: "json_object" },
-      messages: [
-        {
-          role: "system",
-          content: `Je bent een content- en SEO-specialist. Genereer een SEO-blogartikel voor het gegeven onderwerp. Antwoord in het Nederlands in JSON:
+    const completion = await withRetry(() =>
+      openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        response_format: { type: "json_object" },
+        messages: [
+          {
+            role: "system",
+            content: `Je bent een content- en SEO-specialist. Genereer een SEO-blogartikel voor het gegeven onderwerp. Antwoord in het Nederlands in JSON:
 {
   "metaTitle": "max 60 tekens",
   "metaDescription": "max 155 tekens",
   "headings": ["H2 of H3 koppen voor het artikel"],
   "article": "volledige blogtekst in markdown (kort, 3-5 alinea's)"
 }`,
-        },
-        { role: "user", content: `Onderwerp: ${topic}` },
-      ],
-    });
+          },
+          { role: "user", content: `Onderwerp: ${topic}` },
+        ],
+      })
+    );
 
     const raw = completion.choices[0]?.message?.content?.trim();
     if (!raw) {

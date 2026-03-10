@@ -6,6 +6,8 @@ import { handleApiError } from "@/lib/apiSafeResponse";
 import { rateLimitSensitive, getRateLimitKey } from "@/lib/rateLimit";
 import { checkoutPlanSchema, safeParse } from "@/lib/validation";
 import { trackEvent } from "@/lib/analytics";
+import { withRetry } from "@/lib/retry";
+import { getBaseUrl } from "@/lib/siteUrl";
 
 const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 
@@ -58,10 +60,7 @@ export async function POST(request: Request) {
       select: { stripeCustomerId: true },
     });
 
-    const baseUrl =
-      process.env.SITE_URL ||
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
-      "http://localhost:3000";
+    const baseUrl = getBaseUrl();
     const origin = request.headers.get("origin") || baseUrl;
 
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
@@ -80,7 +79,7 @@ export async function POST(request: Request) {
       sessionParams.customer_email = user.email;
     }
 
-    const session = await stripe.checkout.sessions.create(sessionParams);
+    const session = await withRetry(() => stripe.checkout.sessions.create(sessionParams));
     trackEvent("checkout_started", { plan: planKey, userId: user.id.slice(0, 8) });
     return NextResponse.json({ url: session.url, sessionId: session.id });
   } catch (e) {

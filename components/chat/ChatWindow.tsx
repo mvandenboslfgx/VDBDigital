@@ -42,9 +42,11 @@ export function ChatWindow({
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(
-        `/api/chat/messages?conversationId=${encodeURIComponent(conversationId)}&markRead=true`
-      );
+      const params = new URLSearchParams({
+        conversationId,
+        visitorEmail: visitorEmail || "",
+      });
+      const res = await fetch(`/api/chat/messages?${params.toString()}`);
       const data = await res.json();
       if (data?.messages) setMessages(data.messages);
     } catch {

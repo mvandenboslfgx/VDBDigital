@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sanitizeEmail } from "@/lib/apiSecurity";
+import { rateLimitSensitive, getRateLimitKey } from "@/lib/rateLimit";
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -9,6 +10,11 @@ const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-
  * Does not store the email again if lead exists; just validates access (report is public by link).
  */
 export async function POST(request: Request) {
+  const key = getRateLimitKey(request);
+  const { ok } = rateLimitSensitive(key);
+  if (!ok) {
+    return NextResponse.json({ error: "Te veel verzoeken." }, { status: 429 });
+  }
   try {
     const body = (await request.json().catch(() => ({}))) as {
       reportId?: string;

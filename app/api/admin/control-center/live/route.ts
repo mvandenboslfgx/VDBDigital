@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireOwner } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getBaseUrl } from "@/lib/siteUrl";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -86,7 +87,7 @@ export async function GET() {
     }),
     prisma.user.findMany({
       where: { stripeSubscriptionId: { not: null }, planId: { not: null }, disabledAt: null },
-      include: { plan: true },
+      select: { plan: { select: { price: true } } },
     }),
     prisma.auditReport.findMany({
       orderBy: { createdAt: "desc" },
@@ -122,12 +123,7 @@ export async function GET() {
       take: 10,
       select: { id: true, email: true, source: true, createdAt: true },
     }),
-    fetch(
-      process.env.SITE_URL || process.env.VERCEL_URL
-        ? `${process.env.SITE_URL || `https://${process.env.VERCEL_URL}`}/api/health`
-        : "http://localhost:3000/api/health",
-      { cache: "no-store" }
-    )
+    fetch(`${getBaseUrl()}/api/health`, { cache: "no-store" })
       .then((r) => r.json())
       .catch(() => ({ database: "error", stripe: "error" })),
   ]);

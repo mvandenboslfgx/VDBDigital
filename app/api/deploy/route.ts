@@ -3,11 +3,18 @@ import { deployWebsite } from "@/modules/deploy/logic";
 import { requireUser } from "@/lib/auth";
 import type { DeployInput } from "@/modules/deploy/types";
 import { logger } from "@/lib/logger";
+import { rateLimitSensitive, getRateLimitKey } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
+    const key = getRateLimitKey(request);
+    const { ok } = rateLimitSensitive(key);
+    if (!ok) {
+      return NextResponse.json({ success: false, message: "Te veel verzoeken." }, { status: 429 });
+    }
+
     const user = await requireUser();
     if (!user) {
       return NextResponse.json(

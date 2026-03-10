@@ -80,6 +80,23 @@ export async function POST(request: Request) {
           runInBackground("auditPlanUpgrade", () => auditPlanUpgrade(uid, resolved.planName, { source: "checkout.session.completed" }));
         }
       }
+    } else if (event.type === "customer.subscription.created") {
+      const sub = event.data.object as Stripe.Subscription;
+      if (sub.status === "active") {
+        const priceId = sub.items.data[0]?.price.id;
+        const resolved = priceId ? await resolvePlanFromPriceId(priceId) : null;
+        if (resolved) {
+          const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+          const user = await prisma.user.findFirst({ where: { stripeCustomerId: customerId }, select: { id: true } });
+          if (user) {
+            await prisma.user.update({
+              where: { id: user.id },
+              data: { stripeSubscriptionId: sub.id, planId: resolved.planId, role: resolved.role },
+            });
+            runInBackground("auditPlanUpgrade", () => auditPlanUpgrade(user.id, resolved.planName, { source: "subscription.created" }));
+          }
+        }
+      }
     } else if (event.type === "customer.subscription.updated") {
       const sub = event.data.object as Stripe.Subscription;
       if (sub.status === "active") {
@@ -96,7 +113,7 @@ export async function POST(request: Request) {
       }
     } else if (event.type === "customer.subscription.deleted") {
       const sub = event.data.object as Stripe.Subscription;
-      const freePlan = await prisma.plan.findFirst({ where: { name: "free" } });
+      const freePlan = await prisma.plan.findFirst({ where: { name: "free" }, select: { id: true } });
       if (freePlan) {
         await prisma.user.updateMany({
           where: { stripeSubscriptionId: sub.id },
@@ -108,6 +125,17 @@ export async function POST(request: Request) {
         });
         await recordUsageEvent("subscription_cancelled", undefined, { subscriptionId: sub.id });
       }
+    } else if (event.type === "invoice.payment_succeeded") {
+      const invoice = event.data.object as Stripe.Invoice;
+      if (invoice.subscription && invoice.customer_email) {
+        trackEvent("invoice_paid", { subscriptionId: String(invoice.subscription) });
+      }
+    } else if (event.type === "invoice.payment_failed") {
+      const invoice = event.data.object as Stripe.Invoice;
+      logger.warn("[Stripe Webhook] Invoice payment failed", {
+        invoiceId: invoice.id,
+        subscriptionId: invoice.subscription ?? undefined,
+      });
     }
   } catch (e) {
     logger.error("[Stripe Webhook] Handler error", { error: String(e), type: event.type });

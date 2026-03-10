@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { addAdminReply } from "@/modules/chat";
 import { prisma } from "@/lib/prisma";
 import { safeJsonError, handleApiError } from "@/lib/apiSafeResponse";
+import { rateLimitSensitive, getRateLimitKey } from "@/lib/rateLimit";
 import { z } from "zod";
 
 const replySchema = z.object({
@@ -12,6 +13,10 @@ const replySchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    const key = getRateLimitKey(request);
+    const { ok } = rateLimitSensitive(key);
+    if (!ok) return safeJsonError("Te veel verzoeken.", 429);
+
     const user = await getCurrentUser();
     if (!user) return safeJsonError("Niet ingelogd.", 401);
 

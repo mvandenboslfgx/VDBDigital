@@ -2,11 +2,15 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimitSensitive, getClientKey } from "@/lib/rateLimit";
 import { sanitizeString } from "@/lib/apiSecurity";
+import { validateOrigin } from "@/lib/apiSecurity";
 import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
+  if (!validateOrigin(request)) {
+    return NextResponse.json({ success: false }, { status: 403 });
+  }
   try {
-    const key = `analytics:${getClientKey(request)}`;
+    const key = `analytics-visit:${getClientKey(request)}`;
     const { ok } = rateLimitSensitive(key);
     if (!ok) {
       return NextResponse.json({ success: true }, { status: 200 });

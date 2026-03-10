@@ -2,11 +2,18 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { getConversationById, markConversationMessagesRead } from "@/modules/chat";
 import { safeJsonError, handleApiError } from "@/lib/apiSafeResponse";
+import { rateLimitSensitive, getRateLimitKey } from "@/lib/rateLimit";
 
 export async function GET(request: Request) {
   try {
+    const key = getRateLimitKey(request);
+    const { ok } = rateLimitSensitive(key);
+    if (!ok) return safeJsonError("Te veel verzoeken.", 429);
+
     const { searchParams } = new URL(request.url);
     const conversationId = searchParams.get("conversationId");
+    const visitorEmail = searchParams.get("visitorEmail")?.trim().toLowerCase();
+
     if (!conversationId) {
       return safeJsonError("conversationId ontbreekt.", 400);
     }
@@ -16,14 +23,18 @@ export async function GET(request: Request) {
       return safeJsonError("Gesprek niet gevonden.", 404);
     }
 
-    const markRead = searchParams.get("markRead") === "true";
-    if (markRead) {
-      const user = await getCurrentUser();
-      const isAdminOrOwner = user && (user.role === "admin" || user.role === "owner");
-      if (isAdminOrOwner) {
-        await markConversationMessagesRead(conversationId);
+    const user = await getCurrentUser();
+    const isAdminOrOwner = user && (user.role === "admin" || user.role === "owner");
+
+    if (!isAdminOrOwner) {
+      if (!visitorEmail || visitorEmail !== conv.visitorEmail.toLowerCase()) {
+        return safeJsonError("Geen toegang tot dit gesprek.", 403);
       }
-      // If not admin/owner, do not mark as read (e.g. visitor with markRead=true is ignored)
+    }
+
+    const markRead = searchParams.get("markRead") === "true";
+    if (markRead && isAdminOrOwner) {
+      await markConversationMessagesRead(conversationId);
     }
 
     return NextResponse.json(
