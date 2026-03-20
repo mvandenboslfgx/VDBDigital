@@ -25,7 +25,7 @@ export default async function AdminLeadDetailPage({
 
   return (
     <div className="rounded-2xl border border-white/10 bg-black/80 p-6 backdrop-blur-xl">
-      <Link href="/admin/leads" className="text-sm text-gold hover:underline">
+      <Link href="/admin/leads" className="text-sm text-indigo-400 hover:underline">
         ← Back to leads
       </Link>
       <h1 className="section-heading mt-4">Lead: {lead.name}</h1>
@@ -42,7 +42,7 @@ export default async function AdminLeadDetailPage({
           <p className="text-xs text-gray-400">Website</p>
           <p className="font-medium text-white">
             {lead.website ? (
-              <a href={lead.website} target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">
+              <a href={lead.website} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">
                 {lead.website}
               </a>
             ) : (

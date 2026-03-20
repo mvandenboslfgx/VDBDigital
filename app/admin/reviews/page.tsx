@@ -31,7 +31,7 @@ export default async function AdminReviewsPage() {
             {reviews.map((r) => (
               <tr key={r.id} className="border-b border-white/5">
                 <td className="py-3 pr-4">
-                  <span className="font-medium text-gold">{r.rating}★</span>
+                  <span className="font-medium text-indigo-400">{r.rating}★</span>
                 </td>
                 <td className="py-3 pr-4 text-white">{r.name}</td>
                 <td className="py-3">

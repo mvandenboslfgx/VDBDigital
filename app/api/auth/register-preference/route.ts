@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { rateLimitRegistration, getClientKey } from "@/lib/rateLimit";
-import { validateOrigin, sanitizeEmail, validateEmailFormat } from "@/lib/apiSecurity";
-import { handleApiError, safeJsonError } from "@/lib/apiSafeResponse";
+import { createSecureRoute } from "@/lib/secureRoute";
+import { sanitizeEmail } from "@/lib/apiSecurity";
+import { safeJsonError } from "@/lib/apiSafeResponse";
 import { logger } from "@/lib/logger";
+import { registrationPreferenceBodySchema } from "@/lib/validation";
 
 function isLocalhostRequest(request: Request): boolean {
   const origin = request.headers.get("origin");
@@ -19,50 +20,29 @@ function isLocalhostRequest(request: Request): boolean {
   }
 }
 
-export async function POST(request: Request) {
-  try {
-    if (!validateOrigin(request)) {
-      logger.warn("[Auth/RegisterPreference] Rejected: invalid origin");
-      return NextResponse.json(
-        { success: false, message: "Invalid request origin." },
-        { status: 403 }
-      );
-    }
+export const POST = createSecureRoute<{
+  email: string;
+  newsletterOptIn: boolean;
+  website?: string;
+}>({
+  auth: "optional",
+  csrf: true,
+  rateLimit: "registration",
+  logContext: "Auth/RegisterPreference",
+  schema: registrationPreferenceBodySchema,
+  invalidInputMessage: "Ongeldige invoer.",
+  skipRateLimit: (request) => isLocalhostRequest(request),
+  handler: async ({ input, requestId }) => {
+    const email = sanitizeEmail(input.email);
+    const newsletterOptIn = input.newsletterOptIn === true;
 
-    const key = `registration:${getClientKey(request)}`;
-    const skipRateLimit = isLocalhostRequest(request);
-    if (!skipRateLimit) {
-      const { ok } = rateLimitRegistration(key);
-      if (!ok) {
-        logger.warn("[Auth/RegisterPreference] Rate limit exceeded", { key });
-        return NextResponse.json(
-          { success: false, message: "Too many requests. Try again in a minute." },
-          { status: 429 }
-        );
-      }
-    }
-
-    let body: { email?: string; newsletterOptIn?: boolean; website?: string };
-    try {
-      body = (await request.json()) as typeof body;
-    } catch {
-      return NextResponse.json(
-        { success: false, message: "Invalid JSON body." },
-        { status: 400 }
-      );
-    }
-    const email = sanitizeEmail(body.email ?? "");
-    const newsletterOptIn = body.newsletterOptIn === true;
-
-    if (body.website && String(body.website).trim().length > 0) {
+    if (input.website && input.website.trim().length > 0) {
+      // Honeypot anti-bot
       return NextResponse.json({ success: true }, { status: 200 });
     }
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return NextResponse.json(
-        { success: false, message: "Valid email required." },
-        { status: 400 }
-      );
+    if (!email) {
+      return safeJsonError("Valid email required.", 400, { requestId });
     }
 
     await prisma.registrationNewsletter.upsert({
@@ -71,9 +51,10 @@ export async function POST(request: Request) {
       update: { newsletterOptIn },
     });
 
-    logger.info("[Auth/RegisterPreference] Saved preference", { email: email.slice(0, 3) + "***" });
+    logger.info("[Auth/RegisterPreference] Saved preference", {
+      email: email.slice(0, 3) + "***",
+      requestId,
+    });
     return NextResponse.json({ success: true }, { status: 200 });
-  } catch (e) {
-    return handleApiError(e, "Auth/RegisterPreference");
-  }
-}
+  },
+});

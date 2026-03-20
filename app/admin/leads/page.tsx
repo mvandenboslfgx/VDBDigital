@@ -48,7 +48,7 @@ export default async function AdminLeadsPage() {
                         href={lead.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-amber-400 hover:underline"
+                        className="text-indigo-400 hover:underline"
                       >
                         {lead.website.replace(/^https?:\/\//, "").slice(0, 30)}
                         {lead.website.length > 30 ? "…" : ""}

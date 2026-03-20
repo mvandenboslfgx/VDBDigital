@@ -43,17 +43,23 @@ export async function GET(request: Request) {
     }
 
     const state = await job.getState();
-    const result = job.returnvalue as { reportId?: string; leadId?: string } | undefined;
+    const result = job.returnvalue as
+      | { reportId?: string; leadId?: string; websiteAuditId?: string }
+      | undefined;
     const failedReason = job.failedReason;
 
     const response: {
       status: string;
       reportId?: string;
+      websiteAuditId?: string;
       error?: string;
     } = {
       status: state,
     };
 
+    if (state === "completed" && result?.websiteAuditId) {
+      response.websiteAuditId = result.websiteAuditId;
+    }
     if (state === "completed" && result?.reportId) {
       response.reportId = result.reportId;
     }

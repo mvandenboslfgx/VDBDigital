@@ -73,7 +73,7 @@ export default async function SiteBeheerPage() {
             key={section.title}
             className="rounded-2xl border border-white/10 bg-black/80 p-6 backdrop-blur-xl"
           >
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-400/90">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-indigo-400/90">
               {section.title}
             </h2>
             <p className="mt-1 text-xs text-zinc-500">{section.description}</p>
@@ -82,7 +82,7 @@ export default async function SiteBeheerPage() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="block rounded-lg px-3 py-2.5 text-sm text-white transition-colors hover:bg-white/10 hover:text-amber-400/90"
+                    className="block rounded-lg px-3 py-2.5 text-sm text-white transition-colors hover:bg-white/10 hover:text-indigo-400/90"
                   >
                     <span className="font-medium">{link.label}</span>
                     <span className="ml-2 text-xs text-zinc-500">— {link.desc}</span>
@@ -94,12 +94,12 @@ export default async function SiteBeheerPage() {
         ))}
       </div>
 
-      <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-6">
-        <h2 className="text-sm font-semibold text-amber-400/90">Snelle acties</h2>
+      <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-6">
+        <h2 className="text-sm font-semibold text-indigo-400/90">Snelle acties</h2>
         <div className="mt-4 flex flex-wrap gap-3">
           <Link
             href="/admin/products/new"
-            className="rounded-xl bg-amber-500/20 px-4 py-2.5 text-sm font-medium text-amber-400 hover:bg-amber-500/30 transition-colors"
+            className="rounded-xl bg-indigo-500/20 px-4 py-2.5 text-sm font-medium text-indigo-400 hover:bg-indigo-500/30 transition-colors"
           >
             + Nieuw product
           </Link>

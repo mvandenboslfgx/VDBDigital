@@ -1,11 +1,12 @@
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
+import { isAdmin } from "@/lib/permissions";
 import PortalNewsletterSetting from "@/components/portal/PortalNewsletterSetting";
 
 export default async function PortalSettingsPage() {
   const user = await requireUser();
   if (!user) redirect("/login");
-  if (user.role === "admin") redirect("/admin");
+  if (isAdmin(user)) redirect("/admin");
 
   const newsletterOptIn = user.newsletterOptIn ?? false;
 

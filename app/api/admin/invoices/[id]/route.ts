@@ -1,33 +1,35 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
+import { createSecureRoute } from "@/lib/secureRoute";
 import { prisma } from "@/lib/prisma";
-import { requireUser } from "@/lib/auth";
-import { logger } from "@/lib/logger";
 
 export async function PATCH(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const admin = await requireUser("admin");
-    if (!admin) {
-      return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
-    }
-    const { id } = await params;
-    const body = (await _request.json()) as { status?: string };
-    const status = body.status as "pending" | "paid" | "overdue" | "cancelled" | undefined;
-    if (!status || !["pending", "paid", "overdue", "cancelled"].includes(status)) {
-      return NextResponse.json(
-        { success: false, message: "Valid status required (pending, paid, overdue, cancelled)." },
-        { status: 400 }
-      );
-    }
-    const invoice = await prisma.invoice.update({
-      where: { id },
-      data: { status },
-    });
-    return NextResponse.json({ success: true, invoice }, { status: 200 });
-  } catch (error) {
-    logger.error("[Admin/Invoices] PATCH error", { error: String(error) });
-    return NextResponse.json({ success: false, message: "Unable to update invoice." }, { status: 500 });
-  }
+  const { id } = await params;
+
+  const statusSchema = z.object({
+    status: z.enum(["pending", "paid", "overdue", "cancelled"]),
+  });
+
+  const wrapper = createSecureRoute<{
+    status: "pending" | "paid" | "overdue" | "cancelled";
+  }>({
+    auth: "admin",
+    csrf: true,
+    rateLimit: "api",
+    logContext: "Admin/Invoices/[id]/PATCH",
+    schema: statusSchema,
+    invalidInputMessage: "Ongeldige invoer.",
+    handler: async ({ input }) => {
+      const invoice = await prisma.invoice.update({
+        where: { id },
+        data: { status: input.status },
+      });
+      return NextResponse.json({ success: true, invoice }, { status: 200 });
+    },
+  });
+
+  return wrapper(request);
 }

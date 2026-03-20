@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { deployWebsite } from "@/modules/deploy/logic";
 import { requireUser } from "@/lib/auth";
+import { isAdmin } from "@/lib/permissions";
 import type { DeployInput } from "@/modules/deploy/types";
 import { logger } from "@/lib/logger";
 import { rateLimitSensitive, getRateLimitKey } from "@/lib/rateLimit";
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
 
     const clientId = body.clientId ?? undefined;
     const projectId = body.projectId ?? undefined;
-    if (clientId && user.role !== "admin") {
+    if (clientId && !isAdmin(user)) {
       return NextResponse.json(
         { message: "Alleen admins kunnen voor een client deployen." },
         { status: 403 }

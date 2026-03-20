@@ -1,5 +1,7 @@
-import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { notFound, redirect } from "next/navigation";
+import { cookies, headers } from "next/headers";
+import { getCurrentUser } from "@/lib/auth";
+import { getAuditReportForPublicView } from "@/lib/auditReportPublic";
 import { ReportPublicClient } from "@/components/report/ReportPublicClient";
 import { ReportStructuredData } from "@/components/report/ReportStructuredData";
 import { getRelevantAd } from "@/lib/ads";
@@ -11,6 +13,15 @@ const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+async function getReport(slug: string) {
+  const user = await getCurrentUser();
+  const email = user?.email?.trim() || null;
+  if (UUID_REGEX.test(slug) && !email) {
+    redirect(`/login?next=${encodeURIComponent(`/report/${slug}`)}`);
+  }
+  return getAuditReportForPublicView(slug, email);
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -35,17 +46,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-async function getReport(slug: string) {
-  const byId = UUID_REGEX.test(slug)
-    ? await prisma.auditReport.findUnique({ where: { id: slug }, include: { lead: true } })
-    : null;
-  if (byId) return byId;
-  const bySlug = await prisma.auditReport
-    .findFirst({ where: { shareSlug: slug }, include: { lead: true } })
-    .catch(() => null);
-  return bySlug;
-}
-
 /** Revalidate report pages after 1 hour (ISR) for performance while keeping content fresh */
 export const revalidate = 3600;
 
@@ -60,12 +60,20 @@ export default async function ReportPublicPage({ params }: PageProps) {
   );
   const topInsights = report.summary.split(/\n/).filter(Boolean).slice(0, 5);
 
-  const relevantAd = await getRelevantAd({
-    seoScore: report.seoScore,
-    perfScore: report.perfScore,
-    uxScore: report.uxScore,
-    convScore: report.convScore,
-  });
+  const cookieStore = await cookies();
+  const adsClientId = cookieStore.get("ads_client_id")?.value;
+  const h = await headers();
+  const viewerIp = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? h.get("x-real-ip") ?? "";
+  const viewerUa = h.get("user-agent") ?? "";
+  const relevantAd = await getRelevantAd(
+    {
+      seoScore: report.seoScore,
+      perfScore: report.perfScore,
+      uxScore: report.uxScore,
+      convScore: report.convScore,
+    },
+    { clientId: adsClientId ?? undefined, viewerIp, viewerUa }
+  );
   const metricLabels: Record<string, string> = {
     SEO: "SEO-optimalisatie",
     PERF: "snelheidstimalisatie",

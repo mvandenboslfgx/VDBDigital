@@ -10,7 +10,10 @@ interface AdBannerProps {
 }
 
 export function AdBanner({ ad, metricLabel }: AdBannerProps) {
-  const clickUrl = `/api/ads/click?adId=${encodeURIComponent(ad.id)}`;
+  const clickUrl =
+    ad.impressionId != null
+      ? `/api/ads/click?adId=${encodeURIComponent(ad.id)}&impressionId=${encodeURIComponent(ad.impressionId)}&placement=${encodeURIComponent(ad.placement)}&ctx=${encodeURIComponent(ad.contextSig)}&creativeId=${encodeURIComponent(ad.creativeId)}`
+      : `/api/ads/click?adId=${encodeURIComponent(ad.id)}&placement=${encodeURIComponent(ad.placement)}&ctx=${encodeURIComponent(ad.contextSig)}&creativeId=${encodeURIComponent(ad.creativeId)}`;
 
   return (
     <motion.section

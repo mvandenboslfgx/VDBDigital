@@ -174,7 +174,8 @@ export default async function DashboardHomePage() {
             uxScore: lastReport.uxScore,
             convScore: lastReport.convScore,
           },
-          3
+          3,
+          { userId: user.id }
         )
       : [];
   const lowestMetricLabel =

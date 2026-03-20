@@ -1,5 +1,7 @@
-import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { notFound, redirect } from "next/navigation";
+import { cookies, headers } from "next/headers";
+import { getCurrentUser } from "@/lib/auth";
+import { getAuditReportForPublicView } from "@/lib/auditReportPublic";
 import { ReportPublicClient, type ReportPublicClientProps } from "@/components/report/ReportPublicClient";
 import { getRelevantAd } from "@/lib/ads";
 import type { Metadata } from "next";
@@ -11,14 +13,12 @@ interface PageProps {
 }
 
 async function getReport(slug: string) {
-  const byId = UUID_REGEX.test(slug)
-    ? await prisma.auditReport.findUnique({ where: { id: slug }, include: { lead: true } })
-    : null;
-  if (byId) return byId;
-  const bySlug = await prisma.auditReport
-    .findFirst({ where: { shareSlug: slug }, include: { lead: true } })
-    .catch(() => null);
-  return bySlug;
+  const user = await getCurrentUser();
+  const email = user?.email?.trim() || null;
+  if (UUID_REGEX.test(slug) && !email) {
+    redirect(`/login?next=${encodeURIComponent(`/rapport/${slug}`)}`);
+  }
+  return getAuditReportForPublicView(slug, email);
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -50,12 +50,20 @@ export default async function RapportPage({ params }: PageProps) {
   );
   const topInsights = report.summary.split(/\n/).filter(Boolean).slice(0, 5);
 
-  const relevantAd = await getRelevantAd({
-    seoScore: report.seoScore,
-    perfScore: report.perfScore,
-    uxScore: report.uxScore,
-    convScore: report.convScore,
-  });
+  const cookieStore = await cookies();
+  const h = await headers();
+  const adsClientId = cookieStore.get("ads_client_id")?.value;
+  const viewerIp = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? h.get("x-real-ip") ?? "";
+  const viewerUa = h.get("user-agent") ?? "";
+  const relevantAd = await getRelevantAd(
+    {
+      seoScore: report.seoScore,
+      perfScore: report.perfScore,
+      uxScore: report.uxScore,
+      convScore: report.convScore,
+    },
+    { clientId: adsClientId ?? undefined, viewerIp, viewerUa }
+  );
   const metricLabels: Record<string, string> = {
     SEO: "SEO-optimalisatie",
     PERF: "snelheidstimalisatie",

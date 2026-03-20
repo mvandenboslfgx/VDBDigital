@@ -159,7 +159,39 @@ Rechts: Winkelwagen → `/cart`, Inloggen → `/login`, Account maken → `/crea
 
 ---
 
-## 9. Documentatie in dit project
+## 9. VDB OS — AI engines & bouwvolgorde
+
+**VDB OS** is de productlaag bovenop dit blueprint: geen tweede codebase, wel **duidelijke engine-grenzen** en **gefaseerde delivery** (anders: chaos en technische schuld).
+
+### Engines (logische modules)
+
+| Engine | Taak | Richting in codebase |
+|--------|------|----------------------|
+| **Audit** | SEO / UX / performance / conversie analyseren | `modules/audit`, audit-API’s, rapporten |
+| **Fix** | Suggesties + (waar veilig) toepassen | aparte stap na audit; altijd traceerbaar (wie/wat/wanneer) |
+| **Generate** | Site/webshop uit prompt → structuur + pages | aparte pipeline; output als data + templates, niet “willekeurige repo-dump” |
+| **Content** | SEO-teksten, landingspagina’s | `modules/ai`, content generator/admin |
+| **Ad** | Metrieken, campagnes | bestaand ads-pad + workers |
+
+### Automatisering
+
+- **Queue:** Redis + BullMQ zit al in de stack; jobs (`analyzeWebsite`, `generateSite`, …) horen **één** job-definitie en idempotente handlers.
+- **Workers:** draaien als aparte processen (zoals `audit:worker`, `ads:metrics:worker`); geen zware generatie in request/response.
+
+### Data & “Project”
+
+- **Prisma-schema in deze repo** is de bron van waarheid (`User`, `Client`, `Website`, `Project`, audits, …) — geen vereenvoudigd parallelmodel blijven bijhouden.
+- Nieuwe builder-features: **uitbreiden** met o.a. gestructureerde JSON voor pages/products en migraties, niet losse JSON zonder schema.
+
+### Realistische fasering
+
+1. **MVP-platform:** landing + dashboard + analyser + duidelijke AI-output (geen “alles tegelijk”).
+2. **Generator:** prompt → **data + preview** eerst; pas daarna export/deploy.
+3. **Automation + schaal:** meer jobs, monitoring, deployment (Vercel API) als harde productstap met secrets & tenancy.
+
+---
+
+## 10. Documentatie in dit project
 
 | Document | Inhoud |
 |----------|--------|
@@ -167,7 +199,7 @@ Rechts: Winkelwagen → `/cart`, Inloggen → `/login`, Account maken → `/crea
 | `docs/PLATFORM_AUDIT.md` | Eerste platform-audit (links, SEO, security, UI). |
 | `docs/SUPER_QA_REPORT.md` | Production readiness (12 checks, 10k users). |
 | `docs/TECHNICAL_ROADMAP.md` | Volgorde van verbeteringen (security, performance, SEO, UX, schaal). |
-| `docs/PLATFORM_BLUEPRINT.md` | Dit document: architectuur, design, features. |
+| `docs/PLATFORM_BLUEPRINT.md` | Dit document: architectuur, design, features, VDB OS-laag. |
 | `docs/DESIGN_SYSTEM.md` | Uitgewerkt design system (indien aanwezig). |
 | `docs/DEPLOY.md` | Deployment en env (indien aanwezig). |
 

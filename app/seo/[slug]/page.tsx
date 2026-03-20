@@ -9,6 +9,7 @@ import {
 } from "@/lib/seo-pages";
 import { pageMetadata } from "@/lib/metadata";
 import { SeoPageStructuredData } from "@/components/seo/SeoPageStructuredData";
+import { BreadcrumbStructuredData } from "@/components/StructuredData";
 
 export const dynamic = "force-static";
 
@@ -44,6 +45,7 @@ export default async function SeoSlugPage({
     <SiteShell>
       <article className="section-container py-16 md:py-24">
         <SeoPageStructuredData slug={slug} config={config} />
+        <BreadcrumbStructuredData items={[{ name: "Home", url: "/" }, { name: config.title, url: `/seo/${slug}` }]} />
 
         <header className="mx-auto max-w-3xl">
           <p className="section-heading">SEO &amp; website</p>
@@ -116,7 +118,7 @@ export default async function SeoSlugPage({
             </p>
             <Link
               href="/website-scan"
-              className="mt-6 inline-flex items-center justify-center rounded-xl bg-gold px-8 py-4 text-lg font-semibold text-black transition-colors hover:bg-goldHover"
+              className="mt-6 inline-flex items-center justify-center rounded-xl bg-indigo-600 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-indigo-700"
             >
               Start gratis analyse
             </Link>
@@ -134,6 +136,21 @@ export default async function SeoSlugPage({
               <li>
                 <Link href="/website-scan" className="text-indigo-600 hover:text-indigo-700 hover:underline">
                   Website scan
+                </Link>
+              </li>
+              <li>
+                <Link href="/website-seo-check" className="text-indigo-600 hover:text-indigo-700 hover:underline">
+                  Website SEO check
+                </Link>
+              </li>
+              <li>
+                <Link href="/website-snelheid-test" className="text-indigo-600 hover:text-indigo-700 hover:underline">
+                  Website snelheid test
+                </Link>
+              </li>
+              <li>
+                <Link href="/conversie-check" className="text-indigo-600 hover:text-indigo-700 hover:underline">
+                  Conversie check
                 </Link>
               </li>
               <li>

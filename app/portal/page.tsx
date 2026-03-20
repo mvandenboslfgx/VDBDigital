@@ -1,12 +1,13 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
+import { isAdmin } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 
 export default async function PortalDashboardPage() {
   const user = await requireUser();
   if (!user) redirect("/login");
-  if (user.role === "admin") redirect("/admin");
+  if (isAdmin(user)) redirect("/admin");
 
   const client = await prisma.client.findFirst({ where: { userId: user.id } });
   if (!client) {

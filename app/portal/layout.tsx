@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { requireUser } from "@/lib/auth";
+import { isAdmin } from "@/lib/permissions";
 
 export default async function PortalLayout({
   children,
@@ -10,7 +11,7 @@ export default async function PortalLayout({
 }) {
   const user = await requireUser();
   if (!user) redirect("/login");
-  if (user.role === "admin") redirect("/admin/dashboard");
+  if (isAdmin(user)) redirect("/admin/dashboard");
 
   return (
     <div className="min-h-screen bg-background pt-24">

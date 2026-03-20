@@ -17,24 +17,64 @@ export default async function DashboardWebsitesPage() {
         orderBy: { createdAt: "desc" },
         take: 20,
       },
+      websiteAudits: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+        select: {
+          id: true,
+          status: true,
+          createdAt: true,
+          result: true,
+          errorMessage: true,
+        },
+      },
     },
   });
 
-  const projects = rows.map((p) => ({
-    id: p.id,
-    domain: p.domain,
-    createdAt: p.createdAt.toISOString(),
-    auditHistories: p.auditHistories.map((h) => ({
-      id: h.id,
-      website: h.website,
-      seoScore: h.seoScore,
-      perfScore: h.perfScore,
-      uxScore: h.uxScore,
-      convScore: h.convScore,
-      createdAt: h.createdAt.toISOString(),
-      auditReportId: h.auditReportId,
-    })),
-  }));
+  const projects = rows.map((p) => {
+    const wa = p.websiteAudits[0];
+    const r = wa?.result as
+      | {
+          scores?: { seo: number; performance: number; ux: number; conversion: number };
+          issues?: Array<{
+            id: string;
+            type: string;
+            title: string;
+            description: string;
+            fix: string;
+            impact: string;
+          }>;
+          pageMeta?: { title: string; metaDescription: string; h1: string };
+        }
+      | null
+      | undefined;
+    return {
+      id: p.id,
+      domain: p.domain,
+      createdAt: p.createdAt.toISOString(),
+      auditHistories: p.auditHistories.map((h) => ({
+        id: h.id,
+        website: h.website,
+        seoScore: h.seoScore,
+        perfScore: h.perfScore,
+        uxScore: h.uxScore,
+        convScore: h.convScore,
+        createdAt: h.createdAt.toISOString(),
+        auditReportId: h.auditReportId,
+      })),
+      latestWebsiteAudit: wa
+        ? {
+            id: wa.id,
+            status: wa.status,
+            createdAt: wa.createdAt.toISOString(),
+            errorMessage: wa.errorMessage,
+            scores: r?.scores ?? null,
+            issues: r?.issues ?? null,
+            pageMeta: r?.pageMeta ?? null,
+          }
+        : null,
+    };
+  });
 
   return (
     <div className="space-y-8">

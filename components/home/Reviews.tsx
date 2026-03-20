@@ -49,7 +49,7 @@ const REVIEWS = [
 
 function StarRating({ stars }: { stars: number }) {
   return (
-    <div className="flex gap-0.5 text-amber-400" aria-label={`${stars} van 5 sterren`}>
+    <div className="flex gap-0.5 text-indigo-600" aria-label={`${stars} van 5 sterren`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <span key={i} className={i < stars ? "opacity-100" : "opacity-30"}>
           ★
@@ -67,16 +67,16 @@ function ReviewCard({
   stars,
 }: (typeof REVIEWS)[0]) {
   return (
-    <div className="flex w-[320px] shrink-0 flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+    <div className="flex w-[320px] shrink-0 flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md">
       <StarRating stars={stars} />
-      <p className="mt-3 text-sm text-midnight line-clamp-3">&ldquo;{text}&rdquo;</p>
+      <p className="mt-3 line-clamp-3 text-base text-gray-700">&ldquo;{text}&rdquo;</p>
       <div className="mt-4 flex items-center gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-600">
           {name.charAt(0)}
         </div>
         <div>
-          <p className="font-medium text-midnight">{name}</p>
-          <p className="text-xs text-slate-500">
+          <p className="font-medium text-gray-900">{name}</p>
+          <p className="text-xs text-gray-500">
             {role} · {company}
           </p>
         </div>
@@ -90,17 +90,17 @@ export default function Reviews() {
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section ref={ref} className="overflow-hidden py-16 md:py-20" aria-labelledby="reviews-heading">
+    <section ref={ref} className="overflow-hidden py-20 md:py-28" aria-labelledby="reviews-heading">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="section-container text-center"
       >
-        <h2 id="reviews-heading" className="text-2xl font-semibold tracking-tight text-midnight md:text-3xl">
+        <h2 id="reviews-heading" className="text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">
           Wat klanten zeggen
         </h2>
-        <p className="mx-auto mt-2 max-w-xl text-slate-600">
+        <p className="mx-auto mt-2 max-w-xl text-xl text-gray-500">
           Ondernemers en marketeers die hun website laten analyseren.
         </p>
       </motion.div>

@@ -37,7 +37,7 @@ export default async function AdminChatPage() {
           </p>
         </div>
         {unreadCount > 0 && (
-          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-sm font-medium text-amber-400">
+          <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-sm font-medium text-indigo-400">
             {unreadCount} ongelezen
           </span>
         )}

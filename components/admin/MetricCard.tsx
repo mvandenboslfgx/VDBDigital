@@ -21,31 +21,41 @@ export function MetricCard({
 }: MetricCardProps) {
   const statusColor =
     status === "error"
-      ? "border-red-500/30 bg-red-500/5"
+      ? "border-rose-200 bg-rose-50"
       : status === "warning"
-        ? "border-amber-500/30 bg-amber-500/5"
-        : "border-white/[0.06] bg-[#111113]";
+        ? "border-amber-200 bg-amber-50"
+        : "border-gray-200 bg-white";
+
+  const statusDot =
+    status === "error"
+      ? "bg-rose-500"
+      : status === "warning"
+        ? "bg-amber-500"
+        : "bg-emerald-500";
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`rounded-2xl border p-6 shadow-panel ${statusColor} ${className}`}
+      className={`rounded-2xl border p-6 shadow-sm transition hover:shadow-md ${statusColor} ${className}`}
     >
-      <p className="text-label text-zinc-500">{label}</p>
-      <p className="mt-2 text-2xl font-semibold tracking-tight text-white md:text-3xl">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">{label}</p>
+        <span className={`h-2.5 w-2.5 rounded-full ${statusDot}`} aria-hidden />
+      </div>
+      <p className="mt-3 text-3xl font-semibold tracking-tight text-gray-900 md:text-4xl">
         {value}
       </p>
       {(subtext || trend) && (
         <div className="mt-2 flex items-center gap-2">
           {trend === "up" && (
-            <span className="text-xs font-medium text-emerald-400">↑</span>
+            <span className="text-xs font-medium text-emerald-600">↑</span>
           )}
           {trend === "down" && (
-            <span className="text-xs font-medium text-amber-400">↓</span>
+            <span className="text-xs font-medium text-amber-600">↓</span>
           )}
           {subtext && (
-            <span className="text-sm text-zinc-500">{subtext}</span>
+            <span className="text-sm text-gray-500">{subtext}</span>
           )}
         </div>
       )}

@@ -20,6 +20,6 @@
 ## Required `.env` variables
 
 - `DATABASE_URL` – Transaction mode pooler: `postgresql://postgres.[PROJECT_REF]:[PASSWORD]@aws-1-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true`
-- `DIRECT_URL` – Session mode pooler: `postgresql://postgres.[PROJECT_REF]:[PASSWORD]@aws-1-eu-west-1.pooler.supabase.com:5432/postgres`
+- `DIRECT_URL` (required for reliable migrations) – Session mode: `postgresql://postgres.[PROJECT_REF]:[PASSWORD]@aws-1-eu-west-1.supabase.com:5432/postgres`
 
 Replace `[PROJECT_REF]` and `[PASSWORD]` with your project reference and database password.

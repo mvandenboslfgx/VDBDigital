@@ -22,7 +22,7 @@ export default async function AdminInvoicesPage() {
 
   return (
     <div className="space-y-6">
-      <Link href="/admin/dashboard" className="text-sm text-gray-400 hover:text-gold">
+      <Link href="/admin/dashboard" className="text-sm text-gray-400 hover:text-indigo-400">
         ← Dashboard
       </Link>
       <section className="rounded-2xl border border-white/10 bg-black/80 p-6 backdrop-blur-xl">

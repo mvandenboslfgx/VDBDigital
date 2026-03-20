@@ -51,29 +51,29 @@ export default async function AdminLayout({
   const showOwnerSidebar = isOwner(currentUser);
 
   return (
-    <div className="min-h-screen bg-background pt-20">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-50/60 to-white pt-20">
       <div className="section-container grid gap-6 lg:grid-cols-[240px,1fr]">
         {showOwnerSidebar ? (
           <OwnerSidebar userEmail={currentUser.email} />
         ) : (
-          <aside className="sticky top-20 h-fit rounded-2xl border border-white/10 bg-black/80 p-5 backdrop-blur-xl">
+          <aside className="sticky top-20 h-fit rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
             <Link href="/admin/dashboard" className="inline-block">
               <Image
                 src="/logo-vdb.png"
                 alt="VDB Digital"
                 width={220}
                 height={72}
-                className="h-16 w-auto object-contain brightness-105 contrast-105"
+                className="h-16 w-auto object-contain"
               />
             </Link>
-            <p className="mt-1 text-xs text-gray-500">{t("admin.title")}</p>
-            <p className="mt-2 truncate text-sm font-medium text-white">{currentUser.email}</p>
+            <p className="mt-1 text-xs font-medium text-indigo-600">{t("admin.title")}</p>
+            <p className="mt-2 truncate text-sm text-gray-600">{currentUser.email}</p>
             <nav className="mt-6 space-y-0.5 text-sm">
               {navKeys.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="block rounded-lg px-3 py-2 text-gray-300 transition hover:bg-white/5 hover:text-gold"
+                  className="block rounded-lg px-3 py-2 text-gray-600 transition hover:bg-indigo-50 hover:text-indigo-700"
                 >
                   {t(item.key)}
                 </Link>
@@ -81,7 +81,7 @@ export default async function AdminLayout({
             </nav>
             <Link
               href="/"
-              className="mt-6 block text-xs text-gray-500 hover:text-gold"
+              className="mt-6 block text-xs text-gray-500 hover:text-indigo-700"
             >
               ← {t("common.backToSite")}
             </Link>

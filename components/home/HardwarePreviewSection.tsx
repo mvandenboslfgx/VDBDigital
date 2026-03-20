@@ -3,21 +3,22 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { stockPhotos } from "@/lib/stock-photos";
 
 const PRODUCTS = [
   { name: "Android 14 Smart TV Box 8K", href: "/products/android-14-tv-box", price: "€89,00 excl. btw", image: "/products/tvbox1.jpg" },
-  { name: "Alle producten", href: "/products", price: "Bekijk het aanbod", image: null },
+  { name: "Alle producten", href: "/products", price: "Bekijk het aanbod", image: stockPhotos.tools },
 ];
 
 export default function HardwarePreviewSection() {
   return (
-    <section className="relative py-24 md:py-32">
+    <section className="relative py-20 md:py-28">
       <div className="section-container">
         <motion.h2
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center text-3xl font-semibold text-marketing-text md:text-4xl"
+          className="text-center text-4xl font-bold text-gray-900 md:text-5xl"
         >
           Smart TV & streaming
         </motion.h2>
@@ -26,7 +27,7 @@ export default function HardwarePreviewSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.05 }}
-          className="mx-auto mt-4 max-w-2xl text-center text-lg text-marketing-textSecondary"
+          className="mx-auto mt-4 max-w-2xl text-center text-xl text-gray-500"
         >
           Kwaliteitsapparaten voor streaming en smart TV. Eenvoudig bestellen, snel geleverd.
         </motion.p>
@@ -46,9 +47,9 @@ export default function HardwarePreviewSection() {
             >
               <Link
                 href={product.href}
-                className="group block rounded-2xl border border-gray-200 bg-surface p-8 shadow-sm transition-shadow hover:border-indigo-200 hover:shadow-md"
+                className="group block rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md"
               >
-                <div className="aspect-video rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden">
+                <div className="flex -mx-8 -mt-8 aspect-video w-[calc(100%+4rem)] items-center justify-center overflow-hidden rounded-t-xl bg-indigo-50">
                   {product.image ? (
                     <Image
                       src={product.image}
@@ -63,13 +64,13 @@ export default function HardwarePreviewSection() {
                       }}
                     />
                   ) : (
-                    <span className="text-sm text-marketing-textSecondary">Producten bekijken</span>
+                    <span className="text-sm text-gray-500">Producten bekijken</span>
                   )}
                 </div>
-                <h3 className="mt-4 text-xl font-semibold text-marketing-text group-hover:text-indigo-600 transition-colors">
+                <h3 className="mt-4 text-xl font-semibold text-gray-900 transition-colors group-hover:text-indigo-600">
                   {product.name}
                 </h3>
-                <p className="mt-2 text-lg font-medium text-marketing-textSecondary">
+                <p className="mt-2 text-base font-medium text-gray-500">
                   {product.price}
                 </p>
                 <span className="mt-4 inline-block text-sm font-medium text-indigo-600 group-hover:text-indigo-700">
@@ -85,10 +86,7 @@ export default function HardwarePreviewSection() {
           viewport={{ once: true }}
           className="mt-10 text-center"
         >
-          <Link
-            href="/products"
-            className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700"
-          >
+          <Link href="/products" className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-8 py-4 text-lg font-medium text-white shadow-lg transition hover:bg-indigo-700 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 active:scale-95">
             Alle producten
           </Link>
         </motion.div>

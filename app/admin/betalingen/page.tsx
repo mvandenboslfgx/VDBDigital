@@ -84,13 +84,13 @@ export default async function AdminBetalingenPage() {
             href="https://dashboard.stripe.com/invoices"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-amber-400 hover:underline"
+            className="text-indigo-400 hover:underline"
           >
             Stripe Dashboard → Invoices
           </a>
         </p>
         {!stripe ? (
-          <p className="mt-4 text-sm text-amber-500">
+          <p className="mt-4 text-sm text-indigo-500">
             Stripe is niet geconfigureerd (STRIPE_SECRET_KEY ontbreekt). Facturen zijn alleen in het Stripe Dashboard zichtbaar.
           </p>
         ) : (

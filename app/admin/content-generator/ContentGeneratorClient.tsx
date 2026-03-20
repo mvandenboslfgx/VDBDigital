@@ -152,7 +152,7 @@ export function ContentGeneratorClient() {
           type="button"
           onClick={loadIdeas}
           disabled={loading === "ideas"}
-          className="mt-3 rounded-lg bg-amber-500/20 px-4 py-2 text-sm font-medium text-amber-400 hover:bg-amber-500/30 disabled:opacity-50"
+          className="mt-3 rounded-lg bg-indigo-500/20 px-4 py-2 text-sm font-medium text-indigo-400 hover:bg-indigo-500/30 disabled:opacity-50"
         >
           {loading === "ideas" ? "Laden…" : "Laad ideeën"}
         </button>
@@ -197,13 +197,13 @@ export function ContentGeneratorClient() {
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             placeholder="Onderwerp of titel (bijv. SEO tips)"
-            className="flex-1 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white placeholder-gray-500 focus:border-amber-500/50 focus:outline-none"
+            className="flex-1 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white placeholder-gray-500 focus:border-indigo-500/50 focus:outline-none"
           />
           <button
             type="button"
             onClick={generateTitles}
             disabled={loading === "titles"}
-            className="rounded-lg bg-amber-500/20 px-4 py-2 text-sm font-medium text-amber-400 hover:bg-amber-500/30 disabled:opacity-50"
+            className="rounded-lg bg-indigo-500/20 px-4 py-2 text-sm font-medium text-indigo-400 hover:bg-indigo-500/30 disabled:opacity-50"
           >
             {loading === "titles" ? "Bezig…" : "Genereer titels"}
           </button>
@@ -217,7 +217,7 @@ export function ContentGeneratorClient() {
                   onClick={() => setSelectedTitle(t)}
                   className={`w-full rounded-lg border px-4 py-2 text-left text-sm transition ${
                     selectedTitle === t
-                      ? "border-amber-500/50 bg-amber-500/10 text-amber-400"
+                      ? "border-indigo-500/50 bg-indigo-500/10 text-indigo-400"
                       : "border-white/10 bg-white/5 text-gray-300 hover:bg-white/10"
                   }`}
                 >
@@ -237,7 +237,7 @@ export function ContentGeneratorClient() {
           type="button"
           onClick={generateArticle}
           disabled={loading === "article" || (!selectedTitle && !topic.trim())}
-          className="mt-3 rounded-lg bg-amber-500/20 px-4 py-2 text-sm font-medium text-amber-400 hover:bg-amber-500/30 disabled:opacity-50"
+          className="mt-3 rounded-lg bg-indigo-500/20 px-4 py-2 text-sm font-medium text-indigo-400 hover:bg-indigo-500/30 disabled:opacity-50"
         >
           {loading === "article" ? "Bezig…" : "Genereer volledig artikel"}
         </button>
@@ -256,7 +256,7 @@ export function ContentGeneratorClient() {
                 value={seoTitle}
                 onChange={(e) => setSeoTitle(e.target.value)}
                 maxLength={100}
-                className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500/50 focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-indigo-500/50 focus:outline-none"
               />
             </div>
             <div>
@@ -266,7 +266,7 @@ export function ContentGeneratorClient() {
                 onChange={(e) => setSeoDescription(e.target.value)}
                 maxLength={500}
                 rows={2}
-                className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500/50 focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-indigo-500/50 focus:outline-none"
               />
             </div>
             <div>
@@ -276,7 +276,7 @@ export function ContentGeneratorClient() {
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="artikel-slug"
-                className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white placeholder-gray-500 focus:border-amber-500/50 focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white placeholder-gray-500 focus:border-indigo-500/50 focus:outline-none"
               />
             </div>
             <div>
@@ -284,7 +284,7 @@ export function ContentGeneratorClient() {
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500/50 focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-indigo-500/50 focus:outline-none"
               >
                 {CATEGORIES.map((c) => (
                   <option key={c.value} value={c.value}>
@@ -299,7 +299,7 @@ export function ContentGeneratorClient() {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows={16}
-                className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 font-mono text-sm text-gray-300 focus:border-amber-500/50 focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 font-mono text-sm text-gray-300 focus:border-indigo-500/50 focus:outline-none"
               />
             </div>
             <div className="flex gap-2">
@@ -315,7 +315,7 @@ export function ContentGeneratorClient() {
                 type="button"
                 onClick={() => save(true)}
                 disabled={loading === "save"}
-                className="rounded-lg bg-amber-500/20 px-4 py-2 text-sm font-medium text-amber-400 hover:bg-amber-500/30 disabled:opacity-50"
+                className="rounded-lg bg-indigo-500/20 px-4 py-2 text-sm font-medium text-indigo-400 hover:bg-indigo-500/30 disabled:opacity-50"
               >
                 {loading === "save" ? "Bezig…" : "Publiceren"}
               </button>

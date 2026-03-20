@@ -246,19 +246,9 @@ export const Navbar = () => {
                 )}
               </div>
             ))}
-            {mounted && user && (
-              <Link
-                href={dashboardHref}
-                className={`ml-2 inline-flex items-center rounded-lg px-3 py-2 transition-colors hover:text-marketing-text ${
-                  pathname.startsWith("/admin") || pathname.startsWith("/dashboard") ? "text-indigo-600 font-semibold" : ""
-                }`}
-              >
-                {t("nav.dashboard")}
-              </Link>
-            )}
           </div>
 
-          {/* Desktop CTA: Inloggen, Account maken, Winkelwagen */}
+          {/* Desktop CTA: Winkelwagen + Inloggen/Account maken of Dashboard-knop */}
           <div className="hidden items-center gap-3 md:flex">
             <Link
               href="/cart"
@@ -406,15 +396,6 @@ export const Navbar = () => {
                   )}
                 </div>
               ))}
-              {mounted && user && (
-                <Link
-                  href={dashboardHref}
-                  onClick={() => setMobileOpen(false)}
-                  className="mt-2 flex items-center rounded-xl px-4 py-3 text-base font-medium text-indigo-600 transition-colors hover:bg-gray-50"
-                >
-                  {t("nav.dashboard")}
-                </Link>
-              )}
               <Link
                 href="/cart"
                 onClick={() => setMobileOpen(false)}

@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui";
+import { stockPhotos } from "@/lib/stock-photos";
 
 const TOOLS = [
   { name: "AI Website Audit", desc: "Analyseer je website op SEO, UX, conversie en prestaties.", href: "/tools/website-audit" },
@@ -16,14 +18,16 @@ const TOOLS = [
 ];
 
 export default function ToolkitSection() {
+  const CTA_CLASS =
+    "bg-indigo-600 text-white px-8 py-4 text-lg rounded-xl font-medium hover:bg-indigo-700 shadow-lg hover:shadow-xl transition focus:outline-none focus:ring-2 focus:ring-indigo-500 active:scale-95";
   return (
-    <section className="relative py-24 md:py-32">
+    <section className="relative py-20 md:py-28">
       <div className="section-container">
         <motion.h2
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center text-3xl font-semibold text-marketing-text md:text-4xl"
+          className="text-center text-4xl font-bold text-gray-900 md:text-5xl"
         >
           Alle tools om je website te laten groeien
         </motion.h2>
@@ -32,10 +36,27 @@ export default function ToolkitSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.05 }}
-          className="mt-4 text-center text-lg text-marketing-textSecondary max-w-2xl mx-auto"
+          className="mx-auto mt-4 max-w-2xl text-center text-xl text-gray-500"
         >
           Van website-audit tot zoekwoorden, conversie en content: alles voor betere resultaten.
         </motion.p>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mx-auto mt-12 max-w-4xl overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md"
+        >
+          <div className="relative -mx-8 -mt-8 aspect-[21/9] w-[calc(100%+4rem)] bg-indigo-50">
+            <Image
+              src={stockPhotos.tools}
+              alt="Digitale tools en workspace"
+              fill
+              sizes="(max-width: 1024px) 100vw, 896px"
+              className="object-cover"
+              unoptimized
+            />
+          </div>
+        </motion.div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {TOOLS.map((tool, i) => (
             <motion.div
@@ -48,11 +69,11 @@ export default function ToolkitSection() {
               <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.2 }}>
                 <Link
                   href={tool.href}
-                  className="group flex flex-col rounded-2xl border border-marketing-border bg-surface p-8 shadow-marketing-card transition-all duration-300 hover:border-gold/30 hover:shadow-lg"
+                  className="group flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-all duration-300 hover:border-indigo-200 hover:shadow-md"
                 >
-                  <span className="text-lg font-semibold text-marketing-text">{tool.name}</span>
-                  <span className="mt-2 text-lg text-marketing-textSecondary">{tool.desc}</span>
-                  <span className="mt-4 inline-flex items-center gap-1 text-base font-medium text-gold">
+                  <span className="text-xl font-semibold text-gray-900">{tool.name}</span>
+                  <span className="mt-2 text-base text-gray-500">{tool.desc}</span>
+                  <span className="mt-4 inline-flex items-center gap-1 text-base font-medium text-indigo-600">
                     Bekijk tool
                     <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
                   </span>
@@ -70,7 +91,7 @@ export default function ToolkitSection() {
         >
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Link href="/tools">
-              <Button size="lg" className="px-8 py-4 text-lg font-semibold">
+              <Button size="lg" className={CTA_CLASS}>
                 Bekijk alle tools
               </Button>
             </Link>

@@ -54,8 +54,11 @@ export default function RegisterForm() {
             newsletterOptIn,
             website: website || undefined,
           }),
-        });
-      } catch (_) {}
+        }).catch(() => undefined);
+      } catch (err) {
+        // Non-blocking: registration is successful even if preference save fails.
+        console.warn("[Register] register-preference failed", err);
+      }
 
       setSuccess(true);
       router.refresh();

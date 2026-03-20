@@ -43,10 +43,10 @@ export default function DisclaimerPage() {
           </div>
 
           <nav className="mt-14 flex flex-wrap gap-4 text-sm">
-            <Link href="/privacy" className="text-gold hover:text-goldHover underline">Privacybeleid</Link>
-            <Link href="/voorwaarden" className="text-gold hover:text-goldHover underline">Algemene voorwaarden</Link>
-            <Link href="/cookies" className="text-gold hover:text-goldHover underline">Cookiebeleid</Link>
-            <Link href="/contact" className="text-gold hover:text-goldHover underline">Contact</Link>
+            <Link href="/privacy" className="text-indigo-600 hover:text-indigo-700 underline">Privacybeleid</Link>
+            <Link href="/voorwaarden" className="text-indigo-600 hover:text-indigo-700 underline">Algemene voorwaarden</Link>
+            <Link href="/cookies" className="text-indigo-600 hover:text-indigo-700 underline">Cookiebeleid</Link>
+            <Link href="/contact" className="text-indigo-600 hover:text-indigo-700 underline">Contact</Link>
           </nav>
         </div>
       </article>

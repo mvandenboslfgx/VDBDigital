@@ -23,15 +23,15 @@ export default async function WebsiteScanPage({
 
   return (
     <SiteShell>
-      <div className="section-container py-28">
+      <div className="section-container py-0">
         <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 md:text-4xl">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">
             Controleer direct de prestaties van uw website
           </h1>
-          <p className="text-slate-600 mt-4 text-lg">
+          <p className="mt-4 text-xl text-gray-500">
             Laat onze AI uw website analyseren op SEO, snelheid en conversie. Ontvang direct concrete verbeterpunten.
           </p>
-          <ul className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-slate-600">
+          <ul className="mt-6 flex flex-wrap justify-center gap-4 text-gray-700">
             <li className="flex items-center gap-2">
               <span className="text-indigo-600 font-medium">✓</span> SEO analyse
             </li>

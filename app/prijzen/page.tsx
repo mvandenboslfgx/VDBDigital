@@ -95,11 +95,25 @@ export default function PrijzenPage() {
             </div>
           ))}
         </div>
+
+        <section className="mx-auto mt-16 max-w-2xl rounded-2xl border border-slate-200 bg-slate-50/50 p-6 md:p-8">
+          <h2 className="text-lg font-semibold text-slate-900">Wat als ik opzeg? Wat blijft er over?</h2>
+          <p className="mt-3 text-slate-600">
+            Als u uw betaalde abonnement opzegt, gaat u automatisch terug naar het <strong>gratis plan</strong>. U behoudt toegang tot uw account en uw eerder gemaakte rapporten blijven zichtbaar. U krijgt weer <strong>1 gratis scan per maand</strong>. Er wordt niets meer afgeschreven.
+          </p>
+          <p className="mt-2 text-sm text-slate-500">
+            Opzeggen kan elk moment via Dashboard → Facturatie (Stripe-portaal). Voor de volledige regels zie onze{" "}
+            <Link href="/voorwaarden" className="text-indigo-600 font-medium hover:underline">algemene voorwaarden</Link>.
+          </p>
+        </section>
+
         <p className="mt-12 text-center text-sm text-slate-600">
           Heeft u al een account?{" "}
           <Link href="/login" className="text-indigo-600 font-medium hover:underline">Inloggen</Link>
           {" · "}
           <Link href="/dashboard" className="text-indigo-600 font-medium hover:underline">Dashboard</Link>
+          {" · "}
+          <Link href="/voorwaarden" className="text-indigo-600 font-medium hover:underline">Voorwaarden</Link>
         </p>
       </div>
     </SiteShell>

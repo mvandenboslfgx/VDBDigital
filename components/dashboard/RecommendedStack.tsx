@@ -40,7 +40,10 @@ export function RecommendedStack({ ads, lowestMetricLabel }: RecommendedStackPro
 }
 
 function RecommendedStackCard({ ad, index }: { ad: RelevantAd; index: number }) {
-  const clickUrl = `/api/ads/click?adId=${encodeURIComponent(ad.id)}`;
+  const clickUrl =
+    ad.impressionId != null
+      ? `/api/ads/click?adId=${encodeURIComponent(ad.id)}&impressionId=${encodeURIComponent(ad.impressionId)}&placement=${encodeURIComponent(ad.placement)}&ctx=${encodeURIComponent(ad.contextSig)}&creativeId=${encodeURIComponent(ad.creativeId)}`
+      : `/api/ads/click?adId=${encodeURIComponent(ad.id)}&placement=${encodeURIComponent(ad.placement)}&ctx=${encodeURIComponent(ad.contextSig)}&creativeId=${encodeURIComponent(ad.creativeId)}`;
   const icon = METRIC_ICONS[ad.targetMetric] ?? "🔗";
 
   return (

@@ -21,11 +21,18 @@ const websiteSchema = {
   description:
     "Luxe websites die converteren. AI-websitebuilder, website-audits, SEO-optimalisatie en marketingfunnels.",
   publisher: { "@id": `${siteUrl}/#organization` },
-  potentialAction: {
-    "@type": "SearchAction",
-    target: { "@type": "EntryPoint", url: `${siteUrl}/contact` },
-    "query-input": "required name=search_term_string",
-  },
+  potentialAction: [
+    {
+      "@type": "SearchAction",
+      target: { "@type": "EntryPoint", url: `${siteUrl}/website-scan` },
+      "query-input": "optional name=url",
+    },
+    {
+      "@type": "SearchAction",
+      target: { "@type": "EntryPoint", url: `${siteUrl}/contact` },
+      "query-input": "required name=search_term_string",
+    },
+  ],
 };
 
 export function OrganizationStructuredData() {
@@ -128,6 +135,30 @@ export function SoftwareApplicationStructuredData() {
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(softwareApplicationSchema),
       }}
+    />
+  );
+}
+
+/** JSON-LD BreadcrumbList for SEO. Use on inner pages. */
+export function BreadcrumbStructuredData({
+  items,
+}: {
+  items: Array<{ name: string; url: string }>;
+}) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: item.url.startsWith("http") ? item.url : `${siteUrl}${item.url.startsWith("/") ? item.url : `/${item.url}`}`,
+    })),
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
   );
 }

@@ -3,6 +3,8 @@ import SiteShell from "@/components/SiteShell";
 import HeroSection from "@/components/home/HeroSection";
 import TrustSection from "@/components/home/TrustSection";
 import WebsiteScanSection from "@/components/home/WebsiteScanSection";
+import ProblemValueSection from "@/components/home/ProblemValueSection";
+import PreviewSection from "@/components/home/PreviewSection";
 
 const HowItWorksSection = dynamic(
   () => import("@/components/home/HowItWorksSection").then((m) => ({ default: m.default })),
@@ -44,40 +46,46 @@ const Reviews = dynamic(
 export default function HomePage() {
   return (
     <SiteShell>
-      <section className="bg-surface" aria-label="Hero">
+      <section className="bg-white" aria-label="Hero">
         <HeroSection />
       </section>
-      <section className="bg-[#EEF1F5]" aria-label="Vertrouwen">
+      <section className="bg-indigo-50" aria-label="Resultaat preview">
+        <PreviewSection />
+      </section>
+      <section className="bg-indigo-50" aria-label="Vertrouwen">
         <TrustSection />
       </section>
-      <section className="bg-surface" aria-label="Website scan">
+      <section className="bg-white" aria-label="Probleem en resultaat">
+        <ProblemValueSection />
+      </section>
+      <section className="bg-white" aria-label="Website scan">
         <WebsiteScanSection />
       </section>
-      <section className="bg-[#EEF1F5]" aria-label="Hoe het werkt">
+      <section className="bg-indigo-50" aria-label="Hoe het werkt">
         <HowItWorksSection />
       </section>
-      <section className="bg-surface" aria-label="Rapport preview">
+      <section className="bg-white" aria-label="Rapport preview">
         <ExampleReportSection />
       </section>
-      <section className="bg-[#EEF1F5]" aria-label="Tools">
+      <section className="bg-indigo-50" aria-label="Tools">
         <ToolkitSection />
       </section>
-      <section className="bg-surface" aria-label="Apparaten">
+      <section className="bg-white" aria-label="Apparaten">
         <HardwarePreviewSection />
       </section>
-      <section className="bg-[#EEF1F5]" aria-label="Kennisbank">
+      <section className="bg-indigo-50" aria-label="Kennisbank">
         <KnowledgeHubSection />
       </section>
-      <section className="bg-[#EEF1F5]" aria-label="Prijzen">
+      <section className="bg-indigo-50" aria-label="Prijzen">
         <PricingStrip />
       </section>
-      <section className="bg-slate-50" aria-label="Reviews">
+      <section className="bg-indigo-50" aria-label="Reviews">
         <Reviews />
       </section>
-      <section className="bg-surface" aria-label="FAQ">
+      <section className="bg-white" aria-label="FAQ">
         <FAQSection />
       </section>
-      <section className="bg-[#EEF1F5]" aria-label="CTA">
+      <section className="bg-indigo-50" aria-label="CTA">
         <FinalCtaSection />
       </section>
     </SiteShell>

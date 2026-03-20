@@ -57,8 +57,28 @@ export function ArticleLayout({ title, content, author, publishedAt }: ArticleLa
                   </Link>
                 </li>
                 <li>
+                  <Link href="/website-seo-check" className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline">
+                    Website SEO check
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/website-snelheid-test" className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline">
+                    Website snelheid test
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/conversie-check" className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline">
+                    Conversie check
+                  </Link>
+                </li>
+                <li>
                   <Link href="/tools" className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline">
                     Alle tools
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/kennisbank" className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline">
+                    Kennisbank
                   </Link>
                 </li>
                 <li>

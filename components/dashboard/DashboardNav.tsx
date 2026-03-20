@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "@/components/I18nProvider";
+import { isAdmin } from "@/lib/permissions";
 
-export type DashboardRole = "lead" | "pro" | "customer" | "admin";
+export type DashboardRole = "lead" | "pro" | "customer" | "admin" | "owner";
 
 const icons: Record<string, React.ReactNode> = {
   dashboard: (
@@ -108,7 +109,7 @@ export default function DashboardNav({ role }: { role: DashboardRole }) {
     { label: t("dashboard.settings"), href: "/dashboard/settings", roles: ["lead", "pro", "customer"] },
   ];
 
-  const items = role === "admin" ? [] : allItems.filter((i) => i.roles.includes(role));
+  const items = isAdmin({ role }) ? [] : allItems.filter((i) => i.roles.includes(role));
 
   return (
     <nav className="sticky top-28 space-y-0.5" aria-label="Dashboard navigatie">

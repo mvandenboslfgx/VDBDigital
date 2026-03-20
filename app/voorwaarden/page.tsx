@@ -58,20 +58,24 @@ export default function VoorwaardenPage() {
           <section className="mt-10">
             <h2 className="text-xl font-semibold text-marketing-text">4. Betalingen</h2>
             <p className="mt-3 text-marketing-textSecondary">
-              Betalingen voor abonnementen of producten worden verwerkt via externe betaalproviders.
-            </p>
-            <p className="mt-3 text-marketing-textSecondary">
-              Alle prijzen zijn inclusief btw tenzij anders vermeld.
+              Betalingen voor abonnementen en producten worden verwerkt via Stripe. Wij slaan geen creditcardgegevens op. Alle prijzen zijn inclusief btw tenzij anders vermeld. Facturatie voor abonnementen is maandelijks; het bedrag wordt automatisch afgeschreven.
             </p>
           </section>
 
           <section className="mt-10">
-            <h2 className="text-xl font-semibold text-marketing-text">5. Abonnementen</h2>
+            <h2 className="text-xl font-semibold text-marketing-text">5. Abonnementen, opzegging en wat blijft er over</h2>
             <p className="mt-3 text-marketing-textSecondary">
-              Sommige diensten werken met abonnementen.
+              Abonnementen (Starter, Growth, Agency) lopen maandelijks en worden automatisch verlengd tenzij u opzegt. U kunt elk moment opzeggen via het dashboard (Facturatie → beheer abonnement) of via het Stripe-klantenportaal. Na opzegging wordt er geen nieuw bedrag meer afgeschreven.
             </p>
             <p className="mt-3 text-marketing-textSecondary">
-              Deze kunnen automatisch worden verlengd tenzij de gebruiker opzegt.
+              <strong>Wat blijft er over na opzegging?</strong> U gaat terug naar het gratis plan. U behoudt toegang tot uw account. Uw eerder gegenereerde rapporten blijven zichtbaar. U krijgt weer 1 gratis website-scan per maand. Er is geen restitutie voor de reeds betaalde maand; u kunt de dienst tot het einde van de betaalperiode blijven gebruiken.
+            </p>
+          </section>
+
+          <section className="mt-10">
+            <h2 className="text-xl font-semibold text-marketing-text">5b. Herroepingsrecht en restitutie</h2>
+            <p className="mt-3 text-marketing-textSecondary">
+              Voor abonnementen op digitale content (zoals onze scans en AI-tools) gaat u bij aankoop akkoord met directe levering; het herroepingsrecht vervalt daarmee voor zover de wet dat toestaat. Bij fysieke producten (webshop) heeft u 14 dagen herroepingsrecht. Restitutie voor reeds verbruikte abonnementsmaanden wordt niet verleend.
             </p>
           </section>
 
@@ -132,10 +136,11 @@ export default function VoorwaardenPage() {
           </section>
 
           <nav className="mt-14 flex flex-wrap gap-4 text-sm">
-            <Link href="/privacy" className="text-gold hover:text-goldHover underline">Privacybeleid</Link>
-            <Link href="/cookies" className="text-gold hover:text-goldHover underline">Cookiebeleid</Link>
-            <Link href="/disclaimer" className="text-gold hover:text-goldHover underline">Disclaimer</Link>
-            <Link href="/contact" className="text-gold hover:text-goldHover underline">Contact</Link>
+            <Link href="/privacy" className="text-indigo-600 hover:text-indigo-700 underline">Privacybeleid</Link>
+            <Link href="/cookies" className="text-indigo-600 hover:text-indigo-700 underline">Cookiebeleid</Link>
+            <Link href="/disclaimer" className="text-indigo-600 hover:text-indigo-700 underline">Disclaimer</Link>
+            <Link href="/prijzen" className="text-indigo-600 hover:text-indigo-700 underline">Prijzen</Link>
+            <Link href="/contact" className="text-indigo-600 hover:text-indigo-700 underline">Contact</Link>
           </nav>
         </div>
       </article>

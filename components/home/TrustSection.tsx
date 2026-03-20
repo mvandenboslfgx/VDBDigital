@@ -1,12 +1,14 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
+import { stockPhotos } from "@/lib/stock-photos";
 
 const AUDIENCES = [
-  { name: "Webshops", id: "1" },
-  { name: "Marketingbureaus", id: "2" },
-  { name: "SaaS bedrijven", id: "3" },
-  { name: "Dienstverleners", id: "4" },
+  { name: "Webshops", id: "1", image: stockPhotos.webshop, alt: "Webshop en e-commerce" },
+  { name: "Marketingbureaus", id: "2", image: stockPhotos.marketing, alt: "Marketingteam aan het werk" },
+  { name: "SaaS bedrijven", id: "3", image: stockPhotos.saas, alt: "SaaS en analytics" },
+  { name: "Dienstverleners", id: "4", image: stockPhotos.dienstverlener, alt: "Professionele dienstverlening" },
 ];
 
 const container = {
@@ -24,13 +26,13 @@ const item = {
 
 export default function TrustSection() {
   return (
-    <section className="relative py-24 md:py-32">
+    <section className="relative py-20 md:py-28">
       <div className="section-container">
         <motion.h2
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center text-2xl font-semibold text-slate-900 md:text-4xl"
+          className="text-center text-4xl font-bold text-gray-900 md:text-5xl"
         >
           Voor wie is VDB Digital
         </motion.h2>
@@ -47,12 +49,24 @@ export default function TrustSection() {
               variants={item}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ scale: 1.03, boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.15)" }}
-              className="flex min-h-[5rem] w-full items-center justify-center rounded-2xl border border-gray-200 bg-surface px-5 py-5 shadow-sm transition-shadow duration-300 md:min-h-[6rem] md:px-6"
+              className="flex w-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md md:min-h-[6rem]"
               style={{ willChange: "transform" }}
             >
-              <span className="text-center text-lg font-semibold text-slate-800 md:text-xl">
-                {card.name}
-              </span>
+              <div className="relative -mx-8 -mt-8 aspect-[16/10] w-[calc(100%+4rem)] shrink-0 bg-indigo-50">
+                <Image
+                  src={card.image}
+                  alt={card.alt}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+              <div className="flex flex-1 items-center justify-center pt-8">
+                <span className="text-center text-xl font-semibold text-gray-900">
+                  {card.name}
+                </span>
+              </div>
             </motion.div>
           ))}
         </motion.div>

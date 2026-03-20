@@ -37,7 +37,7 @@ export default async function AdminWebsitesPage() {
                         href={w.previewUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-gold hover:underline"
+                        className="text-indigo-400 hover:underline"
                       >
                         Open
                       </a>

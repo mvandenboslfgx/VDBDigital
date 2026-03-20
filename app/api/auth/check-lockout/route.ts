@@ -1,11 +1,19 @@
 import { NextResponse } from "next/server";
-import { getClientKey, isLoginLockedOut } from "@/lib/rateLimit";
+import { getAuthLockoutKey, isLoginLockedOut } from "@/lib/rateLimit";
 import { safeJsonError } from "@/lib/apiSafeResponse";
+import { createSecureRoute } from "@/lib/secureRoute";
 
-export async function GET(request: Request) {
-  const ip = getClientKey(request);
-  if (isLoginLockedOut(ip)) {
-    return safeJsonError("Account tijdelijk geblokkeerd. Probeer het over 15 minuten opnieuw.", 429);
-  }
-  return NextResponse.json({ allowed: true }, { status: 200 });
-}
+export const GET = createSecureRoute<undefined>({
+  auth: "optional",
+  rateLimit: "auth",
+  csrf: false,
+  bodyMode: "none",
+  logContext: "Auth/CheckLockout/GET",
+  handler: async ({ request }) => {
+    const lockoutKey = getAuthLockoutKey(request);
+    if (isLoginLockedOut(lockoutKey)) {
+      return safeJsonError("Account tijdelijk geblokkeerd. Probeer het over 15 minuten opnieuw.", 429);
+    }
+    return NextResponse.json({ allowed: true }, { status: 200 });
+  },
+});

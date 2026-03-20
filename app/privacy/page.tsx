@@ -54,6 +54,13 @@ export default function PrivacyPage() {
               <li>bezochte pagina&apos;s</li>
               <li>gebruik van tools en analyses</li>
             </ul>
+            <h3 className="mt-4 font-medium text-marketing-text">Aanbevolen partners (advertenties)</h3>
+            <p className="mt-2 text-marketing-textSecondary">
+              Voor het tonen van relevante partneraanbevelingen kunnen wij een technische, gehashte fingerprint
+              gebruiken (o.a. op basis van een sessie-cookie, verkorte IP en browserkenmerken), periodiek gecombineerd
+              met een roterende sleutel. Dit dient fraude- en frequentielimieten; wij volgen geen individuele
+              surfprofielen over langere tijd buiten deze doeleinden.
+            </p>
             <h3 className="mt-4 font-medium text-marketing-text">Website-analyse gegevens</h3>
             <p className="mt-2 text-marketing-textSecondary">Wanneer u een website analyse uitvoert:</p>
             <ul className="mt-2 list-inside list-disc space-y-1 text-marketing-textSecondary">
@@ -88,15 +95,7 @@ export default function PrivacyPage() {
           <section className="mt-10">
             <h2 className="text-xl font-semibold text-marketing-text">4. Betalingen</h2>
             <p className="mt-3 text-marketing-textSecondary">
-              Betalingen worden verwerkt via externe betalingsproviders zoals:
-            </p>
-            <ul className="mt-2 list-inside list-disc space-y-1 text-marketing-textSecondary">
-              <li>Stripe</li>
-              <li>PayPal</li>
-              <li>iDEAL</li>
-            </ul>
-            <p className="mt-3 text-marketing-textSecondary">
-              VDB Digital slaat geen volledige betaalgegevens op.
+              Betalingen worden verwerkt via Stripe (o.a. iDEAL, creditcard). VDB Digital slaat geen volledige betaalgegevens op; Stripe verwerkt deze conform hun privacybeleid.
             </p>
           </section>
 
@@ -111,7 +110,7 @@ export default function PrivacyPage() {
               <li>verbetering van gebruikerservaring</li>
             </ul>
             <p className="mt-3 text-marketing-textSecondary">
-              Meer informatie vindt u in ons <Link href="/cookies" className="text-gold hover:text-goldHover underline">cookiebeleid</Link>.
+              Meer informatie vindt u in ons <Link href="/cookies" className="text-indigo-600 hover:text-indigo-700 underline">cookiebeleid</Link>.
             </p>
           </section>
 
@@ -141,7 +140,7 @@ export default function PrivacyPage() {
           <section className="mt-10">
             <h2 className="text-xl font-semibold text-marketing-text">8. Bewaartermijn</h2>
             <p className="mt-3 text-marketing-textSecondary">
-              Gegevens worden niet langer bewaard dan noodzakelijk voor de dienstverlening en wettelijke verplichtingen.
+              Gegevens worden niet langer bewaard dan noodzakelijk voor de dienstverlening en wettelijke verplichtingen. Na opzegging van een abonnement blijven uw accountgegevens en rapporten bewaard zolang u inlogt; u gaat over naar het gratis plan. Als u uw account wilt laten verwijderen, kunt u dat via de instellingen of door contact met ons op te nemen; daarna worden uw persoonsgegevens binnen redelijke termijn verwijderd, behalve waar wij wettelijk verplicht zijn gegevens te bewaren.
             </p>
           </section>
 
@@ -151,9 +150,12 @@ export default function PrivacyPage() {
             <ul className="mt-2 list-inside list-disc space-y-1 text-marketing-textSecondary">
               <li>uw gegevens in te zien</li>
               <li>gegevens te corrigeren</li>
-              <li>gegevens te verwijderen</li>
+              <li>gegevens te laten verwijderen (waaronder accountverwijdering)</li>
               <li>bezwaar te maken tegen verwerking</li>
             </ul>
+            <p className="mt-3 text-marketing-textSecondary">
+              Neem contact met ons op via de contactpagina of per e-mail om een verzoek in te dienen.
+            </p>
           </section>
 
           <section className="mt-10">
@@ -164,10 +166,11 @@ export default function PrivacyPage() {
           </section>
 
           <nav className="mt-14 flex flex-wrap gap-4 text-sm">
-            <Link href="/voorwaarden" className="text-gold hover:text-goldHover underline">Algemene voorwaarden</Link>
-            <Link href="/cookies" className="text-gold hover:text-goldHover underline">Cookiebeleid</Link>
-            <Link href="/disclaimer" className="text-gold hover:text-goldHover underline">Disclaimer</Link>
-            <Link href="/contact" className="text-gold hover:text-goldHover underline">Contact</Link>
+            <Link href="/voorwaarden" className="text-indigo-600 hover:text-indigo-700 underline">Algemene voorwaarden</Link>
+            <Link href="/cookies" className="text-indigo-600 hover:text-indigo-700 underline">Cookiebeleid</Link>
+            <Link href="/disclaimer" className="text-indigo-600 hover:text-indigo-700 underline">Disclaimer</Link>
+            <Link href="/prijzen" className="text-indigo-600 hover:text-indigo-700 underline">Prijzen</Link>
+            <Link href="/contact" className="text-indigo-600 hover:text-indigo-700 underline">Contact</Link>
           </nav>
         </div>
       </article>

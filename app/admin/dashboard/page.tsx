@@ -51,6 +51,12 @@ export default async function AdminDashboardPage() {
     mrrAggregate,
     auditsThisMonthCount,
     totalAuditsCount,
+    recentProductOrders,
+    productOrdersThisMonthCount,
+    productOrdersPendingCount,
+    productOrderRevenueThisMonth,
+    failedProductOrders24h,
+    failedProductOrdersTotal,
   ] = await Promise.all([
     prisma.lead.findMany({
       orderBy: { createdAt: "desc" },
@@ -102,6 +108,36 @@ export default async function AdminDashboardPage() {
       prisma.auditReport.count(),
       prisma.auditHistory.count(),
     ]).then(([c, h]) => c + h),
+    prisma.productOrder.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 8,
+      select: {
+        id: true,
+        email: true,
+        totalCents: true,
+        status: true,
+        createdAt: true,
+      },
+    }),
+    prisma.productOrder.count({
+      where: { status: "paid", createdAt: { gte: startOfMonth } },
+    }),
+    prisma.productOrder.count({
+      where: { status: "pending" },
+    }),
+    prisma.productOrder.aggregate({
+      where: { status: "paid", createdAt: { gte: startOfMonth } },
+      _sum: { totalCents: true },
+    }),
+    prisma.productOrder.count({
+      where: {
+        status: "failed",
+        updatedAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+      },
+    }),
+    prisma.productOrder.count({
+      where: { status: "failed" },
+    }),
   ]);
 
   const totalVisitors = analyticsEvents.filter(
@@ -169,6 +205,11 @@ export default async function AdminDashboardPage() {
     { label: "Audits (maand)", value: auditsThisMonthCount },
     { label: "Totaal audits", value: totalAuditsCount },
   ];
+  const productRevenueMonthCents = productOrderRevenueThisMonth._sum.totalCents ?? 0;
+  const avgOrderValueCents =
+    productOrdersThisMonthCount > 0
+      ? Math.round(productRevenueMonthCents / productOrdersThisMonthCount)
+      : 0;
 
   return (
     <div className="space-y-8">
@@ -189,7 +230,7 @@ export default async function AdminDashboardPage() {
           </div>
           <div className="rounded-xl border border-white/10 bg-black/60 p-4">
             <p className="text-xs text-gray-400">MRR</p>
-            <p className="mt-1 text-2xl font-semibold text-gold">
+            <p className="mt-1 text-2xl font-semibold text-indigo-400">
               €{(mrrCents / 100).toLocaleString()}
             </p>
           </div>
@@ -248,7 +289,7 @@ export default async function AdminDashboardPage() {
           </div>
           <div className="rounded-xl border border-white/10 bg-black/60 p-4">
             <p className="text-xs text-gray-400">Revenue</p>
-            <p className="mt-1 text-2xl font-semibold text-gold">
+            <p className="mt-1 text-2xl font-semibold text-indigo-400">
               €{(revenue / 100).toLocaleString()}
             </p>
           </div>
@@ -257,6 +298,89 @@ export default async function AdminDashboardPage() {
             <p className="mt-1 text-2xl font-semibold text-white">
               {conversions.toFixed(1)}%
             </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-white/10 bg-black/80 p-6 backdrop-blur-xl">
+        <h2 className="section-title">Commerce</h2>
+        <p className="mt-2 text-sm text-gray-400">
+          Productorders, omzet en orderstatus uit de nieuwe checkout flow.
+        </p>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 text-sm">
+          <div className="rounded-xl border border-white/10 bg-black/60 p-4">
+            <p className="text-xs text-gray-400">Orders betaald (maand)</p>
+            <p className="mt-1 text-2xl font-semibold text-white">{productOrdersThisMonthCount}</p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-black/60 p-4">
+            <p className="text-xs text-gray-400">Orders pending</p>
+            <p className="mt-1 text-2xl font-semibold text-amber-300">{productOrdersPendingCount}</p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-black/60 p-4">
+            <p className="text-xs text-gray-400">Product omzet (maand)</p>
+            <p className="mt-1 text-2xl font-semibold text-emerald-300">
+              €{(productRevenueMonthCents / 100).toLocaleString("nl-NL")}
+            </p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-black/60 p-4">
+            <p className="text-xs text-gray-400">Gem. orderwaarde</p>
+            <p className="mt-1 text-2xl font-semibold text-white">
+              €{(avgOrderValueCents / 100).toLocaleString("nl-NL")}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-xl border border-white/10 bg-black/60 p-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-white">Recente productorders</h3>
+            <span className="text-xs text-gray-500">Laatste {recentProductOrders.length}</span>
+          </div>
+          <div className="space-y-2">
+            {recentProductOrders.map((order) => (
+              <div
+                key={order.id}
+                className="flex items-center justify-between rounded-lg border border-white/10 bg-black/50 px-3 py-2 text-sm"
+              >
+                <div>
+                  <p className="font-medium text-white">
+                    #{order.id.slice(0, 8)} · {(order.totalCents / 100).toLocaleString("nl-NL", { style: "currency", currency: "EUR" })}
+                  </p>
+                  <p className="text-xs text-gray-400">{order.email ?? "onbekende e-mail"}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs uppercase tracking-wide text-gray-300">{order.status}</p>
+                  <p className="text-xs text-gray-500">
+                    {new Date(order.createdAt).toLocaleDateString("nl-NL")}
+                  </p>
+                </div>
+              </div>
+            ))}
+            {recentProductOrders.length === 0 && (
+              <p className="py-4 text-center text-sm text-gray-500">Nog geen productorders.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-xl border border-rose-400/25 bg-rose-500/5 p-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-rose-100">Operations</h3>
+            <Link href="/admin/orders" className="text-xs text-rose-200 hover:underline">
+              Open order control center
+            </Link>
+          </div>
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-lg border border-rose-400/20 bg-black/40 p-3">
+              <p className="text-xs text-rose-200/80">Failed orders (24u)</p>
+              <p className="mt-1 text-xl font-semibold text-rose-100">{failedProductOrders24h}</p>
+            </div>
+            <div className="rounded-lg border border-rose-400/20 bg-black/40 p-3">
+              <p className="text-xs text-rose-200/80">Failed orders (totaal)</p>
+              <p className="mt-1 text-xl font-semibold text-rose-100">{failedProductOrdersTotal}</p>
+            </div>
+            <div className="rounded-lg border border-rose-400/20 bg-black/40 p-3">
+              <p className="text-xs text-rose-200/80">Retry queue focus</p>
+              <p className="mt-1 text-xl font-semibold text-rose-100">{productOrdersPendingCount}</p>
+            </div>
           </div>
         </div>
       </section>
@@ -301,7 +425,7 @@ export default async function AdminDashboardPage() {
         <section className="rounded-2xl border border-white/10 bg-black/80 p-6 backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold text-white">Recent leads</h3>
-            <Link href="/admin/leads" className="text-xs text-gold hover:underline">
+            <Link href="/admin/leads" className="text-xs text-indigo-400 hover:underline">
               View all
             </Link>
           </div>
@@ -329,7 +453,7 @@ export default async function AdminDashboardPage() {
         <section className="rounded-2xl border border-white/10 bg-black/80 p-6 backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold text-white">Recent projects</h3>
-            <Link href="/admin/projects" className="text-xs text-gold hover:underline">
+            <Link href="/admin/projects" className="text-xs text-indigo-400 hover:underline">
               View all
             </Link>
           </div>

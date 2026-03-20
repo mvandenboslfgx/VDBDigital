@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button, Input } from "@/components/ui";
 import ScoreRing from "@/components/ui/ScoreRing";
-import { getScoreColorClass } from "@/lib/scoreColor";
+import ScanResultPreview from "@/components/scan/ScanResultPreview";
+import EmailGatePopup from "@/components/scan/EmailGatePopup";
+import { isScanUnlocked, setScanUnlockCookie } from "@/lib/scanUnlock";
 
 const STEPS = [
   { id: "seo", label: "SEO controleren…" },
@@ -24,6 +25,8 @@ const EXAMPLE_SCORES = [
 type Scores = { seoScore: number; perfScore: number; uxScore: number; convScore: number };
 
 export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: string }) {
+  const CTA_CLASS =
+    "bg-indigo-600 text-white px-8 py-4 text-lg rounded-xl font-medium hover:bg-indigo-700 shadow-lg hover:shadow-xl transition focus:outline-none focus:ring-2 focus:ring-indigo-500 active:scale-95";
   const [url, setUrl] = useState(initialUrl);
   const [scanning, setScanning] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
@@ -35,10 +38,17 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
     issues?: Array<{ severity: string; message: string }>;
     recommendations?: string[];
   } | null>(null);
+  const [unlocked, setUnlocked] = useState(false);
+  const [showGate, setShowGate] = useState(false);
+  const [unlocking, setUnlocking] = useState(false);
 
   useEffect(() => {
     setUrl((prev) => (initialUrl && !prev ? initialUrl : prev));
   }, [initialUrl]);
+
+  useEffect(() => {
+    if (isScanUnlocked()) setUnlocked(true);
+  }, []);
 
   const handleScan = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,11 +70,13 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
       setStepIndex((i) => (i >= STEPS.length - 1 ? i : i + 1));
     }, 800);
 
+    const isAlreadyUnlocked = isScanUnlocked();
+
     try {
       const res = await fetch("/api/ai/website-audit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: trimmed, preview: true }),
+        body: JSON.stringify({ url: trimmed, preview: !isAlreadyUnlocked }),
       });
       clearInterval(stepInterval);
       setStepIndex(STEPS.length - 1);
@@ -99,10 +111,59 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
         issues: data.issues,
         recommendations: data.recommendations,
       });
+      if (isAlreadyUnlocked) setUnlocked(true);
     } catch {
       setError("Verbinding mislukt. Controleer je internet en probeer het opnieuw.");
     } finally {
       setScanning(false);
+    }
+  };
+
+  const handleUnlock = async (email: string, name: string) => {
+    setUnlocking(true);
+    try {
+      const res = await fetch("/api/ai/website-audit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: url.trim(),
+          preview: false,
+          email,
+          name: name || undefined,
+        }),
+      });
+      const data = (await res.json()) as {
+        success?: boolean;
+        summary?: string;
+        recommendations?: string[];
+        issues?: Array<{ severity: string; message: string }>;
+        scores?: Scores;
+        totalScore?: number;
+      };
+
+      if (data.success) {
+        setScanUnlockCookie(email);
+        setUnlocked(true);
+        setShowGate(false);
+        if (data.summary) {
+          setResult((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  summary: data.summary || prev.summary,
+                  recommendations: data.recommendations ?? prev.recommendations,
+                  issues: data.issues ?? prev.issues,
+                  scores: data.scores ?? prev.scores,
+                  totalScore: data.totalScore ?? prev.totalScore,
+                }
+              : prev
+          );
+        }
+      }
+    } catch {
+      // Unlock failed silently; popup stays open for retry
+    } finally {
+      setUnlocking(false);
     }
   };
 
@@ -112,7 +173,7 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
   };
 
   return (
-    <section id="website-scan" className="relative py-28">
+    <section id="website-scan" className="relative py-20 md:py-28">
       <div className="section-container">
         <div className="mx-auto max-w-4xl">
           <motion.h2
@@ -120,7 +181,7 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="text-3xl font-semibold text-slate-900 md:text-4xl text-center"
+            className="text-center text-4xl font-bold text-gray-900 md:text-5xl"
           >
             Controleer direct de prestaties van uw website
           </motion.h2>
@@ -129,7 +190,7 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto text-center"
+            className="mx-auto mt-4 max-w-2xl text-center text-xl text-gray-500"
           >
             Vul uw URL in. We analyseren SEO, performance, UX en conversie en tonen een concreet verbeterplan.
           </motion.p>
@@ -140,10 +201,10 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.12 }}
             whileHover={{ scale: 1.02, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.05)" }}
-            className="mt-12 rounded-2xl border border-gray-200 bg-surface p-8 shadow-sm transition-all duration-300"
+            className="mt-12 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md"
           >
-            <p className="text-center text-sm font-medium text-slate-500">Voorbeeld scores</p>
-            <div className="mt-6 flex flex-wrap justify-center gap-8 md:gap-12">
+            <p className="text-center text-sm font-medium text-gray-500">Voorbeeld scores</p>
+            <div className="mt-6 flex flex-wrap justify-center gap-8">
               {EXAMPLE_SCORES.map((s) => (
                 <ScoreRing key={s.label} score={s.value} label={s.label} size="md" />
               ))}
@@ -160,7 +221,7 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.4 }}
                   onSubmit={handleScan}
-                  className="flex flex-col gap-4 sm:flex-row sm:items-end max-w-2xl mx-auto"
+                  className="mx-auto flex max-w-2xl flex-col gap-4 sm:flex-row sm:items-end"
                 >
                   <div className="flex-1">
                     <Input
@@ -177,86 +238,24 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
                     type="submit"
                     size="lg"
                     disabled={scanning}
-                    className="w-full sm:w-auto sm:min-w-[220px] min-h-14 px-8 py-4 text-lg font-medium"
+                    className={`${CTA_CLASS} min-h-14 w-full sm:min-w-[220px] sm:w-auto`}
                   >
                     {scanning ? "Scannen…" : "Start gratis website-analyse"}
                   </Button>
                 </motion.form>
               ) : (
-                <motion.div
-                  key="result"
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="max-w-2xl mx-auto space-y-6"
-                >
-                  <div className="rounded-2xl border border-gray-200 bg-surface p-8 shadow-sm">
-                    <h3 className="text-xl font-semibold text-slate-900">Uw website score</h3>
-                    <p
-                      className={`mt-2 text-4xl font-bold md:text-5xl ${getScoreColorClass(
-                        result.totalScore,
-                        "text"
-                      )}`}
-                    >
-                      {result.totalScore}{" "}
-                      <span className="text-2xl font-normal text-slate-500">/ 100</span>
-                    </p>
-                    <div className="mt-6 flex flex-wrap gap-6">
-                      <ScoreRing
-                        score={result.scores.seoScore}
-                        label="SEO"
-                        size="sm"
-                      />
-                      <ScoreRing
-                        score={result.scores.perfScore}
-                        label="Performance"
-                        size="sm"
-                      />
-                      <ScoreRing
-                        score={result.scores.uxScore}
-                        label="UX"
-                        size="sm"
-                      />
-                      <ScoreRing
-                        score={result.scores.convScore}
-                        label="Conversie"
-                        size="sm"
-                      />
-                    </div>
-                    {(result.issues?.length ?? 0) > 0 && (
-                      <>
-                        <p className="mt-6 text-sm font-medium text-slate-700">
-                          Belangrijkste verbeterpunten
-                        </p>
-                        <ul className="mt-2 space-y-1.5 text-sm text-slate-600">
-                          {result.issues!.slice(0, 4).map((i, idx) => (
-                            <li key={idx} className="flex items-start gap-2">
-                              <span className="text-indigo-500 mt-0.5">•</span>
-                              {i.message}
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    )}
-                    <div className="mt-8 rounded-xl border border-indigo-100 bg-indigo-50/30 p-6">
-                      <h4 className="font-semibold text-slate-900">
-                        Ontgrendel het volledige rapport
-                      </h4>
-                      <p className="mt-2 text-sm text-slate-600">
-                        Maak een gratis account aan voor het volledige rapport met alle
-                        aanbevelingen, technische details en deelbare PDF.
-                      </p>
-                      <div className="mt-4 flex flex-wrap gap-3">
-                        <Link href="/create-account?redirect=/dashboard/audits">
-                          <Button size="lg">Gratis account aanmaken</Button>
-                        </Link>
-                        <Button variant="secondary" size="lg" onClick={handleReset}>
-                          Nieuwe scan
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
+                <div className="max-w-2xl mx-auto">
+                  <ScanResultPreview
+                    totalScore={result.totalScore}
+                    scores={result.scores}
+                    issues={result.issues}
+                    unlocked={unlocked}
+                    summary={result.summary}
+                    recommendations={result.recommendations}
+                    onUnlockClick={() => setShowGate(true)}
+                    onReset={handleReset}
+                  />
+                </div>
               )}
             </AnimatePresence>
 
@@ -264,11 +263,11 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="mt-6 rounded-2xl border border-gray-200 bg-surface p-8 shadow-sm max-w-2xl mx-auto"
+                className="mx-auto mt-6 max-w-2xl rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md"
               >
                 <div className="mb-6 flex items-center gap-3">
                   <div className="h-2 w-2 rounded-full bg-indigo-500 animate-pulse" />
-                  <span className="text-base font-medium text-slate-600">
+                  <span className="text-base font-medium text-gray-500">
                     Analyseren van {url.replace(/^https?:\/\//, "").slice(0, 30)}…
                   </span>
                 </div>
@@ -276,7 +275,7 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
                   {STEPS.map((step, i) => (
                     <div key={step.id} className="flex items-center gap-4">
                       <div
-                        className={`h-2 flex-1 max-w-md rounded-full bg-slate-100 overflow-hidden ${
+                        className={`h-2 max-w-md flex-1 overflow-hidden rounded-full bg-gray-200 ${
                           i < stepIndex ? "opacity-60" : ""
                         }`}
                       >
@@ -289,7 +288,7 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
                       </div>
                       <span
                         className={`text-sm font-medium min-w-[220px] ${
-                          i <= stepIndex ? "text-slate-900" : "text-slate-500"
+                          i <= stepIndex ? "text-gray-900" : "text-gray-500"
                         }`}
                       >
                         {step.label}
@@ -301,17 +300,24 @@ export default function WebsiteScanSection({ initialUrl = "" }: { initialUrl?: s
             )}
 
             {error && (
-              <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-center">
-                <p className="text-sm font-medium text-red-800">{error}</p>
+              <div className="mt-4 rounded-xl border border-gray-200 bg-indigo-50 p-4 text-center">
+                <p className="text-sm font-medium text-gray-700">{error}</p>
               </div>
             )}
           </div>
 
-          <p className="mt-6 text-center text-lg text-slate-600">
-            Gratis account. Geen creditcard. 1 scan per maand op het gratis plan.
+          <p className="mt-6 text-center text-lg text-gray-500">
+            Gratis preview. Vul je e-mail in voor het volledige rapport met AI-advies.
           </p>
         </div>
       </div>
+
+      <EmailGatePopup
+        open={showGate}
+        onClose={() => setShowGate(false)}
+        onSubmit={handleUnlock}
+        loading={unlocking}
+      />
     </section>
   );
 }

@@ -22,29 +22,29 @@ export default function ScoreRing({
 }: ScoreRingProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const safeScore = Math.min(100, Math.max(0, Number(score) || 0));
   const [displayScore, setDisplayScore] = useState(0);
 
   useEffect(() => {
     if (!isInView) return;
     const duration = 800;
-    const start = 0;
     const startTime = Date.now();
     const tick = () => {
       const elapsed = Date.now() - startTime;
       const t = Math.min(elapsed / duration, 1);
       const eased = 1 - Math.pow(1 - t, 2);
-      setDisplayScore(Math.round(start + (score - start) * eased));
+      setDisplayScore(Math.round(safeScore * eased));
       if (t < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
-  }, [isInView, score]);
+  }, [isInView, safeScore]);
 
   const dim = sizeMap[size];
   const stroke = strokeMap[size];
   const r = (dim - stroke) / 2 - 2;
   const circumference = 2 * Math.PI * r;
-  const offset = circumference - (score / 100) * circumference;
-  const color = getScoreColorHex(score);
+  const offset = circumference - (safeScore / 100) * circumference;
+  const color = getScoreColorHex(safeScore);
 
   return (
     <motion.div
@@ -82,7 +82,7 @@ export default function ScoreRing({
           className="absolute inset-0 flex items-center justify-center font-bold text-slate-900 drop-shadow-sm"
           style={{ fontSize: size === "lg" ? "1.5rem" : size === "md" ? "1.25rem" : "1rem" }}
         >
-          {displayScore}
+          {isInView ? displayScore : safeScore}
         </div>
       </div>
       <p className="mt-2 text-xs font-medium uppercase tracking-wider text-slate-500">{label}</p>
