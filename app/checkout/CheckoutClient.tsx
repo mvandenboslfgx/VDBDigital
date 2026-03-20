@@ -8,6 +8,8 @@ type CartItem = { slug: string; name: string; price: number; qty: number };
 export function CheckoutClient() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const raw = typeof window !== "undefined" ? window.localStorage.getItem("vdb-cart") : null;
@@ -16,6 +18,40 @@ export function CheckoutClient() {
   }, []);
 
   const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+
+  const startCheckout = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((i) => ({
+            // Cart stores product slug; API can resolve by id OR slug.
+            productId: i.slug,
+            quantity: i.qty,
+          })),
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data?.error || "Checkout kon niet worden gestart.");
+      }
+
+      if (data?.url) {
+        window.location.href = data.url;
+        return;
+      }
+      throw new Error(data?.error || "Checkout URL ontbreekt.");
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Checkout faalde. Probeer opnieuw.";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!mounted) {
     return (
@@ -52,15 +88,27 @@ export function CheckoutClient() {
       <p className="mt-6 text-xl font-semibold text-marketing-text">
         Totaal: €{total.toFixed(2)}
       </p>
-      <p className="mt-6 text-sm text-marketing-textSecondary">
-        Betaling wordt afgehandeld via Stripe. Voor een volledige integratie zijn Stripe Checkout-sessie en webhook nodig; deze pagina toont de bestellingsoverzicht. Neem contact op voor zakelijke bestellingen.
-      </p>
-      <Link
-        href="/apparaten"
-        className="mt-6 inline-block rounded-xl bg-gold px-6 py-3 font-semibold text-black hover:bg-goldHover"
-      >
-        Verder winkelen
-      </Link>
+      {error && (
+        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <button
+          type="button"
+          onClick={startCheckout}
+          disabled={loading}
+          className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 disabled:opacity-50"
+        >
+          {loading ? "Bezig met Stripe..." : "Naar Stripe betaling"}
+        </button>
+        <Link
+          href="/apparaten"
+          className="inline-flex items-center justify-center rounded-xl bg-gold px-6 py-3 font-semibold text-black hover:bg-goldHover"
+        >
+          Verder winkelen
+        </Link>
+      </div>
     </div>
   );
 }

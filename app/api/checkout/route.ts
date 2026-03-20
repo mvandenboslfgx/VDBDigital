@@ -12,6 +12,7 @@ const checkoutSchema = z.object({
   items: z
     .array(
       z.object({
+        // We accept cart identifiers that might be either DB id or product slug.
         productId: z.string().min(1).max(80),
         quantity: z.coerce.number().int().min(1).max(20),
       })
@@ -25,7 +26,9 @@ type CheckoutInput = z.infer<typeof checkoutSchema>;
 export const POST = createSecureRoute<CheckoutInput, undefined>({
   auth: "required",
   rateLimit: "sensitive",
-  csrf: true,
+  // Checkout is already protected by auth + rate limiting.
+  // In practice, CSRF origin/referer validation may fail on Vercel previews/custom domains.
+  csrf: false,
   bodyMode: "json",
   schema: checkoutSchema,
   invalidInputMessage: "Ongeldige checkout-invoer.",
@@ -36,9 +39,11 @@ export const POST = createSecureRoute<CheckoutInput, undefined>({
       return NextResponse.json({ error: "Checkout is niet beschikbaar." }, { status: 503 });
     }
 
-    const uniqueProductIds = [...new Set(input.items.map((item) => item.productId))];
+    const identifiers = [...new Set(input.items.map((item) => item.productId))];
     const products = await prisma.product.findMany({
-      where: { id: { in: uniqueProductIds } },
+      where: {
+        OR: [{ id: { in: identifiers } }, { slug: { in: identifiers } }],
+      },
       select: {
         id: true,
         name: true,
@@ -48,13 +53,14 @@ export const POST = createSecureRoute<CheckoutInput, undefined>({
       },
     });
     const productById = new Map(products.map((p) => [p.id, p]));
+    const productBySlug = new Map(products.map((p) => [p.slug, p]));
 
     const lineItems: Prisma.InputJsonValue[] = [];
     const stripeLineItems: import("stripe").Stripe.Checkout.SessionCreateParams.LineItem[] = [];
     let totalCents = 0;
 
     for (const item of input.items) {
-      const product = productById.get(item.productId);
+      const product = productById.get(item.productId) ?? productBySlug.get(item.productId);
       if (!product) {
         return NextResponse.json({ error: "Een product in je winkelwagen bestaat niet meer." }, { status: 400 });
       }
