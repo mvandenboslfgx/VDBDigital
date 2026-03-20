@@ -10,7 +10,14 @@ export const metadata = pageMetadata({
   path: "/products",
 });
 
-export default async function ProductsPage() {
+type Props = {
+  searchParams?: {
+    checkout?: string;
+    session_id?: string;
+  };
+};
+
+export default async function ProductsPage({ searchParams }: Props) {
   let products: { id: string; name: string; slug: string; price: number; shortDescription: string | null }[] = [];
   try {
     products = await prisma.product.findMany({
@@ -21,9 +28,56 @@ export default async function ProductsPage() {
     // Table may not exist yet
   }
 
+  const checkoutSuccess = searchParams?.checkout === "success" && typeof searchParams.session_id === "string";
+  let paymentBanner:
+    | null
+    | { statusLabel: string; message: string } = null;
+
+  if (checkoutSuccess) {
+    const sessionId = searchParams!.session_id;
+    try {
+      const order = await prisma.productOrder.findUnique({
+        where: { stripeCheckoutSessionId: sessionId },
+        select: { status: true },
+      });
+
+      if (order) {
+        const statusLabel =
+          order.status === "paid"
+            ? "Betaling bevestigd"
+            : order.status === "pending"
+              ? "Betaling ontvangen"
+              : "Betaling ontvangen (verwerking mogelijk mislukt)";
+
+        const message =
+          order.status === "paid"
+            ? "Dank voor je bestelling. Je order is betaald en wordt verwerkt."
+            : "Dank voor je bestelling. We verwerken je order en nemen contact op als er iets misgaat.";
+
+        paymentBanner = { statusLabel, message };
+      } else {
+        paymentBanner = {
+          statusLabel: "Betaling bevestigd",
+          message: "Dank voor je bestelling. (We konden je order nog niet terugvinden.)",
+        };
+      }
+    } catch {
+      paymentBanner = {
+        statusLabel: "Betaling bevestigd",
+        message: "Dank voor je bestelling. (Orderstatus onbekend.)",
+      };
+    }
+  }
+
   return (
     <SiteShell>
       <div className="section-container py-24 md:py-32">
+        {paymentBanner && (
+          <div className="mb-8 rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-4 text-emerald-900">
+            <div className="text-lg font-semibold">{paymentBanner.statusLabel}</div>
+            <div className="mt-1 text-sm text-emerald-800">{paymentBanner.message}</div>
+          </div>
+        )}
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-4xl font-semibold tracking-tight text-marketing-text md:text-5xl">
             Webshop
