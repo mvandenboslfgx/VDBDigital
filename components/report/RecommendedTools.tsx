@@ -29,7 +29,7 @@ export function RecommendedTools({ ad, metric }: RecommendedToolsProps) {
         href={clickUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-4 flex w-full flex-col gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-left transition-all hover:border-indigo-500/30 hover:bg-white/[0.06] sm:flex-row sm:items-center"
+        className="group mt-4 flex w-full flex-col gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-left transition-all hover:border-indigo-500/30 hover:bg-white/[0.06] sm:flex-row sm:items-center"
       >
         {ad.image && (
           <div className="relative h-20 w-full shrink-0 overflow-hidden rounded-lg sm:h-16 sm:w-32">
@@ -37,10 +37,11 @@ export function RecommendedTools({ ad, metric }: RecommendedToolsProps) {
               src={ad.image}
               alt=""
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, 128px"
               unoptimized
             />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
           </div>
         )}
         <div className="min-w-0 flex-1">

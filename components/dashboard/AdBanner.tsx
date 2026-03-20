@@ -38,7 +38,7 @@ export function AdBanner({ ad, metricLabel }: AdBannerProps) {
           href={clickUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 flex w-full flex-col gap-4 rounded-xl border border-slate-200/80 bg-white/60 p-4 transition-all hover:border-indigo-300 hover:bg-indigo-50/50 hover:shadow-md dark:border-slate-600/50 dark:bg-slate-800/40 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-950/30 sm:flex-row sm:items-center"
+          className="group mt-4 flex w-full flex-col gap-4 rounded-xl border border-slate-200/80 bg-white/60 p-4 transition-all hover:border-indigo-300 hover:bg-indigo-50/50 hover:shadow-md dark:border-slate-600/50 dark:bg-slate-800/40 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-950/30 sm:flex-row sm:items-center"
         >
           {ad.image && (
             <div className="relative h-20 w-full shrink-0 overflow-hidden rounded-lg sm:h-16 sm:w-32">
@@ -46,10 +46,11 @@ export function AdBanner({ ad, metricLabel }: AdBannerProps) {
                 src={ad.image}
                 alt=""
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
                 sizes="(max-width: 640px) 100vw, 128px"
                 unoptimized
               />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
             </div>
           )}
           <div className="min-w-0 flex-1">

@@ -3,6 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { sendClientAccountCreatedEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
+import { z } from "zod";
+
+const convertLeadSchema = z.object({
+  leadId: z.string().min(1),
+  email: z.email(),
+  projectName: z.string().min(1),
+  projectStatus: z.enum(["draft", "in_progress", "review", "completed"]).default("draft"),
+  sendInviteEmail: z.boolean().default(true),
+});
 
 export async function POST(request: Request) {
   try {
@@ -14,36 +23,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = (await request.json()) as {
-      leadId?: string;
-      email?: string;
-      projectName?: string;
-      projectStatus?: string;
-      sendInviteEmail?: boolean;
-    };
-
-    const leadId = body.leadId ?? "";
-    const email = (body.email ?? "").trim().toLowerCase();
-    const projectName = (body.projectName ?? "").trim();
-    const projectStatus = body.projectStatus ?? "draft";
-    const sendInviteEmail = body.sendInviteEmail ?? true;
-
-    if (!leadId || !email || !projectName) {
+    const parseResult = convertLeadSchema.safeParse(await request.json());
+    if (!parseResult.success) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "leadId, email and projectName are required.",
-        },
+        { success: false, message: "Invalid input payload." },
         { status: 400 }
       );
     }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return NextResponse.json(
-        { success: false, message: "Invalid email format." },
-        { status: 400 }
-      );
-    }
+    const { leadId, email, projectName, projectStatus, sendInviteEmail } =
+      parseResult.data;
 
     const lead = await prisma.lead.findUnique({
       where: { id: leadId },
@@ -66,7 +54,7 @@ export async function POST(request: Request) {
     const client = await prisma.client.create({
       data: {
         name: lead.name,
-        email: lead.email,
+        email,
         leadId: lead.id,
       },
     });
@@ -95,7 +83,11 @@ export async function POST(request: Request) {
     });
 
     if (sendInviteEmail) {
-      const baseUrl = process.env.SITE_URL ?? process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000";
+      const baseUrl =
+        process.env.SITE_URL ??
+        (process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : "http://localhost:3000");
       try {
         await sendClientAccountCreatedEmail({
           to: client.email,

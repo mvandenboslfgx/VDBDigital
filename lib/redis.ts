@@ -23,8 +23,19 @@ export function getRedis(): Redis | null {
   try {
     const Redis = require("ioredis") as typeof import("ioredis").default;
     client = new Redis(url, {
-      maxRetriesPerRequest: 3,
-      retryStrategy: (times) => (times < 3 ? 1000 : null),
+      // Fail fast: if redis isn't reachable locally, we must not block requests.
+      connectTimeout: 1500,
+      lazyConnect: true,
+      enableReadyCheck: false,
+      maxRetriesPerRequest: 1,
+      retryStrategy: (times) => (times < 1 ? 200 : null),
+    });
+    client.on("error", () => {
+      // Prevent unhandled 'error' event crashes; fallback to in-memory.
+      client = null;
+    });
+    client.on("end", () => {
+      client = null;
     });
     return client;
   } catch {

@@ -44,17 +44,18 @@ export default function ToolkitSection() {
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mx-auto mt-12 max-w-4xl overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md"
+          className="group mx-auto mt-12 max-w-4xl overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md"
         >
-          <div className="relative -mx-8 -mt-8 aspect-[21/9] w-[calc(100%+4rem)] bg-indigo-50">
+          <div className="relative -mx-8 -mt-8 aspect-[21/9] w-[calc(100%+4rem)] overflow-hidden bg-indigo-50">
             <Image
               src={stockPhotos.tools}
               alt="Digitale tools en workspace"
               fill
               sizes="(max-width: 1024px) 100vw, 896px"
-              className="object-cover"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
               unoptimized
             />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
           </div>
         </motion.div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

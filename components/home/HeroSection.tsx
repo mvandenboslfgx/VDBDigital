@@ -27,7 +27,8 @@ export default function HeroSection() {
     e.preventDefault();
     const trimmed = url.trim();
     if (trimmed) {
-      router.push(`/website-scan${trimmed ? `?url=${encodeURIComponent(trimmed)}` : ""}`);
+      const query = new URLSearchParams({ url: trimmed }).toString();
+      router.push(`/website-scan?${query}`);
     } else {
       router.push("/website-scan");
     }
@@ -120,10 +121,10 @@ export default function HeroSection() {
               width={600}
               height={400}
               sizes="(max-width: 1024px) 0px, 600px"
-              className="-mx-8 -mt-8 h-48 w-[calc(100%+4rem)] object-cover"
+              className="-mx-8 -mt-8 h-48 w-[calc(100%+4rem)] object-cover transition-transform duration-500 hover:scale-105"
               unoptimized
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" aria-hidden />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent" aria-hidden />
           </div>
           <motion.div
             whileHover={{ scale: 1.02, boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.15)" }}

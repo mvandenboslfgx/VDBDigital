@@ -50,17 +50,18 @@ export default function KnowledgeHubSection() {
             >
               <Link
                 href={cat.href}
-                className="block overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm transition hover:shadow-md"
+                className="group block overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm transition hover:shadow-md"
               >
-                <div className="relative -mx-8 -mt-8 aspect-[16/10] w-[calc(100%+4rem)] bg-indigo-50">
+                <div className="relative -mx-8 -mt-8 aspect-[16/10] w-[calc(100%+4rem)] overflow-hidden bg-indigo-50">
                   <Image
                     src={cat.image}
                     alt={cat.alt}
                     fill
                     sizes="(max-width: 768px) 50vw, 33vw"
-                    className="object-cover"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                     unoptimized
                   />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent" />
                 </div>
                 <div className="pt-8">
                   <span className="text-xl font-semibold text-gray-900">{cat.title}</span>

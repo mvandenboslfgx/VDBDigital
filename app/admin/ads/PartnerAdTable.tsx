@@ -32,6 +32,11 @@ export function PartnerAdTable({ ads }: { ads: Ad[] }) {
     }
   };
 
+  const getActionLabel = (adId: string, isActive: boolean): string => {
+    if (toggling === adId) return "…";
+    return isActive ? "Deactiveren" : "Activeren";
+  };
+
   if (ads.length === 0) {
     return (
       <p className="py-8 text-center text-sm text-gray-500">
@@ -58,15 +63,16 @@ export function PartnerAdTable({ ads }: { ads: Ad[] }) {
               <td className="py-3 pr-4">
                 <div className="flex items-center gap-3">
                   {ad.image && (
-                    <div className="relative h-10 w-16 shrink-0 overflow-hidden rounded">
+                    <div className="group relative h-10 w-16 shrink-0 overflow-hidden rounded-md border border-white/10">
                       <Image
                         src={ad.image}
                         alt=""
                         fill
-                        className="object-cover"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
                         sizes="64px"
                         unoptimized
                       />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                     </div>
                   )}
                   <div>
@@ -92,7 +98,7 @@ export function PartnerAdTable({ ads }: { ads: Ad[] }) {
                   disabled={toggling === ad.id}
                   className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-gray-300 transition hover:bg-white/5 disabled:opacity-50"
                 >
-                  {toggling === ad.id ? "…" : ad.active ? "Deactiveren" : "Activeren"}
+                  {getActionLabel(ad.id, ad.active)}
                 </button>
               </td>
             </tr>

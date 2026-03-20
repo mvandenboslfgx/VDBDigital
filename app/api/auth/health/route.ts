@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 import { logger } from "@/lib/logger";
 import { createSecureRoute } from "@/lib/secureRoute";
 
@@ -12,13 +13,20 @@ export const GET = createSecureRoute<undefined>({
   bodyMode: "none",
   logContext: "Auth/Health/GET",
   handler: async ({ request }) => {
+    const safeEquals = (a: string, b: string): boolean => {
+      const aBuf = Buffer.from(a);
+      const bBuf = Buffer.from(b);
+      if (aBuf.length !== bBuf.length) return false;
+      return timingSafeEqual(aBuf, bBuf);
+    };
+
     const secret = process.env.HEALTHCHECK_SECRET?.trim();
     if (secret) {
       const provided =
         request.headers.get("x-health-secret") ??
         request.headers.get("x-healthcheck-secret") ??
         "";
-      if (provided !== secret) {
+      if (!safeEquals(provided, secret)) {
         return NextResponse.json({ ok: false, message: "Forbidden" }, { status: 403, headers: { "Cache-Control": "no-store" } });
       }
     }

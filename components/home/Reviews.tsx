@@ -4,83 +4,37 @@ import { useRef } from "react";
 import { useInView } from "framer-motion";
 import { motion } from "framer-motion";
 
-const REVIEWS = [
+const INSIGHTS = [
   {
-    name: "Lisa van der Berg",
-    company: "Studio Lisa",
-    role: "Eigenaar",
-    text: "Onze website scoort nu veel beter. Duidelijke adviezen en snel resultaat.",
-    stars: 5,
-    logo: null,
+    title: "Snelle eerste scan",
+    text: "Ontvang direct een eerste score voor SEO, performance, UX en conversie.",
+    label: "Realtime analyse",
   },
   {
-    name: "Mark Jansen",
-    company: "Jansen Digital",
-    role: "Marketing",
-    text: "De AI-audit gaf ons precies de punten die we nodig hadden. Top tool.",
-    stars: 5,
-    logo: null,
+    title: "Concrete verbeterpunten",
+    text: "Per onderdeel zie je wat je kunt verbeteren en welke impact dat heeft.",
+    label: "Actiegericht",
   },
   {
-    name: "Sophie de Vries",
-    company: "De Vries Design",
-    role: "Creative director",
-    text: "Eindelijk inzicht in wat er echt toe doet voor conversie. Aanrader.",
-    stars: 5,
-    logo: null,
+    title: "Gemaakt voor teams",
+    text: "Gebruik de uitkomsten voor development, marketing en content in een workflow.",
+    label: "Team-ready",
   },
   {
-    name: "Thomas Bakker",
-    company: "Bakker & Partners",
-    role: "Directeur",
-    text: "Professionele analyse en heldere rapporten. We werken nu structureel met de tips.",
-    stars: 5,
-    logo: null,
-  },
-  {
-    name: "Emma Mulder",
-    company: "Mulder Media",
-    role: "SEO specialist",
-    text: "Snel, betrouwbaar en de resultaten kloppen. Ideaal voor onze klanten.",
-    stars: 5,
-    logo: null,
+    title: "Eerlijk en transparant",
+    text: "Geen verzonnen testimonials: we tonen platforminzichten in plaats van fictieve citaten.",
+    label: "Zonder hype",
   },
 ];
 
-function StarRating({ stars }: { stars: number }) {
+function InsightCard({ title, text, label }: (typeof INSIGHTS)[0]) {
   return (
-    <div className="flex gap-0.5 text-indigo-600" aria-label={`${stars} van 5 sterren`}>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} className={i < stars ? "opacity-100" : "opacity-30"}>
-          ★
-        </span>
-      ))}
-    </div>
-  );
-}
-
-function ReviewCard({
-  name,
-  company,
-  role,
-  text,
-  stars,
-}: (typeof REVIEWS)[0]) {
-  return (
-    <div className="flex w-[320px] shrink-0 flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md">
-      <StarRating stars={stars} />
-      <p className="mt-3 line-clamp-3 text-base text-gray-700">&ldquo;{text}&rdquo;</p>
-      <div className="mt-4 flex items-center gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-600">
-          {name.charAt(0)}
-        </div>
-        <div>
-          <p className="font-medium text-gray-900">{name}</p>
-          <p className="text-xs text-gray-500">
-            {role} · {company}
-          </p>
-        </div>
-      </div>
+    <div className="flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md">
+      <span className="inline-flex w-fit rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
+        {label}
+      </span>
+      <p className="mt-4 text-lg font-semibold text-gray-900">{title}</p>
+      <p className="mt-2 line-clamp-3 text-base text-gray-700">{text}</p>
     </div>
   );
 }
@@ -98,21 +52,21 @@ export default function Reviews() {
         className="section-container text-center"
       >
         <h2 id="reviews-heading" className="text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">
-          Wat klanten zeggen
+          Waarom teams dit gebruiken
         </h2>
         <p className="mx-auto mt-2 max-w-xl text-xl text-gray-500">
-          Ondernemers en marketeers die hun website laten analyseren.
+          Transparante productinzichten in plaats van fictieve klantquotes.
         </p>
       </motion.div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-        className="relative mt-10"
+        className="section-container mt-10"
       >
-        <div className="flex animate-marquee gap-6 overflow-hidden">
-          {[...REVIEWS, ...REVIEWS].map((review, i) => (
-            <ReviewCard key={`${review.name}-${i}`} {...review} />
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {INSIGHTS.map((insight) => (
+            <InsightCard key={insight.title} {...insight} />
           ))}
         </div>
       </motion.div>

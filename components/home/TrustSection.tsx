@@ -49,18 +49,19 @@ export default function TrustSection() {
               variants={item}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ scale: 1.03, boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.15)" }}
-              className="flex w-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md md:min-h-[6rem]"
+              className="group flex w-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md md:min-h-[6rem]"
               style={{ willChange: "transform" }}
             >
-              <div className="relative -mx-8 -mt-8 aspect-[16/10] w-[calc(100%+4rem)] shrink-0 bg-indigo-50">
+              <div className="relative -mx-8 -mt-8 aspect-[16/10] w-[calc(100%+4rem)] shrink-0 overflow-hidden bg-indigo-50">
                 <Image
                   src={card.image}
                   alt={card.alt}
                   fill
                   sizes="(max-width: 768px) 50vw, 25vw"
-                  className="object-cover"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                   unoptimized
                 />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent" />
               </div>
               <div className="flex flex-1 items-center justify-center pt-8">
                 <span className="text-center text-xl font-semibold text-gray-900">

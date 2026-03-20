@@ -4,7 +4,7 @@ import { z } from "zod";
 import { createSecureRoute } from "@/lib/secureRoute";
 import { prisma } from "@/lib/prisma";
 import { getStripe } from "@/lib/stripe";
-import { getBaseUrl } from "@/lib/siteUrl";
+import { getTrustedOrigin } from "@/lib/siteUrl";
 import { trackEvent } from "@/lib/analytics";
 import { withRetry } from "@/lib/retry";
 
@@ -101,8 +101,7 @@ export const POST = createSecureRoute<CheckoutInput, undefined>({
     });
 
     try {
-      const baseUrl = getBaseUrl();
-      const origin = request.headers.get("origin") || baseUrl;
+      const origin = getTrustedOrigin(request.headers.get("origin"));
 
       const session = await withRetry(() =>
         stripe.checkout.sessions.create({

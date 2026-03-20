@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 import { prisma } from "@/lib/prisma";
 import { getOrSet, HEALTH_CACHE_KEY } from "@/lib/cache";
 import { createSecureRoute } from "@/lib/secureRoute";
@@ -25,13 +26,20 @@ export const GET = createSecureRoute<undefined>({
   bodyMode: "none",
   logContext: "Health/GET",
   handler: async ({ request }) => {
+    const safeEquals = (a: string, b: string): boolean => {
+      const aBuf = Buffer.from(a);
+      const bBuf = Buffer.from(b);
+      if (aBuf.length !== bBuf.length) return false;
+      return timingSafeEqual(aBuf, bBuf);
+    };
+
     const secret = process.env.HEALTHCHECK_SECRET?.trim();
     if (secret) {
       const provided =
         request.headers.get("x-health-secret") ??
         request.headers.get("x-healthcheck-secret") ??
         "";
-      if (provided !== secret) {
+      if (!safeEquals(provided, secret)) {
         const body: HealthResponse = {
           status: "degraded",
           database: "error",
@@ -55,8 +63,13 @@ export const GET = createSecureRoute<undefined>({
         let ai: HealthResponse["ai"] = "not_configured";
 
         try {
-          await prisma.$queryRaw`SELECT 1`;
-          database = "ok";
+          // Ensure health endpoint never hangs on a dead/unreachable DB connection.
+          const TIMEOUT_MS = 4000;
+          const ok = await Promise.race([
+            prisma.$queryRaw`SELECT 1`.then(() => true),
+            new Promise<boolean>((resolve) => setTimeout(() => resolve(false), TIMEOUT_MS)),
+          ]);
+          database = ok ? "ok" : "error";
         } catch {
           database = "error";
         }

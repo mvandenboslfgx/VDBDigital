@@ -16,6 +16,20 @@ const ADS_RT_METRICS_TTL_SECONDS = Number(process.env.ADS_RT_METRICS_TTL_SECONDS
 // Fallback idempotency when Redis is down.
 type ConversionOnceEntry = { expiresAtMs: number };
 const conversionOnceMemory = new Map<string, ConversionOnceEntry>();
+type ClickTokenData = {
+  adId: string;
+  campaignId: string | null;
+  clientId: string;
+  issuedAtMs: number;
+  abuseScore?: number;
+};
+
+function isValidMoneyString(value: string): boolean {
+  const [whole, decimals] = value.split(".");
+  if (!whole || !/^\d+$/.test(whole)) return false;
+  if (decimals === undefined) return true;
+  return /^\d{1,2}$/.test(decimals);
+}
 
 const conversionBodySchema = z
   .object({
@@ -26,7 +40,7 @@ const conversionBodySchema = z
       z.number().nonnegative().max(100000),
       z
         .string()
-        .regex(/^\d+(\.\d{1,2})?$/)
+        .refine(isValidMoneyString, "Invalid amount format")
         .transform((s) => s),
     ]),
   })
@@ -51,6 +65,26 @@ function getCookieValue(cookieHeader: string | null, name: string): string | nul
     if (k === name) return v.join("=") ?? null;
   }
   return null;
+}
+
+function parseClickTokenData(raw: string): ClickTokenData | null {
+  try {
+    const parsed = JSON.parse(raw) as ClickTokenData;
+    if (!parsed || typeof parsed !== "object") return null;
+    if (typeof parsed.adId !== "string") return null;
+    if (parsed.campaignId !== null && typeof parsed.campaignId !== "string") return null;
+    if (typeof parsed.clientId !== "string") return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function isTokenBoundToRequest(tokenData: ClickTokenData, clientId: string, adId: string, campaignId?: string | null): boolean {
+  if (tokenData.clientId !== clientId) return false;
+  if (tokenData.adId !== adId) return false;
+  if (campaignId && tokenData.campaignId && campaignId !== tokenData.campaignId) return false;
+  return true;
 }
 
 async function bumpRealtimeMetrics(adId: string, delta: Partial<{ conversions: number; revenueCents: number }>): Promise<void> {
@@ -80,6 +114,22 @@ async function bumpRealtimeMetrics(adId: string, delta: Partial<{ conversions: n
   void redisSet(key, JSON.stringify(next), ADS_RT_METRICS_TTL_SECONDS);
 }
 
+async function claimConversionOnce(onceKey: string): Promise<"new" | "duplicate"> {
+  const incr = await redisIncr(onceKey, ADS_CONVERSION_ONCE_TTL_SECONDS);
+  if (incr === null) {
+    const existing = conversionOnceMemory.get(onceKey);
+    if (existing && existing.expiresAtMs > Date.now()) {
+      return "duplicate";
+    }
+    conversionOnceMemory.set(onceKey, {
+      expiresAtMs: Date.now() + ADS_CONVERSION_ONCE_TTL_SECONDS * 1000,
+    });
+    return "new";
+  }
+  if (incr > 1) return "duplicate";
+  return "new";
+}
+
 export const POST = createSecureRoute<z.infer<typeof conversionBodySchema>, undefined>({
   auth: "required",
   csrf: true,
@@ -102,23 +152,12 @@ export const POST = createSecureRoute<z.infer<typeof conversionBodySchema>, unde
       return NextResponse.json({ ok: false }, { status: 403 });
     }
 
-    let tokenData: {
-      adId: string;
-      campaignId: string | null;
-      clientId: string;
-      issuedAtMs: number;
-      abuseScore?: number;
-    };
-    try {
-      tokenData = JSON.parse(tokenRaw) as typeof tokenData;
-    } catch {
+    const tokenData = parseClickTokenData(tokenRaw);
+    if (!tokenData) {
       return NextResponse.json({ ok: false }, { status: 403 });
     }
 
-    if (!tokenData || tokenData.clientId !== clientId) {
-      return NextResponse.json({ ok: false }, { status: 403 });
-    }
-    if (tokenData.adId !== input.adId) {
+    if (!isTokenBoundToRequest(tokenData, clientId, input.adId, input.campaignId)) {
       return NextResponse.json({ ok: false }, { status: 403 });
     }
 
@@ -139,23 +178,14 @@ export const POST = createSecureRoute<z.infer<typeof conversionBodySchema>, unde
     if (typeof tokenData.abuseScore === "number") {
       if (tokenData.abuseScore >= 5) conversionQuality = 0.2;
       else if (tokenData.abuseScore >= 3) conversionQuality = 0.6;
-      else conversionQuality = 1.0;
-    } else {
-      conversionQuality = 1.0;
     }
 
     const adjustedValueCents = Math.max(1, Math.round(valueCents * conversionQuality));
 
     // Idempotency: only one conversion per click token.
     const onceKey = `${ADS_CONVERSION_ONCE_PREFIX}${clickToken}`;
-    const incr = await redisIncr(onceKey, ADS_CONVERSION_ONCE_TTL_SECONDS);
-    if (incr === null) {
-      const existing = conversionOnceMemory.get(onceKey);
-      if (existing && existing.expiresAtMs > Date.now()) {
-        return NextResponse.json({ ok: true }, { status: 200 });
-      }
-      conversionOnceMemory.set(onceKey, { expiresAtMs: Date.now() + ADS_CONVERSION_ONCE_TTL_SECONDS * 1000 });
-    } else if (incr > 1) {
+    const idempotency = await claimConversionOnce(onceKey);
+    if (idempotency === "duplicate") {
       return NextResponse.json({ ok: true }, { status: 200 });
     }
 

@@ -61,7 +61,7 @@ function RecommendedStackCard({ ad, index }: { ad: RelevantAd; index: number }) 
               src={ad.image}
               alt=""
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
               sizes="40px"
               unoptimized
             />
@@ -70,6 +70,7 @@ function RecommendedStackCard({ ad, index }: { ad: RelevantAd; index: number }) 
               {icon}
             </span>
           )}
+          {ad.image && <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />}
         </div>
         <p className="font-medium text-slate-900 dark:text-white">
           {ad.companyName ?? ad.title}

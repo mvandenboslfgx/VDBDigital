@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { stockPhotos } from "@/lib/stock-photos";
 
 const PRODUCTS = [
-  { name: "Android 14 Smart TV Box 8K", href: "/products/android-14-tv-box", price: "€89,00 excl. btw", image: "/products/tvbox1.jpg" },
+  { name: "Android 14 Smart TV Box 8K", href: "/products/android-14-tv-box", price: "€89,00 excl. btw", image: stockPhotos.productTvBox },
   { name: "Alle producten", href: "/products", price: "Bekijk het aanbod", image: stockPhotos.tools },
 ];
 
@@ -49,7 +49,7 @@ export default function HardwarePreviewSection() {
                 href={product.href}
                 className="group block rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition hover:shadow-md"
               >
-                <div className="flex -mx-8 -mt-8 aspect-video w-[calc(100%+4rem)] items-center justify-center overflow-hidden rounded-t-xl bg-indigo-50">
+                <div className="relative flex -mx-8 -mt-8 aspect-video w-[calc(100%+4rem)] items-center justify-center overflow-hidden rounded-t-xl bg-indigo-50">
                   {product.image ? (
                     <Image
                       src={product.image}
@@ -57,7 +57,7 @@ export default function HardwarePreviewSection() {
                       width={400}
                       height={225}
                       sizes="(max-width: 640px) 100vw, 400px"
-                      className="h-full w-full object-contain"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = "/products/placeholder.svg";
@@ -66,6 +66,7 @@ export default function HardwarePreviewSection() {
                   ) : (
                     <span className="text-sm text-gray-500">Producten bekijken</span>
                   )}
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent" />
                 </div>
                 <h3 className="mt-4 text-xl font-semibold text-gray-900 transition-colors group-hover:text-indigo-600">
                   {product.name}

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { siteUrl } from "@/lib/metadata";
 import { ProductBuyButton } from "./ProductBuyButton";
+import { stockPhotos } from "@/lib/stock-photos";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -85,27 +86,32 @@ export default async function ProductPage({ params }: Props) {
           <div className="space-y-4">
             {images.length > 0 ? (
               images.map((src, i) => (
-                <div key={i} className="relative aspect-square max-w-lg overflow-hidden rounded-2xl bg-slate-100">
-                  {src.startsWith("http") ? (
-                    <img
-                      src={src}
-                      alt={`${product.name} ${i + 1}`}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <Image
-                      src={src}
-                      alt={`${product.name} ${i + 1}`}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                    />
-                  )}
+                <div
+                  key={i}
+                  className="group relative aspect-square max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-slate-100"
+                >
+                  <Image
+                    src={src}
+                    alt={`${product.name} ${i + 1}`}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    unoptimized={src.startsWith("http")}
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent" />
                 </div>
               ))
             ) : (
-              <div className="aspect-square max-w-lg rounded-2xl bg-slate-100 flex items-center justify-center">
-                <span className="text-marketing-textSecondary">Geen afbeelding</span>
+              <div className="group relative aspect-square max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+                <Image
+                  src={stockPhotos.productTvBox}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  unoptimized
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
               </div>
             )}
           </div>

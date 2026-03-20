@@ -7,15 +7,27 @@ import { rateLimitSensitive, getRateLimitKey } from "@/lib/rateLimit";
 import { checkoutPlanSchema, safeParse } from "@/lib/validation";
 import { trackEvent } from "@/lib/analytics";
 import { withRetry } from "@/lib/retry";
-import { getBaseUrl } from "@/lib/siteUrl";
+import { getTrustedOrigin } from "@/lib/siteUrl";
 
 const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 
-const PRICE_IDS: Record<string, string> = {
+const PRICE_IDS = {
   starter: process.env.STRIPE_PRICE_ID_STARTER ?? process.env.STRIPE_PRICE_ID_PRO ?? "",
   growth: process.env.STRIPE_PRICE_ID_GROWTH ?? process.env.STRIPE_PRICE_ID_BUSINESS ?? "",
   agency: process.env.STRIPE_PRICE_ID_AGENCY ?? "",
-};
+} as const;
+
+function resolvePlanKey(plan: "starter" | "growth" | "agency" | "pro" | "business"): "starter" | "growth" | "agency" {
+  if (plan === "pro") return "starter";
+  if (plan === "business") return "growth";
+  return plan;
+}
+
+function resolvePriceId(planKey: "starter" | "growth" | "agency"): string {
+  if (planKey === "starter") return PRICE_IDS.starter;
+  if (planKey === "growth") return PRICE_IDS.growth;
+  return PRICE_IDS.agency;
+}
 
 export async function POST(request: Request) {
   try {
@@ -49,8 +61,8 @@ export async function POST(request: Request) {
       );
     }
     const plan = parsed.data.plan;
-    const planKey = plan === "pro" ? "starter" : plan === "business" ? "growth" : plan;
-    const priceId = PRICE_IDS[planKey] ?? PRICE_IDS.starter;
+    const planKey = resolvePlanKey(plan);
+    const priceId = resolvePriceId(planKey) || PRICE_IDS.starter;
     if (!priceId) {
       return NextResponse.json({ error: "Ongeldig plan of prijs niet geconfigureerd" }, { status: 400 });
     }
@@ -60,8 +72,7 @@ export async function POST(request: Request) {
       select: { stripeCustomerId: true },
     });
 
-    const baseUrl = getBaseUrl();
-    const origin = request.headers.get("origin") || baseUrl;
+    const origin = getTrustedOrigin(request.headers.get("origin"));
 
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       mode: "subscription",

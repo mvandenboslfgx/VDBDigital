@@ -4,13 +4,22 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { handleApiError } from "@/lib/apiSafeResponse";
 import { rateLimitSensitive, getRateLimitKey } from "@/lib/rateLimit";
-import { getBaseUrl } from "@/lib/siteUrl";
+import { getBaseUrl, getTrustedOrigin } from "@/lib/siteUrl";
 import { z } from "zod";
 import { getStripe } from "@/lib/stripe";
 import { trackEvent } from "@/lib/analytics";
 import { withRetry } from "@/lib/retry";
 
 const bodySchema = z.object({ productId: z.string().min(1) });
+
+function resolveProductImageUrl(images: unknown, baseUrl: string): string | undefined {
+  if (!Array.isArray(images) || images.length === 0) return undefined;
+  const firstImage = images[0];
+  if (typeof firstImage !== "string") return undefined;
+  if (firstImage.startsWith("http")) return firstImage;
+  const normalizedPath = firstImage.startsWith("/") ? firstImage : `/${firstImage}`;
+  return `${baseUrl}${normalizedPath}`;
+}
 
 /**
  * POST /api/stripe/product-checkout
@@ -54,15 +63,9 @@ export async function POST(request: Request) {
     }
 
     const baseUrl = getBaseUrl();
-    const origin = request.headers.get("origin") || baseUrl;
+    const origin = getTrustedOrigin(request.headers.get("origin"));
 
-    const images: string[] = Array.isArray(product.images) ? (product.images as string[]) : [];
-    const imageUrl =
-      images.length > 0 && typeof images[0] === "string"
-        ? images[0].startsWith("http")
-          ? images[0]
-          : `${baseUrl}${images[0].startsWith("/") ? "" : "/"}${images[0]}`
-        : undefined;
+    const imageUrl = resolveProductImageUrl(product.images, baseUrl);
 
     const unitAmount = Math.round(product.price * 100);
     const draftOrder = await prisma.productOrder.create({

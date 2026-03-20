@@ -37,10 +37,12 @@ In het **Vercel Dashboard** → jouw project → **Settings** → **Environment 
 | `SUPABASE_SERVICE_ROLE_KEY` | ✅ |
 | `STRIPE_SECRET_KEY` | ✅ |
 | `STRIPE_WEBHOOK_SECRET` | ✅ |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ✅ |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Optioneel* |
 | `OPENAI_API_KEY` | ✅ |
 | `JWT_SECRET` | ✅ |
 | `SITE_URL` | ✅ (bijv. `https://jouw-project.vercel.app`) |
+
+`*` Deze app gebruikt server-side Stripe Checkout (`/api/stripe/create-checkout-session`), dus de publishable key is alleen nodig als je later client-side Stripe Elements toevoegt.
 
 Volledige lijst: zie **docs/DEPLOY.md** sectie 6b.
 

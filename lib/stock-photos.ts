@@ -1,37 +1,44 @@
 /**
- * Stock photo URLs (Unsplash). Free to use with optional attribution.
- * Format: w=width, q=quality for responsive loading.
+ * Stock photo URLs (Picsum). Stable direct JPG endpoints.
  */
-const U = (id: string, w = 800) =>
-  `https://images.unsplash.com/photo-${id}?w=${w}&q=80`;
+const P = (id: number, w = 800, h = 500) =>
+  `https://picsum.photos/id/${id}/${w}/${h}.jpg`;
 
 export const stockPhotos = {
   /** Hero: laptop/workspace, digital */
-  hero: U("1498050108023-c5249f4df085", 1200),
+  hero: P(180, 1200, 750),
   /** Webshop / e-commerce */
-  webshop: U("1556742049-0cfed4f6a45d", 600),
+  webshop: P(1060, 900, 600),
   /** Marketing / team collaboration */
-  marketing: U("1522071820081-009f0129c71c", 600),
+  marketing: P(1027, 900, 600),
   /** SaaS / analytics dashboard */
-  saas: U("1460925895917-afdab827c52f", 600),
+  saas: P(1048, 900, 600),
   /** Professional services */
-  dienstverlener: U("1573496359142-b8d87734a5a2", 600),
+  dienstverlener: P(1005, 900, 600),
   /** Step 1: website / browser */
-  stepWebsite: U("1499955089372-7eb0a9b60a1f", 500),
+  stepWebsite: P(366, 700, 500),
   /** Step 2: AI / data */
-  stepAI: U("1620712943543-9f671e7c8f1e", 500),
+  stepAI: P(119, 700, 500),
   /** Step 3: report / dashboard */
-  stepReport: U("1553877522-43200d972916", 500),
+  stepReport: P(883, 700, 500),
   /** SEO */
-  seo: U("1486312338219-ce628e0a6c5e", 500),
+  seo: P(48, 700, 500),
   /** Snelheid / performance */
-  speed: U("1553877522-43200d972916", 500),
+  speed: P(160, 700, 500),
   /** Conversie */
-  conversion: U("1552664730-d307ca844321", 500),
+  conversion: P(201, 700, 500),
   /** AI marketing */
-  aiMarketing: U("1620712943543-9f671e7c8f1e", 500),
+  aiMarketing: P(180, 700, 500),
   /** Strategie */
-  strategy: U("1454165804606-c063d9e3f1a2", 500),
+  strategy: P(944, 700, 500),
   /** Tools / workspace */
-  tools: U("1504384308090-c894fdcc538d", 800),
+  tools: P(903, 1100, 700),
+  /** Product: TV/streaming device */
+  productTvBox: P(96, 1000, 700),
+  /** Product: compact streaming setup */
+  productStreaming: P(292, 1000, 700),
+  /** Product: accessories / cables */
+  productAccessories: P(1, 1000, 700),
+  /** Case study visual */
+  caseStudyPreview: P(1048, 1200, 750),
 } as const;

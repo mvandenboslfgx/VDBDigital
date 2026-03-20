@@ -15,3 +15,22 @@ export function getBaseUrl(): string {
   }
   return "http://localhost:3000";
 }
+
+/**
+ * Returns a safe origin for redirect URLs.
+ * Accept the request Origin only when protocol+host match our configured base URL.
+ */
+export function getTrustedOrigin(originHeader: string | null): string {
+  const baseUrl = getBaseUrl();
+  if (!originHeader) return baseUrl;
+
+  try {
+    const origin = new URL(originHeader);
+    const base = new URL(baseUrl);
+    if (origin.protocol !== base.protocol) return baseUrl;
+    if (origin.host !== base.host) return baseUrl;
+    return origin.origin;
+  } catch {
+    return baseUrl;
+  }
+}

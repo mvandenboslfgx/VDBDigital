@@ -1,11 +1,32 @@
 import SiteShell from "@/components/SiteShell";
 import Link from "next/link";
+import Image from "next/image";
 import { pageMetadata } from "@/lib/metadata";
+import { stockPhotos } from "@/lib/stock-photos";
 
 const PRODUCTS = [
-  { slug: "smart-tv-box-pro", name: "Smart TV Box Pro", description: "Krachtige streamingbox met 4K HDR en alle apps.", price: 129, image: "/placeholder-product.jpg" },
-  { slug: "streaming-box-mini", name: "Streaming Box Mini", description: "Compacte box voor streaming in HD.", price: 79, image: "/placeholder-product.jpg" },
-  { slug: "accessoires", name: "Accessoires", description: "Afstandsbedieningen, kabels en houders.", price: null, image: "/placeholder-product.jpg" },
+  {
+    slug: "smart-tv-box-pro",
+    name: "Smart TV Box Pro",
+    description:
+      "Krachtige streamingbox met 4K HDR en alle apps.",
+    price: 129,
+    image: stockPhotos.productTvBox,
+  },
+  {
+    slug: "streaming-box-mini",
+    name: "Streaming Box Mini",
+    description: "Compacte box voor streaming in HD.",
+    price: 79,
+    image: stockPhotos.productStreaming,
+  },
+  {
+    slug: "accessoires",
+    name: "Accessoires",
+    description: "Afstandsbedieningen, kabels en houders.",
+    price: null,
+    image: stockPhotos.productAccessories,
+  },
 ];
 
 export const metadata = pageMetadata({
@@ -31,10 +52,17 @@ export default function ApparatenPage() {
             <Link
               key={product.slug}
               href={`/apparaten/${product.slug}`}
-              className="group rounded-2xl border border-slate-200 bg-surface shadow-sm transition-all hover:border-gold/30 hover:shadow-md"
+              className="group overflow-hidden rounded-2xl border border-slate-200 bg-surface shadow-sm transition-all hover:border-gold/30 hover:shadow-md"
             >
-              <div className="aspect-square rounded-t-2xl bg-slate-100 flex items-center justify-center">
-                <span className="text-sm text-marketing-textSecondary">Productafbeelding</span>
+              <div className="relative aspect-square overflow-hidden rounded-t-2xl bg-slate-100">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent" />
               </div>
               <div className="p-8">
                 <h2 className="text-xl font-semibold text-marketing-text group-hover:text-gold transition-colors">
