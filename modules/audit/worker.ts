@@ -34,7 +34,8 @@ export function startAuditWorker(): Worker<AuditJobData, AuditJobResult> {
   );
 
   worker.on("completed", (job, result) => {
-    console.log(`[AuditWorker] Job ${job.id} completed, reportId=${result.reportId}`);
+    const ref = result.websiteAuditId ?? result.reportId ?? "?";
+    console.log(`[AuditWorker] Job ${job.id} completed, ref=${ref}`);
   });
 
   worker.on("failed", (job, err) => {

@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
+import type { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { handleApiError } from "@/lib/apiSafeResponse";
 import { rateLimitSensitive, getRateLimitKey } from "@/lib/rateLimit";
 import { getBaseUrl } from "@/lib/siteUrl";
-import Stripe from "stripe";
 import { z } from "zod";
-
-const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
+import { getStripe } from "@/lib/stripe";
+import { trackEvent } from "@/lib/analytics";
+import { withRetry } from "@/lib/retry";
 
 const bodySchema = z.object({ productId: z.string().min(1) });
 
@@ -18,6 +19,7 @@ const bodySchema = z.object({ productId: z.string().min(1) });
  */
 export async function POST(request: Request) {
   try {
+    const stripe = getStripe();
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
@@ -62,33 +64,76 @@ export async function POST(request: Request) {
           : `${baseUrl}${images[0].startsWith("/") ? "" : "/"}${images[0]}`
         : undefined;
 
-    const sessionParams: Stripe.Checkout.SessionCreateParams = {
-      mode: "payment",
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price_data: {
-            currency: "eur",
-            unit_amount: Math.round(product.price * 100),
-            product_data: {
-              name: product.name,
-              description: product.shortDescription ?? product.description.slice(0, 160),
-              images: imageUrl ? [imageUrl] : undefined,
-            },
-          },
-          quantity: 1,
-        },
-      ],
-      success_url: `${origin}/products?checkout=success`,
-      cancel_url: `${origin}/products/${product.slug}`,
-      metadata: {
+    const unitAmount = Math.round(product.price * 100);
+    const draftOrder = await prisma.productOrder.create({
+      data: {
         userId: user.id,
-        productId: product.id,
-        type: "product",
+        email: user.email,
+        currency: "eur",
+        totalCents: unitAmount,
+        status: "pending",
+        lineItems: [
+          {
+            productId: product.id,
+            name: product.name,
+            slug: product.slug,
+            unitAmount,
+            quantity: 1,
+          },
+        ] as Prisma.InputJsonValue,
       },
-    };
+      select: { id: true },
+    });
 
-    const session = await stripe.checkout.sessions.create(sessionParams);
+    let session: Awaited<ReturnType<typeof stripe.checkout.sessions.create>>;
+    try {
+      session = await withRetry(() =>
+        stripe.checkout.sessions.create({
+          mode: "payment",
+          payment_method_types: ["card"],
+          line_items: [
+            {
+              price_data: {
+                currency: "eur",
+                unit_amount: unitAmount,
+                product_data: {
+                  name: product.name,
+                  description: product.shortDescription ?? product.description.slice(0, 160),
+                  images: imageUrl ? [imageUrl] : undefined,
+                },
+              },
+              quantity: 1,
+            },
+          ],
+          success_url: `${origin}/products?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${origin}/products/${product.slug}`,
+          customer_email: user.email,
+          metadata: {
+            checkoutType: "product_order",
+            productOrderId: draftOrder.id,
+            userId: user.id,
+            productId: product.id,
+            type: "product",
+          },
+        })
+      );
+    } catch {
+      await prisma.productOrder.update({
+        where: { id: draftOrder.id },
+        data: { status: "failed", failureReason: "stripe_session_create_failed" },
+      }).catch(() => undefined);
+      return NextResponse.json({ error: "Checkout sessie kon niet worden aangemaakt." }, { status: 500 });
+    }
+    await prisma.productOrder.update({
+      where: { id: draftOrder.id },
+      data: { stripeCheckoutSessionId: session.id, failureReason: null },
+    });
+    trackEvent("checkout_started", {
+      type: "product_single",
+      orderId: draftOrder.id.slice(0, 8),
+      userId: user.id.slice(0, 8),
+      productId: product.id,
+    });
     return NextResponse.json({ url: session.url, sessionId: session.id });
   } catch (e) {
     return handleApiError(e, "StripeProductCheckout");

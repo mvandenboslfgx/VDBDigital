@@ -9,11 +9,25 @@ import { captureAuditLead } from "@/modules/leads/auditLead";
 import { sendAuditReportEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
 import type { AuditJobData, AuditJobResult } from "./queue";
+import { processWebsiteProjectAuditJob } from "./process-website-audit";
 
 export async function processAuditJob(
   job: Job<AuditJobData, AuditJobResult>
 ): Promise<AuditJobResult> {
-  const { url, email, name, company, userId } = job.data;
+  const data = job.data;
+  if (data.websiteAuditId && data.websiteProjectId && data.userId) {
+    return processWebsiteProjectAuditJob({
+      url: data.url,
+      userId: data.userId,
+      websiteProjectId: data.websiteProjectId,
+      websiteAuditId: data.websiteAuditId,
+    });
+  }
+
+  const { url, email, name, company, userId } = data;
+  if (!email?.trim()) {
+    throw new Error("Email is required for lead audit jobs");
+  }
 
   const result = await runFullWebsiteAudit(url, true);
 
@@ -29,7 +43,7 @@ export async function processAuditJob(
   );
 
   sendAuditReportEmail({
-    to: email,
+    to: email!,
     website: result.signals.url,
     summary: result.summary,
     seoScore: result.scores.seoScore,

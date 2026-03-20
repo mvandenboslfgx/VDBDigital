@@ -29,6 +29,19 @@ enum WebsiteStatus {
   live
 }
 
+enum WebsiteAuditStatus {
+  pending
+  completed
+  failed
+}
+
+enum WebsiteFixStatus {
+  pending
+  processing
+  preview_ready
+  failed
+}
+
 enum UserRole {
   lead
   customer
@@ -59,6 +72,14 @@ enum CalculatorType {
   freelancerRate
   discountImpact
   financeCheck
+}
+
+enum ProductOrderStatus {
+  pending
+  paid
+  failed
+  refunded
+  cancelled
 }
 
 model Lead {
@@ -219,6 +240,7 @@ model User {
   leadScores            LeadScore[]
   auditHistories        AuditHistory[]
   usageEvents           UsageEvent[]
+  productOrders         ProductOrder[]
   agencyBranding        AgencyBranding?
   ownedTeams            Team[]
   teamMemberships       TeamMember[]
@@ -226,6 +248,8 @@ model User {
 
   @@index([planId])
   @@index([role])
+  @@index([stripeSubscriptionId])
+  @@index([createdAt])
 }
 
 model AgencyBranding {
@@ -301,9 +325,57 @@ model WebsiteProject {
   domain          String
   createdAt       DateTime       @default(now())
   auditHistories  AuditHistory[]
+  websiteAudits   WebsiteAudit[]
 
   @@unique([userId, domain])
   @@index([userId])
+}
+
+model WebsiteAudit {
+  id               String             @id @default(uuid())
+  websiteProjectId String
+  websiteProject   WebsiteProject     @relation(fields: [websiteProjectId], references: [id], onDelete: Cascade)
+  url              String
+  status           WebsiteAuditStatus @default(pending)
+  result           Json?
+  errorMessage     String?            @db.Text
+  auditHistoryId   String?            @unique
+  auditHistory     AuditHistory?      @relation(fields: [auditHistoryId], references: [id], onDelete: SetNull)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  websiteFixes     WebsiteFix[]
+
+  @@index([websiteProjectId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model WebsiteFix {
+  id             String           @id @default(uuid())
+  websiteAuditId String
+  websiteAudit   WebsiteAudit     @relation(fields: [websiteAuditId], references: [id], onDelete: Cascade)
+  sourceIssueId  String
+  kind           String           @default("meta_h1_v1")
+  status         WebsiteFixStatus @default(pending)
+  payload        Json
+  errorMessage   String?          @db.Text
+  /** User explicitly approved the preview (v0: decision only; no live CMS apply). */
+  approved       Boolean          @default(false)
+  approvedAt     DateTime?
+  /**
+   * Apply v1: structured export / “apply” stap voltooid (geen live CMS-mutatie in v1).
+   * `applied` = gebruiker heeft export/trail afgerond; details in `applyResult`.
+   */
+  applied        Boolean          @default(false)
+  appliedAt      DateTime?
+  applyResult    Json?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([websiteAuditId])
+  @@index([websiteAuditId, sourceIssueId])
+  @@index([approved])
+  @@index([applied])
 }
 
 model AuditHistory {
@@ -321,6 +393,7 @@ model AuditHistory {
   improvements      Json?          @default("[]")
   auditReportId     String?        @unique
   createdAt         DateTime       @default(now())
+  websiteAudit      WebsiteAudit?
 
   @@index([userId])
   @@index([websiteProjectId])
@@ -533,11 +606,25 @@ model AdCampaign {
   totalBudget Float       // total budget (e.g. euros)
   spent       Float       @default(0)
   cpc         Float       // cost per click
+  bidCpc      Float       @default(1.0)
   active      Boolean     @default(true)
   createdAt   DateTime   @default(now())
   partnerAds  PartnerAd[]
 
   @@index([active])
+}
+
+model AdMetricsDaily {
+  id           String   @id @default(cuid())
+  adId         String
+  date         DateTime
+  impressions  Int      @default(0)
+  clicks       Int      @default(0)
+  conversions  Int      @default(0)
+  revenueCents Int      @default(0)
+
+  @@unique([adId, date])
+  @@index([adId, date])
 }
 
 model PartnerAd {
@@ -653,4 +740,25 @@ model Product {
 
   @@index([slug])
   @@index([category])
+}
+
+model ProductOrder {
+  id                     String            @id @default(cuid())
+  userId                 String?
+  user                   User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email                  String?
+  currency               String            @default("eur")
+  totalCents             Int
+  status                 ProductOrderStatus @default(pending)
+  failureReason          String?
+  stripeCheckoutSessionId String?          @unique
+  stripePaymentIntentId  String?
+  lineItems              Json              @default("[]")
+  metadata               Json?
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
 }

@@ -8,15 +8,20 @@ const QUEUE_NAME = "website-audit";
 
 export interface AuditJobData {
   url: string;
-  email: string;
+  /** Required for lead capture path; omitted for dashboard WebsiteProject audits */
+  email?: string;
   name?: string;
   company?: string;
   userId?: string;
+  /** When set with websiteAuditId, worker runs dashboard audit (no Lead / AuditReport). */
+  websiteProjectId?: string;
+  websiteAuditId?: string;
 }
 
 export interface AuditJobResult {
-  reportId: string;
-  leadId: string;
+  reportId?: string;
+  leadId?: string;
+  websiteAuditId?: string;
 }
 
 let queue: Queue<AuditJobData, AuditJobResult> | null = null;
@@ -48,7 +53,7 @@ export function getAuditQueue(): Queue<AuditJobData, AuditJobResult> | null {
       connection,
       defaultJobOptions: {
         removeOnComplete: { count: 1000 },
-        attempts: 2,
+        attempts: 3,
         backoff: { type: "exponential", delay: 5000 },
       },
     });
@@ -65,7 +70,15 @@ export async function addAuditJob(data: AuditJobData): Promise<string | null> {
   const q = getAuditQueue();
   if (!q) return null;
   try {
-    const job = await q.add("audit", data);
+    const job = await q.add(
+      "audit",
+      data,
+      data.websiteAuditId
+        ? {
+            jobId: `website-audit-${data.websiteAuditId}`, // dedupe duplicate add(); retries = attempts/backoff
+          }
+        : undefined
+    );
     return typeof job.id === "string" ? job.id : String(job.id ?? "");
   } catch {
     return null;
