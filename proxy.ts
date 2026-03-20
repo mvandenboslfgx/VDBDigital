@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isAdminPath, isOwnerPath } from "@/lib/permissions";
 
-const SAFE_NEXT = /^\/(?!\/)[\w\-\/.]*$/;
+const SAFE_NEXT = new RegExp("^/(?!/)[\\w\\-/.]*$");
 const VALID_LOCALES = ["nl", "en", "de"] as const;
 type Locale = (typeof VALID_LOCALES)[number];
 
@@ -45,17 +45,36 @@ async function getRoleFromApi(request: NextRequest): Promise<string | null> {
 
 const CANONICAL_HOST = "www.vdbdigital.nl";
 
+function ensureRequestId(request: NextRequest): string {
+  const h = request.headers.get("x-request-id");
+  if (h && h.trim().length > 0) return h.trim().slice(0, 200);
+  const c = globalThis.crypto as Crypto | undefined;
+  const id =
+    c && "randomUUID" in c
+      ? (c as unknown as { randomUUID: () => string }).randomUUID()
+      : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  request.headers.set("x-request-id", id);
+  return id;
+}
+
+function withRequestId(response: NextResponse, requestId: string): NextResponse {
+  response.headers.set("x-request-id", requestId);
+  return response;
+}
+
 export async function proxy(request: NextRequest) {
+  const requestId = ensureRequestId(request);
+
   const host = request.nextUrl.hostname.toLowerCase();
   if (host === "vdbdigital.nl") {
     const canonical = new URL(request.nextUrl.pathname + request.nextUrl.search, `https://${CANONICAL_HOST}`);
-    return NextResponse.redirect(canonical, 301);
+    return withRequestId(NextResponse.redirect(canonical, 301), requestId);
   }
 
   let response = NextResponse.next({ request });
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return response;
+  if (!url || !key) return withRequestId(response, requestId);
 
   const supabase = createServerClient(url, key, {
     cookies: {
@@ -78,7 +97,7 @@ export async function proxy(request: NextRequest) {
     const nextParam = request.nextUrl.searchParams.get("next");
     const allowed = safeNext(nextParam ?? path);
     if (allowed) login.searchParams.set("next", allowed);
-    return NextResponse.redirect(login);
+    return withRequestId(NextResponse.redirect(login), requestId);
   }
 
   if (user && isAdminPath(path)) {
@@ -86,11 +105,11 @@ export async function proxy(request: NextRequest) {
     // Owner-only routes: only owner may access
     if (isOwnerPath(path)) {
       if (role !== "owner") {
-        return NextResponse.redirect(new URL("/dashboard", request.url));
+        return withRequestId(NextResponse.redirect(new URL("/dashboard", request.url)), requestId);
       }
     } else if (role !== "admin" && role !== "owner") {
       // Other admin routes: admin or owner may access
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return withRequestId(NextResponse.redirect(new URL("/dashboard", request.url)), requestId);
     }
   }
 
@@ -114,7 +133,7 @@ export async function proxy(request: NextRequest) {
     response.headers.set("Cache-Control", "public, s-maxage=1800, stale-while-revalidate=86400");
   }
 
-  return response;
+  return withRequestId(response, requestId);
 }
 
 export const config = {

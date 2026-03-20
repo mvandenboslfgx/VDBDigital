@@ -3,7 +3,27 @@
  * Use for: AI tools, auth endpoints, public/sensitive APIs.
  * Keys include IP and optionally userId. Logs triggers for security.
  */
+import { createHash } from "crypto";
 import { logger } from "@/lib/logger";
+
+function isRedisUrlConfigured(): boolean {
+  return typeof process !== "undefined" && !!process.env.REDIS_URL?.trim();
+}
+
+let rateLimitDegradedWarned = false;
+
+function warnRateLimitDegradedOnce(): void {
+  if (isRedisUrlConfigured() || rateLimitDegradedWarned) return;
+  rateLimitDegradedWarned = true;
+  console.warn("[Security] Running in degraded rate limit mode (REDIS_URL not set)");
+}
+
+/** When Redis is absent, per-instance memory limits are weak; cap max requests sharply. */
+function capWhenNoRedis(max: number, strict: boolean): number {
+  if (isRedisUrlConfigured()) return max;
+  warnRateLimitDegradedOnce();
+  return Math.min(max, strict ? 3 : 8);
+}
 
 const WINDOW_MS = 60 * 1000;
 const HOUR_MS = 60 * 60 * 1000;
@@ -15,6 +35,7 @@ export const AUTH_MAX_PER_MINUTE = 10;
 export const AI_MAX_PER_MINUTE = 20;
 export const REGISTRATION_MAX_PER_MINUTE = 5;
 export const SENSITIVE_ENDPOINT_MAX = 20;
+export const ADMIN_MAX_PER_MINUTE = 60;
 
 /** Entry for a rate limit window. */
 export interface RateLimitEntry {
@@ -105,19 +126,23 @@ function rateLimitInternal(
 }
 
 export function rateLimit(key: string): { ok: boolean; remaining: number } {
-  return rateLimitInternal(key, MAX_REQUESTS_GENERAL, "general");
+  return rateLimitInternal(key, capWhenNoRedis(MAX_REQUESTS_GENERAL, false), "general");
 }
 
 export function rateLimitAuth(key: string): { ok: boolean; remaining: number } {
-  return rateLimitInternal(key, AUTH_MAX_PER_MINUTE, "auth");
+  return rateLimitInternal(key, capWhenNoRedis(AUTH_MAX_PER_MINUTE, true), "auth");
 }
 
 export function rateLimitRegistration(key: string): { ok: boolean; remaining: number } {
-  return rateLimitInternal(key, REGISTRATION_MAX_PER_MINUTE, "registration");
+  return rateLimitInternal(key, capWhenNoRedis(REGISTRATION_MAX_PER_MINUTE, true), "registration");
 }
 
 export function rateLimitSensitive(key: string): { ok: boolean; remaining: number } {
-  return rateLimitInternal(key, SENSITIVE_ENDPOINT_MAX, "sensitive");
+  return rateLimitInternal(key, capWhenNoRedis(SENSITIVE_ENDPOINT_MAX, true), "sensitive");
+}
+
+export function rateLimitAdmin(key: string): { ok: boolean; remaining: number } {
+  return rateLimitInternal(key, capWhenNoRedis(ADMIN_MAX_PER_MINUTE, true), "admin");
 }
 
 export const AUDIT_MAX_PER_MINUTE = 10;
@@ -151,16 +176,21 @@ function rateLimitWithWindow(
 }
 
 export function rateLimitAudit(key: string): { ok: boolean; remaining: number } {
-  return rateLimitInternal(key, AUDIT_MAX_PER_MINUTE, "audit");
+  return rateLimitInternal(key, capWhenNoRedis(AUDIT_MAX_PER_MINUTE, true), "audit");
 }
 
 /** 10 scans per hour per key (use getClientKey(request) for IP). */
 export function rateLimitAuditPerHour(key: string): { ok: boolean; remaining: number } {
-  return rateLimitWithWindow(key, AUDIT_MAX_PER_HOUR, HOUR_MS, "audit-hour");
+  return rateLimitWithWindow(
+    key,
+    capWhenNoRedis(AUDIT_MAX_PER_HOUR, true),
+    HOUR_MS,
+    "audit-hour"
+  );
 }
 
 export function rateLimitAi(key: string): { ok: boolean; remaining: number } {
-  return rateLimitInternal(key, AI_MAX_PER_MINUTE, "ai");
+  return rateLimitInternal(key, capWhenNoRedis(AI_MAX_PER_MINUTE, true), "ai");
 }
 
 export function getClientKey(request: Request): string {
@@ -176,6 +206,29 @@ export function getClientKey(request: Request): string {
 export function getRateLimitKey(request: Request, userId?: string | null): string {
   const ip = getClientKey(request);
   return userId ? `${ip}:${userId}` : ip;
+}
+
+/**
+ * Stronger lockout key for authentication endpoints.
+ * Uses IP + user-agent fingerprint (hashed) to reduce shared-IP abuse.
+ */
+export function getAuthLockoutKey(request: Request): string {
+  const ip = getClientKey(request);
+  const ua = request.headers.get("user-agent") ?? "";
+  const fingerprint = createHash("sha256").update(`${ip}|${ua}`).digest("hex").slice(0, 16);
+  return `${ip}:${fingerprint}`;
+}
+
+/**
+ * Request fingerprint for dedupe / abuse keys.
+ * Includes IP + user-agent, hashed to make keys resistant to raw string leakage.
+ */
+export function getRequestFingerprintKey(request: Request): string {
+  const ip = getClientKey(request);
+  const ua = request.headers.get("user-agent") ?? "";
+  const accept = request.headers.get("accept") ?? "";
+  const lang = request.headers.get("accept-language") ?? "";
+  return createHash("sha256").update(`${ip}|${ua}|${accept}|${lang}`).digest("hex").slice(0, 24);
 }
 
 /** Failed login tracking: after 5 failures from IP, lock out for 15 min. */

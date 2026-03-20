@@ -25,4 +25,6 @@ pnpm-lock.yaml
 yarn.lock
 # Vercel
 .vercel
+# Export for external review (optional, can be large)
+PROJECT_EXPORT_FOR_REVIEW.txt
 

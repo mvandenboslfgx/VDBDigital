@@ -2,6 +2,9 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "./prisma";
 import { logger } from "./logger";
 import { recordUsageEvent } from "./usage-events";
+import { getOwnerEmails } from "./ownerEmails";
+
+export { getOwnerEmails } from "./ownerEmails";
 
 export type UserRoleName = "lead" | "customer" | "pro" | "admin" | "owner";
 
@@ -20,28 +23,6 @@ function isValidRole(value: string): value is UserRoleName {
 
 function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
-}
-
-/** Default owner emails when OWNER_EMAILS env is not set (must match lib/permissions.ts OWNER_EMAILS). */
-const DEFAULT_OWNER_EMAILS = [
-  "info@vdbdigital.nl",
-  "matthijsvandenbos8@gmail.com",
-];
-
-/**
- * Read OWNER_EMAILS: env (comma-separated) overrides hardcoded list.
- * Alleen server-side; waarde staat uitsluitend in .env (nooit in code of client).
- */
-export function getOwnerEmails(): string[] {
-  const raw = process.env.OWNER_EMAILS;
-  if (raw && typeof raw === "string") {
-    const fromEnv = raw
-      .split(",")
-      .map((e) => e.trim().toLowerCase())
-      .filter(Boolean);
-    if (fromEnv.length > 0) return fromEnv;
-  }
-  return [...DEFAULT_OWNER_EMAILS];
 }
 
 /**
@@ -122,7 +103,9 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
       }
       try {
         await recordUsageEvent("signup", user.id);
-      } catch (_) {}
+      } catch {
+        // Non-blocking: usage tracking failures should not break auth.
+      }
       const { runInBackground } = await import("@/lib/runInBackground");
       const { auditUserSignup } = await import("@/lib/auditLog");
       const newUserId = user.id;

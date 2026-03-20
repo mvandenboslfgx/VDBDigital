@@ -6,7 +6,7 @@
  */
 const required = [
   "DATABASE_URL",
-  "DIRECT_URL",
+  // DIRECT_URL is strongly recommended for migrations; optional for app runtime.
   "NEXT_PUBLIC_SUPABASE_URL",
   "NEXT_PUBLIC_SUPABASE_ANON_KEY",
   "STRIPE_SECRET_KEY",
@@ -21,6 +21,9 @@ if (!isProd) {
   process.exit(0);
 }
 const missing = required.filter((k) => !process.env[k]?.trim());
+if (!process.env.REDIS_URL?.trim()) {
+  missing.push("REDIS_URL");
+}
 if (missing.length) {
   console.error("[validate-env] Missing required env in production:", missing.join(", "));
   process.exit(1);

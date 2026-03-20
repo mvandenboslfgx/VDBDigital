@@ -67,6 +67,121 @@ export const seoAuditBodySchema = z.object({
   url: urlSchema,
 });
 
+/** Auth/register-preference API body. */
+export const registrationPreferenceBodySchema = z
+  .object({
+    email: emailSchema,
+    newsletterOptIn: z.boolean().optional().default(false),
+    // Honeypot/anti-bot: if provided, endpoint responds success without storing.
+    website: z.string().max(500).optional().default(""),
+  })
+  .strict();
+
+/** Newsletter subscribe API body. */
+export const newsletterSubscribeBodySchema = z
+  .object({
+    email: emailSchema,
+    source: z.string().max(50).optional().default("website"),
+  })
+  .strict();
+
+/** Admin/create-invoice API body. */
+export const adminCreateInvoiceBodySchema = z
+  .object({
+    clientId: z.string().min(1).max(64),
+    amount: z.coerce.number().positive(),
+    dueDate: z.string().datetime().optional().nullable(),
+    description: z.string().max(1000).optional().nullable(),
+  })
+  .strict();
+
+/** Public review submission API body (supports JSON and HTML form). */
+export const reviewSubmitBodySchema = z
+  .object({
+    name: z.string().max(80).optional().default(""),
+    rating: z.coerce.number().int().min(1).max(5).optional(),
+    content: z.string().max(2000).optional().default(""),
+    botField: z.string().max(100).optional().default(""),
+    token: z.string().max(128).optional().default(""),
+  })
+  .strict();
+
+const PRODUCT_UPLOAD_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"] as const;
+const PRODUCT_UPLOAD_MAX_SIZE_BYTES = 5 * 1024 * 1024;
+
+/** Admin upload product image API body (multipart/form-data). */
+export const adminProductUploadBodySchema = z
+  .object({
+    file: z.any().refine((f) => {
+      if (typeof File === "undefined") return false;
+      return f instanceof File;
+    }, "Missing or invalid file")
+      .refine((f) => PRODUCT_UPLOAD_ALLOWED_TYPES.includes((f as File).type as (typeof PRODUCT_UPLOAD_ALLOWED_TYPES)[number]), "Invalid file type")
+      .refine((f) => Number((f as File).size) <= PRODUCT_UPLOAD_MAX_SIZE_BYTES, "File too large"),
+  })
+  .strict();
+
+/** Public preview request API body. */
+export const previewRequestBodySchema = z
+  .object({
+    businessName: z.string().max(120).optional().default(""),
+    industry: z.string().max(120).optional().default(""),
+    colorPreference: z.string().max(120).optional().default(""),
+    style: z.string().max(40).optional().default("Luxury"),
+    botField: z.string().max(100).optional().default(""),
+  })
+  .strict();
+
+/** Authenticated website project creation body. */
+export const websiteProjectCreateBodySchema = z
+  .object({
+    domain: z.string().max(253).optional().default(""),
+  })
+  .strict();
+
+/** Authenticated portal support request body. */
+export const portalSupportBodySchema = z
+  .object({
+    type: z.string().max(50).optional().default("support"),
+    message: z.string().min(1).max(2000),
+  })
+  .strict();
+
+/** Public analytics: track CTA or user events. */
+export const analyticsTrackBodySchema = z
+  .object({
+    event: z.string().max(64),
+    data: z.any().optional(),
+  })
+  .strict();
+
+const ALLOWED_ANALYTICS_EVENT_TYPES = [
+  "registration",
+  "signup",
+  "lead",
+  "newsletter",
+  "audit_started",
+  "audit_completed",
+  "lead_created",
+  "upgrade_clicked",
+] as const;
+
+export const analyticsEventTypeSchema = z.enum(ALLOWED_ANALYTICS_EVENT_TYPES);
+
+/** Public analytics: generic event endpoint. */
+export const analyticsEventBodySchema = z
+  .object({
+    type: analyticsEventTypeSchema,
+  })
+  .strict();
+
+/** Public analytics: record page visit. */
+export const analyticsVisitBodySchema = z
+  .object({
+    path: z.string().max(500).optional(),
+  })
+  .strict();
+
 /** Stripe checkout: plan key. */
 export const checkoutPlanSchema = z.object({
   plan: z.enum(["starter", "growth", "agency", "pro", "business"]).optional().default("starter"),
@@ -83,6 +198,15 @@ export const websiteAuditBodySchema = z.object({
   useQueue: z.boolean().optional().default(false),
 });
 export type WebsiteAuditBody = z.infer<typeof websiteAuditBodySchema>;
+
+/** Start Fix Engine v1 job (meta + H1 preview). */
+export const websiteFixCreateBodySchema = z
+  .object({
+    websiteAuditId: z.string().min(1).max(80),
+    issueId: z.string().min(1).max(80),
+  })
+  .strict();
+export type WebsiteFixCreateBody = z.infer<typeof websiteFixCreateBodySchema>;
 
 /**
  * Parse JSON body with schema; throw ZodError on failure.

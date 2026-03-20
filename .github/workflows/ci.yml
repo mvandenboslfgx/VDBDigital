@@ -24,8 +24,18 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
+      - name: Typecheck
+        run: npm run typecheck
+
       - name: Lint
         run: npm run lint
+
+      - name: Tests (audit scoring)
+        run: npm run test:audit-scoring
+
+      # Avoid stale/corrupt .next (esp. dev/types) if a future cache restores it
+      - name: Clean Next & tool caches
+        run: npm run clean:build-cache
 
       - name: Build
         run: npm run build
@@ -40,3 +50,4 @@ jobs:
           OPENAI_API_KEY: "sk-placeholder"
           JWT_SECRET: "test-secret-min-16-chars"
           SITE_URL: "https://example.com"
+          REDIS_URL: "redis://localhost:6379"

@@ -355,6 +355,33 @@ function buildSeoPages(): Record<string, SeoPageConfig> {
       { label: "SEO analyse WordPress", href: "/seo/seo-analyse-wordpress" },
     ],
   };
+  pages["seo-analyse-saas"] = {
+    ...WEBSITE_ANALYSE_BASE,
+    title: "SEO analyse SaaS",
+    description:
+      "SEO analyse voor SaaS-websites: optimaliseer landing pages en conversie voor software. Gratis scan voor SaaS en productbedrijven.",
+    intro:
+      "SaaS-websites hebben specifieke SEO-uitdagingen: landing pages, signup-flow en technische content. Onze SEO analyse voor SaaS kijkt naar structuur, conversie-elementen en vindbaarheid. Krijg concrete verbeterpunten om meer organisch verkeer en aanmeldingen te genereren.",
+    benefits: [
+      "SaaS- en landingpage-focus",
+      "Conversie- en signup-optimalisatie",
+      "Technische en content-SEO",
+      "Aanbevelingen voor softwarebedrijven",
+    ],
+    faqs: [
+      ...WEBSITE_ANALYSE_BASE.faqs,
+      {
+        question: "Werkt de analyse voor SaaS-websites?",
+        answer:
+          "Ja. Onze tool analyseert elke website, inclusief SaaS en product-sites. Je krijgt scores en verbeterpunten die je kunt inzetten voor betere vindbaarheid en conversie.",
+      },
+    ],
+    relatedLinks: [
+      { label: "SEO analyse webshop", href: "/seo/seo-analyse-webshop" },
+      { label: "SEO analyse WordPress", href: "/seo/seo-analyse-wordpress" },
+      { label: "SEO analyse Shopify", href: "/seo/seo-analyse-shopify" },
+    ],
+  };
 
   // —— City-based pages: website-analyse-[city] ——
   const cities = [

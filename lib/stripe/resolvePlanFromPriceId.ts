@@ -25,10 +25,14 @@ async function getPlans() {
  * Returns planId, planName, and role for the given Stripe price ID.
  * Agency → customer role; starter/growth → pro role.
  * Supports STRIPE_PRICE_ID_STARTER, _GROWTH, _AGENCY (and legacy _PRO, _BUSINESS).
+ * Empty/missing priceId → null. Known priceId with no matching env mapping → throws (fail-fast).
  */
 export async function resolvePlanFromPriceId(
-  priceId: string
+  priceId: string | null | undefined
 ): Promise<ResolvedPlan | null> {
+  const id = typeof priceId === "string" ? priceId.trim() : "";
+  if (!id) return null;
+
   const env = process.env;
   const plans = await getPlans();
   const starterPlan =
@@ -36,17 +40,14 @@ export async function resolvePlanFromPriceId(
   const growthPlan = plans.find((p) => p.name === "growth") ?? plans.find((p) => p.name === "business");
   const agencyPlan = plans.find((p) => p.name === "agency");
 
-  if (priceId === env.STRIPE_PRICE_ID_AGENCY && agencyPlan) {
+  if (id === env.STRIPE_PRICE_ID_AGENCY && agencyPlan) {
     return { planId: agencyPlan.id, planName: "agency", role: "customer" };
   }
-  if ((priceId === env.STRIPE_PRICE_ID_GROWTH || priceId === env.STRIPE_PRICE_ID_BUSINESS) && growthPlan) {
+  if ((id === env.STRIPE_PRICE_ID_GROWTH || id === env.STRIPE_PRICE_ID_BUSINESS) && growthPlan) {
     return { planId: growthPlan.id, planName: "growth", role: "pro" };
   }
-  if ((priceId === env.STRIPE_PRICE_ID_STARTER || priceId === env.STRIPE_PRICE_ID_PRO) && starterPlan) {
+  if ((id === env.STRIPE_PRICE_ID_STARTER || id === env.STRIPE_PRICE_ID_PRO) && starterPlan) {
     return { planId: starterPlan.id, planName: "starter", role: "pro" };
   }
-  if (agencyPlan) return { planId: agencyPlan.id, planName: "agency", role: "customer" };
-  if (growthPlan) return { planId: growthPlan.id, planName: "growth", role: "pro" };
-  if (starterPlan) return { planId: starterPlan.id, planName: "starter", role: "pro" };
-  return null;
+  throw new Error(`Unknown Stripe priceId: ${id}`);
 }

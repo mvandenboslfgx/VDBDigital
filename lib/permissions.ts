@@ -4,12 +4,10 @@
  */
 
 import type { UserRoleName } from "./auth";
+import { DEFAULT_OWNER_EMAILS } from "./ownerEmails";
 
 /** Only these emails are automatically granted owner role (plus env OWNER_EMAILS). */
-export const OWNER_EMAILS = [
-  "info@vdbdigital.nl",
-  "matthijsvandenbos8@gmail.com",
-] as const;
+export const OWNER_EMAILS = DEFAULT_OWNER_EMAILS;
 
 /** Roles supported by the app (must match Prisma UserRole). */
 export const ROLES = ["lead", "customer", "pro", "admin", "owner"] as const;
@@ -50,13 +48,20 @@ export function isOwner(user: UserWithRole | null): user is UserWithRole & { rol
 }
 
 /**
+ * Admin or owner (full staff access). Prefer this over raw role checks.
+ */
+export function isAdmin(user: UserWithRole | null): boolean {
+  return user != null && (user.role === "admin" || user.role === "owner");
+}
+
+/**
  * Whether the user can access the admin area.
  * Only role === "admin" or "owner" may access /admin.
  */
 export function canAccessAdmin(
   user: UserWithRole | null
 ): user is UserWithRole & { role: "admin" | "owner" } {
-  return user != null && (user.role === "admin" || user.role === "owner");
+  return isAdmin(user);
 }
 
 /**

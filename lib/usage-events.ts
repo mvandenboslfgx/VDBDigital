@@ -10,6 +10,8 @@ const ALLOWED_EVENTS = new Set([
   "signup",
   "audit_started",
   "audit_completed",
+  "fix_approved",
+  "fix_apply_exported",
   "upgrade_clicked",
   "subscription_created",
   "subscription_cancelled",

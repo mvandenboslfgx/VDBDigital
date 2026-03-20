@@ -1,17 +1,18 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { getServerEnv } from "@/lib/env";
 
 export async function createClient() {
   const cookieStore = await cookies();
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url) {
-    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL. Add it to .env.local.");
+  const serverEnv = getServerEnv();
+  const url = serverEnv.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  const key = serverEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+  if (!url || !key) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[Supabase] Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY. Auth will not work.");
+    }
   }
-  if (!key) {
-    throw new Error("Missing NEXT_PUBLIC_SUPABASE_ANON_KEY. Add it to .env.local.");
-  }
-  return createServerClient(url, key, {
+  return createServerClient(url || "https://placeholder.supabase.co", key || "placeholder-anon-key", {
     cookies: {
       getAll() {
         return cookieStore.getAll();

@@ -1,13 +1,13 @@
 /**
  * Map audit score (0–100) to semantic color names for UI.
+ * Consistent brand: indigo everywhere; green for excellent, muted indigo for lower.
  */
-
-export type ScoreColorName = "green" | "indigo" | "orange" | "red";
+export type ScoreColorName = "green" | "indigo" | "indigoMuted" | "red";
 
 export function getScoreColor(score: number): ScoreColorName {
   if (score >= 90) return "green";
   if (score >= 70) return "indigo";
-  if (score >= 50) return "orange";
+  if (score >= 50) return "indigoMuted";
   return "red";
 }
 
@@ -17,9 +17,10 @@ export function getScoreColorClass(score: number, prefix: "text" | "bg" | "borde
   const shades: Record<ScoreColorName, string> = {
     green: "600",
     indigo: "600",
-    orange: "600",
+    indigoMuted: "400",
     red: "600",
   };
+  if (color === "indigoMuted") return `${prefix}-indigo-400`;
   const shade = shades[color];
   return `${prefix}-${color}-${shade}`;
 }
@@ -27,7 +28,7 @@ export function getScoreColorClass(score: number, prefix: "text" | "bg" | "borde
 const SCORE_COLOR_HEX: Record<ScoreColorName, string> = {
   green: "#22c55e",
   indigo: "#4F46E5",
-  orange: "#f97316",
+  indigoMuted: "#818cf8",
   red: "#ef4444",
 };
 
