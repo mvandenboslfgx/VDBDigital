@@ -37,14 +37,16 @@ export function CheckoutClient() {
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(data?.error || "Checkout kon niet worden gestart.");
+        const message = (data as any)?.error || (data as any)?.message;
+        const suffix = message ? `: ${message}` : "";
+        throw new Error(`HTTP ${res.status}${suffix}`);
       }
 
       if (data?.url) {
         window.location.href = data.url;
         return;
       }
-      throw new Error(data?.error || "Checkout URL ontbreekt.");
+      throw new Error((data as any)?.error || (data as any)?.message || "Checkout URL ontbreekt.");
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Checkout faalde. Probeer opnieuw.";
       setError(msg);
