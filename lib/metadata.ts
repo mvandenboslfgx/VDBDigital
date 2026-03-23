@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 const siteUrl = "https://www.vdbdigital.nl";
 const siteName = "VDB Digital";
 
-const defaultOgImage = `${siteUrl}/og-default.png`;
+const defaultOgImage = `${siteUrl}/og-default.svg`;
 
 export function pageMetadata({
   title,
