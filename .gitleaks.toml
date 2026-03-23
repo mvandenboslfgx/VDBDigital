@@ -1,0 +1,14 @@
+# Extend default rules; allowlist docs/templates that use illustrative values.
+# See: https://github.com/gitleaks/gitleaks
+title = "VDB Digital gitleaks"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Example files and CI placeholders (not real secrets)"
+paths = [
+  '''\.env\.example$''',
+  '''^docs/''',
+  '''^\.github/workflows/ci\.yml$''',
+]

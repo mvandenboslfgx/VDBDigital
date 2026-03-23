@@ -1,0 +1,121 @@
+# Production release gate: build + smoke, optional Vercel CLI deploy, post-deploy health.
+# If you use Vercel Git integration (auto deploy on push), set repo variable RELEASE_USE_VERCEL_CLI=false
+# and this workflow still validates + hits PRODUCTION_URL after deploy.
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: "22"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Validate dependency tree
+        run: npm ls --depth=0
+
+      - name: Prisma generate
+        run: npx prisma generate
+
+      - name: Build (production)
+        run: npm run build
+        env:
+          NODE_ENV: production
+          DATABASE_URL: "postgresql://test:test@localhost:5432/test"
+          DIRECT_URL: "postgresql://test:test@localhost:5432/test"
+          NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "test"
+          STRIPE_SECRET_KEY: "sk_test_placeholder"
+          STRIPE_WEBHOOK_SECRET: "whsec_placeholder"
+          OPENAI_API_KEY: "sk-placeholder"
+          JWT_SECRET: "test-secret-min-16-chars"
+          SITE_URL: "https://example.com"
+          REDIS_URL: "redis://localhost:6379"
+
+      - name: Smoke test (next start + /api/health/live)
+        env:
+          NODE_ENV: production
+          PORT: 3000
+          DATABASE_URL: "postgresql://test:test@localhost:5432/test"
+          DIRECT_URL: "postgresql://test:test@localhost:5432/test"
+          NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "test"
+          STRIPE_SECRET_KEY: "sk_test_placeholder"
+          STRIPE_WEBHOOK_SECRET: "whsec_placeholder"
+          OPENAI_API_KEY: "sk-placeholder"
+          JWT_SECRET: "test-secret-min-16-chars"
+          SITE_URL: "https://example.com"
+          REDIS_URL: "redis://localhost:6379"
+        run: |
+          set -e
+          npm run start &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+          for i in $(seq 1 45); do
+            if curl -fsS "http://127.0.0.1:3000/api/health/live" | python3 -c "import json,sys; j=json.load(sys.stdin); sys.exit(0 if j.get('status')=='ok' else 1)"; then
+              echo "Smoke OK (GET /api/health/live)"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::Smoke test failed"
+          exit 1
+
+      # Optional: CLI deploy. If false, rely on Vercel Git deploy for the same push.
+      - name: Deploy to Vercel (CLI)
+        if: vars.RELEASE_USE_VERCEL_CLI == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: npx --yes vercel deploy --prod --yes --token "$VERCEL_TOKEN"
+
+      - name: Post-deploy health (production)
+        env:
+          PRODUCTION_URL: ${{ vars.PRODUCTION_URL }}
+          RELEASE_REQUIRE_PRODUCTION_HEALTH: ${{ vars.RELEASE_REQUIRE_PRODUCTION_HEALTH }}
+        run: |
+          set -e
+          if [ -z "${PRODUCTION_URL:-}" ]; then
+            if [ "${RELEASE_REQUIRE_PRODUCTION_HEALTH:-}" = "true" ]; then
+              echo "::error::PRODUCTION_URL is required when RELEASE_REQUIRE_PRODUCTION_HEALTH=true"
+              exit 1
+            fi
+            echo "PRODUCTION_URL not set — skipping remote health (set GitHub variable PRODUCTION_URL, e.g. https://www.example.com)"
+            exit 0
+          fi
+          BASE="${PRODUCTION_URL%/}"
+          HEALTH="${BASE}/api/health/live"
+          echo "Checking $HEALTH"
+          for i in $(seq 1 20); do
+            if curl -fsS "$HEALTH" | python3 -c "import json,sys; j=json.load(sys.stdin); sys.exit(0 if j.get('status')=='ok' else 1)"; then
+              echo "Post-deploy health OK"
+              exit 0
+            fi
+            echo "Waiting for Vercel deploy... ($i/20)"
+            sleep 15
+          done
+          echo "::error::Post-deploy health check failed for $HEALTH"
+          exit 1

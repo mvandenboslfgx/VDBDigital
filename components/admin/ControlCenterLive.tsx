@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef, memo } from "react";
 import { MetricCard } from "@/components/admin/MetricCard";
 import Link from "next/link";
 import Image from "next/image";
-import type { ControlCenterLiveData, ActivityItem } from "@/app/api/admin/control-center/live/route";
+import type { ControlCenterLiveData, ActivityItem } from "@/lib/admin/control-center-live";
+import { useAdaptivePollingInterval } from "@/hooks/useAdaptivePollingInterval";
 
-const POLL_INTERVAL_MS = 20_000;
+const POLL_VISIBLE_MS = 10_000;
+const POLL_HIDDEN_MS = 60_000;
 
 interface ControlCenterLiveProps {
   initialData?: ControlCenterLiveData | null;
@@ -22,7 +24,7 @@ function formatTime(iso: string): string {
   return d.toLocaleDateString("nl-NL", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 }
 
-function ActivityRow({ item }: { item: ActivityItem }) {
+const ActivityRow = memo(function ActivityRow({ item }: { item: ActivityItem }) {
   if (item.type === "scan") {
     return (
       <div className="flex items-center justify-between gap-4 border-b border-gray-100 py-3 last:border-0">
@@ -97,35 +99,60 @@ function ActivityRow({ item }: { item: ActivityItem }) {
     );
   }
   return null;
-}
+});
 
 export default function ControlCenterLive({ initialData }: ControlCenterLiveProps) {
   const [data, setData] = useState<ControlCenterLiveData | null>(initialData ?? null);
   const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(null);
+  const pollIntervalMs = useAdaptivePollingInterval(POLL_VISIBLE_MS, POLL_HIDDEN_MS);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
-    async function fetchLive() {
-      try {
-        const res = await fetch("/api/admin/control-center/live", { credentials: "include" });
-        if (!res.ok) {
-          setError("Kon gegevens niet laden");
-          return;
-        }
-        const json = await res.json();
-        setData(json);
-        setError(null);
-      } catch {
-        setError("Netwerkfout");
-      } finally {
-        setLoading(false);
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  const mergeIfNewer = useCallback((json: ControlCenterLiveData) => {
+    setData((prev) => {
+      if (prev?.timestamp === json.timestamp) return prev;
+      return json;
+    });
+  }, []);
+
+  const fetchLive = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/control-center/live", { credentials: "include" });
+      if (!mountedRef.current) return;
+      if (!res.ok) {
+        setError("Kon gegevens niet laden");
+        return;
       }
+      const json = (await res.json()) as ControlCenterLiveData;
+      if (!mountedRef.current) return;
+      mergeIfNewer(json);
+      setError(null);
+    } catch {
+      if (mountedRef.current) setError("Netwerkfout");
+    } finally {
+      if (mountedRef.current) setLoading(false);
+    }
+  }, [mergeIfNewer]);
+
+  useEffect(() => {
+    if (!initialData) {
+      void fetchLive();
+    } else {
+      setLoading(false);
     }
 
-    fetchLive();
-    const interval = setInterval(fetchLive, POLL_INTERVAL_MS);
+    const interval = setInterval(() => {
+      void fetchLive();
+    }, pollIntervalMs);
     return () => clearInterval(interval);
-  }, []);
+  }, [initialData, fetchLive, pollIntervalMs]);
 
   if (loading && !data) {
     return (

@@ -72,9 +72,9 @@ In je environment (.env):
 STRIPE_PRICE_ID_STARTER=price_xxx
 STRIPE_PRICE_ID_GROWTH=price_xxx
 STRIPE_PRICE_ID_AGENCY=price_xxx
-STRIPE_SECRET_KEY=sk_live_xxx
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_xxx
-STRIPE_WEBHOOK_SECRET=whsec_xxx
+STRIPE_SECRET_KEY=<from Stripe Dashboard — secret key>
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=<from Stripe Dashboard — publishable key>
+STRIPE_WEBHOOK_SECRET=<from Stripe CLI or Dashboard — whsec_…>
 ```
 
 ---

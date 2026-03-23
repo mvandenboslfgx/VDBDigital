@@ -4,14 +4,33 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
+    # Bump package.json + lockfile together where possible (lockfile-aligned)
+    versioning-strategy: increase
+    # Eerste match wint — specifieke groepen vóór brede prod/dev buckets
     groups:
+      core:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+          - "@next/*"
+      prisma:
+        patterns:
+          - "prisma"
+          - "@prisma/client"
+      tooling:
+        patterns:
+          - "eslint*"
+          - "typescript"
+          - "@typescript-eslint/*"
       production-dependencies:
         dependency-type: "production"
       development-dependencies:
         dependency-type: "development"
     commit-message:
       prefix: "deps"
+    # Native Dependabot heeft geen label per group; filter in GitHub op [deps] of branch name.
     labels:
       - "dependencies"
 

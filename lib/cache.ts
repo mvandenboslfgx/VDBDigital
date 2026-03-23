@@ -3,7 +3,7 @@
  * Uses Redis when REDIS_URL is set; otherwise in-memory. TTL 30–60 seconds.
  */
 
-import { redisGet, redisSet, isRedisAvailable } from "./redis";
+import { redisGet, redisSet, redisDel, isRedisAvailable } from "./redis";
 
 const DEFAULT_TTL_MS = 45_000; // 45 seconds
 const CACHE_PREFIX = "vdb:cache:";
@@ -71,6 +71,15 @@ export async function getOrSet<T>(
   }
 
   return value;
+}
+
+/**
+ * Drop a logical cache entry from Redis + in-memory (event-driven invalidation).
+ */
+export async function invalidateCache(logicalKey: string): Promise<void> {
+  const fullKey = CACHE_PREFIX + logicalKey;
+  memoryStore.delete(fullKey);
+  await redisDel(fullKey);
 }
 
 /** Cache key for dashboard analytics (per user). */

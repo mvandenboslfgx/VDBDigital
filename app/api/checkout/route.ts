@@ -8,6 +8,9 @@ import { getTrustedOrigin } from "@/lib/siteUrl";
 import { trackEvent } from "@/lib/analytics";
 import { withRetry } from "@/lib/retry";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const checkoutSchema = z.object({
   items: z
     .array(
@@ -20,8 +23,21 @@ const checkoutSchema = z.object({
     .min(1)
     .max(50),
 });
+const LOCALE_PREFIX_RE = /^\/(nl|en)(?:\/|$)/i;
 
 type CheckoutInput = z.infer<typeof checkoutSchema>;
+
+function resolveLocalePrefix(request: Request): string {
+  const referer = request.headers.get("referer");
+  if (!referer) return "/nl";
+  try {
+    const pathname = new URL(referer).pathname;
+    const match = pathname.match(LOCALE_PREFIX_RE);
+    return match ? `/${match[1].toLowerCase()}` : "/nl";
+  } catch {
+    return "/nl";
+  }
+}
 
 export const POST = createSecureRoute<CheckoutInput, undefined>({
   auth: "required",
@@ -108,14 +124,15 @@ export const POST = createSecureRoute<CheckoutInput, undefined>({
 
     try {
       const origin = getTrustedOrigin(request.headers.get("origin"));
+      const localePrefix = resolveLocalePrefix(request);
 
       const session = await withRetry(() =>
         stripe.checkout.sessions.create({
           mode: "payment",
           payment_method_types: ["card"],
           line_items: stripeLineItems,
-          success_url: `${origin}/products?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${origin}/cart`,
+          success_url: `${origin}${localePrefix}/products?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${origin}${localePrefix}/cart`,
           customer_email: user.email,
           metadata: {
             checkoutType: "product_order",

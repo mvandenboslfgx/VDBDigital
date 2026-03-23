@@ -11,7 +11,9 @@ import { DashboardBentoGrid } from "@/components/dashboard/DashboardBentoGrid";
 import { RecommendedStack } from "@/components/dashboard/RecommendedStack";
 import { getRelevantAds } from "@/lib/ads";
 import { getOrSet, dashboardCacheKey } from "@/lib/cache";
+import { CACHE_TTL_MS } from "@/lib/cache-policy";
 import { getTranslations } from "@/lib/i18n";
+import { getUsageStatsForDashboard } from "@/lib/usage-dashboard-stats";
 
 const DashboardOnboarding = dynamic(
   () => import("@/components/onboarding/DashboardOnboarding").then((m) => ({ default: m.default })),
@@ -37,46 +39,50 @@ export default async function DashboardHomePage() {
 
   const client = await prisma.client.findFirst({ where: { userId: user.id } });
 
-  const [recentReports, usage, aiByTool, recentActivity] = await getOrSet(
-    dashboardCacheKey(user.id),
-    async () =>
-      Promise.all([
-    prisma.auditReport.findMany({
+  const [[recentReports, usage, aiByTool, recentActivity], usageCardStats, totalScans] = await Promise.all([
+    getOrSet(
+      dashboardCacheKey(user.id),
+      async () =>
+        Promise.all([
+          prisma.auditReport
+            .findMany({
+              where: { lead: { email: user.email } },
+              orderBy: { createdAt: "desc" },
+              take: 5,
+              select: {
+                id: true,
+                url: true,
+                createdAt: true,
+                seoScore: true,
+                perfScore: true,
+                uxScore: true,
+                convScore: true,
+              },
+            })
+            .then((reports) => reports.map((report) => ({ report }))),
+          getUsage(user.id),
+          prisma.aIUsage.groupBy({
+            by: ["tool"],
+            where: {
+              userId: user.id,
+              createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+            },
+            _count: { tool: true },
+          }),
+          prisma.usageEvent.findMany({
+            where: { userId: user.id },
+            orderBy: { createdAt: "desc" },
+            take: 5,
+            select: { id: true, event: true, createdAt: true },
+          }),
+        ]),
+      CACHE_TTL_MS.DASHBOARD_HOME
+    ),
+    getUsageStatsForDashboard(user.id, user.email),
+    prisma.auditReport.count({
       where: { lead: { email: user.email } },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-      select: {
-        id: true,
-        url: true,
-        createdAt: true,
-        seoScore: true,
-        perfScore: true,
-        uxScore: true,
-        convScore: true,
-      },
-    }).then((reports) => reports.map((report) => ({ report }))),
-    getUsage(user.id),
-    prisma.aIUsage.groupBy({
-      by: ["tool"],
-      where: {
-        userId: user.id,
-        createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
-      },
-      _count: { tool: true },
     }),
-    prisma.usageEvent.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-      select: { id: true, event: true, createdAt: true },
-    }),
-  ]),
-    45_000
-  );
-
-  const totalScans = await prisma.auditReport.count({
-    where: { lead: { email: user.email } },
-  });
+  ]);
 
   const allCards = [
     {
@@ -254,7 +260,7 @@ export default async function DashboardHomePage() {
         )}
       </div>
 
-      <UsageDashboard />
+      <UsageDashboard initialStats={usageCardStats} />
 
       <DashboardWidget
         title={t("dashboard.usageThisMonth")}

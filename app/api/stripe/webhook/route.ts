@@ -13,6 +13,7 @@ import { createSecureRoute } from "@/lib/secureRoute";
 import { z } from "zod";
 import { getServerEnv } from "@/lib/env";
 import { addProductOrderJob } from "@/modules/commerce/queue";
+import { onPlatformActivity, invalidateControlCenterLive } from "@/lib/cache-invalidation";
 
 const serverEnv = getServerEnv();
 const stripe = serverEnv.STRIPE_SECRET_KEY ? new Stripe(serverEnv.STRIPE_SECRET_KEY) : null;
@@ -64,6 +65,7 @@ export const POST = createSecureRoute<string, undefined>({
       if (event.type === "checkout.session.completed") {
         const session = event.data.object as Stripe.Checkout.Session;
         const checkoutType = session.metadata?.checkoutType;
+        let checkoutCacheUserId: string | undefined;
 
         if (checkoutType === "product_order") {
           const productOrderId = session.metadata?.productOrderId;
@@ -106,6 +108,7 @@ export const POST = createSecureRoute<string, undefined>({
                   });
                 }
               });
+              if (updatedOrder.userId) checkoutCacheUserId = updatedOrder.userId;
             }
           }
         } else {
@@ -131,8 +134,12 @@ export const POST = createSecureRoute<string, undefined>({
                 () => auditPlanUpgrade(uid, resolved.planName, { source: "checkout.session.completed" })
               );
             }
+            if (uid) checkoutCacheUserId = uid;
           }
         }
+        runInBackground("invalidateCachesStripeCheckout", () =>
+          onPlatformActivity({ userId: checkoutCacheUserId, reason: "stripe_checkout" })
+        );
       } else if (event.type === "customer.subscription.created") {
         const sub = event.data.object as Stripe.Subscription;
         if (sub.status === "active") {
@@ -152,6 +159,9 @@ export const POST = createSecureRoute<string, undefined>({
               runInBackground(
                 "auditPlanUpgrade",
                 () => auditPlanUpgrade(user.id, resolved.planName, { source: "subscription.created" })
+              );
+              runInBackground("invalidateCachesSubCreated", () =>
+                onPlatformActivity({ userId: user.id, reason: "subscription_created" })
               );
             }
           }
@@ -197,11 +207,13 @@ export const POST = createSecureRoute<string, undefined>({
           },
         });
         await recordUsageEvent("subscription_cancelled", undefined, { subscriptionId: sub.id });
+        runInBackground("invalidateCachesSubDeleted", () => invalidateControlCenterLive());
       } else if (event.type === "invoice.payment_succeeded") {
         const invoice = event.data.object as Stripe.Invoice;
         if (invoice.subscription && invoice.customer_email) {
           trackEvent("invoice_paid", { subscriptionId: String(invoice.subscription) });
         }
+        runInBackground("invalidateCachesInvoicePaid", () => invalidateControlCenterLive());
       } else if (event.type === "invoice.payment_failed") {
         const invoice = event.data.object as Stripe.Invoice;
         logger.warn("[Stripe Webhook] Invoice payment failed", {

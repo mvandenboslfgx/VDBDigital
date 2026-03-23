@@ -1,0 +1,174 @@
+# Safe dependency upgrade validation — lockfile/package changes only (minder dubbel met CI).
+name: Upgrade Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "package.json"
+      - "package-lock.json"
+
+concurrency:
+  group: upgrade-validation-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  validate-upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install deps (clean)
+        run: npm ci
+
+      - name: Validate dependency tree
+        run: npm ls --depth=0
+
+      - name: Prisma validate
+        run: npx prisma validate
+
+      # Expliciet: client in sync met schema (naast postinstall)
+      - name: Prisma generate
+        run: npx prisma generate
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build (production mode)
+        run: npm run build
+        env:
+          NODE_ENV: production
+          DATABASE_URL: "postgresql://test:test@localhost:5432/test"
+          DIRECT_URL: "postgresql://test:test@localhost:5432/test"
+          NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "test"
+          STRIPE_SECRET_KEY: "sk_test_placeholder"
+          STRIPE_WEBHOOK_SECRET: "whsec_placeholder"
+          OPENAI_API_KEY: "sk-placeholder"
+          JWT_SECRET: "test-secret-min-16-chars"
+          SITE_URL: "https://example.com"
+          REDIS_URL: "redis://localhost:6379"
+
+      # Static route — geen DB; vangt runtime/start crashes
+      - name: Smoke test (next start + curl)
+        env:
+          NODE_ENV: production
+          PORT: 3000
+          DATABASE_URL: "postgresql://test:test@localhost:5432/test"
+          DIRECT_URL: "postgresql://test:test@localhost:5432/test"
+          NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "test"
+          STRIPE_SECRET_KEY: "sk_test_placeholder"
+          STRIPE_WEBHOOK_SECRET: "whsec_placeholder"
+          OPENAI_API_KEY: "sk-placeholder"
+          JWT_SECRET: "test-secret-min-16-chars"
+          SITE_URL: "https://example.com"
+          REDIS_URL: "redis://localhost:6379"
+        run: |
+          set -e
+          npm run start &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+          for i in $(seq 1 45); do
+            if curl -fsS "http://127.0.0.1:3000/robots.txt" >/dev/null 2>&1; then
+              echo "Smoke OK (GET /robots.txt)"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::Smoke test failed — server did not respond on :3000"
+          exit 1
+
+      - name: Outdated deps (informational)
+        run: npm outdated || true
+
+      - name: Core dependency diff (report + output)
+        id: core_diff
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/check-core-updates.js --ci-report-only
+
+      - name: Label PR (core-update)
+        if: steps.core_diff.outputs.core_changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = "core-update";
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            await github.rest.repos.createLabel({
+              owner,
+              repo,
+              name: label,
+              color: "B60205",
+              description: "next/react/prisma stack bump — review",
+            }).catch((e) => {
+              if (e.status !== 422) throw e;
+            });
+            const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+              owner,
+              repo,
+              issue_number,
+            });
+            if (labels.some((l) => l.name === label)) return;
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number,
+              labels: [label],
+            });
+
+      # Zet repo variable UPGRADE_CORE_POLICY_SOFT=true om enforce over te slaan (label blijft)
+      - name: Enforce manual review for core bumps
+        if: steps.core_diff.outputs.core_changed == 'true' && vars.UPGRADE_CORE_POLICY_SOFT != 'true'
+        run: |
+          echo "::error::Core dependency wijziging — handmatige review vereist (of zet repo variable UPGRADE_CORE_POLICY_SOFT=true voor soft mode)."
+          exit 1
+
+      - name: Comment upgrade validated
+        if: success() && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              "### Upgrade validation",
+              "",
+              "- `npm ci` + `npm ls --depth=0` OK",
+              "- `prisma validate` + `prisma generate` + `typecheck` + **production build** OK",
+              "- **Smoke:** `next start` + `GET /robots.txt` OK",
+              "- Core policy: geen wijziging van next/react/prisma in `package.json`, of label **`core-update`** + review (tenzij soft mode).",
+              "",
+              "_Workflow: `upgrade-validation.yml`_",
+            ].join("\n");
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+            const marker = "<!-- upgrade-validation-bot -->";
+            const existing = comments.find((c) =>
+              c.user?.type === "Bot" && c.body?.includes(marker),
+            );
+            const payload = { owner: context.repo.owner, repo: context.repo.repo, body: marker + "\n" + body };
+            if (existing) {
+              await github.rest.issues.updateComment({ ...payload, comment_id: existing.id });
+            } else {
+              await github.rest.issues.createComment({ ...payload, issue_number: context.issue.number });
+            }

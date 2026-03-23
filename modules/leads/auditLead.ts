@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import { incrementAuditCount } from "@/lib/audit-limits";
 import { recordUsageEvent } from "@/lib/usage-events";
+import { onPlatformActivity } from "@/lib/cache-invalidation";
 
 const AUDIT_SOURCE = "ai-website-audit";
 
@@ -108,6 +109,8 @@ export async function captureAuditLead(
       reportId: report.id,
     });
   }
+
+  void onPlatformActivity({ userId: userId ?? undefined, reason: "audit_report_created" }).catch(() => undefined);
 
   return { leadId: lead.id, reportId: report.id };
 }

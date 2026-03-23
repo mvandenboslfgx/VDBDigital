@@ -3,24 +3,23 @@
 import { useEffect, useState } from "react";
 import MetricCard from "@/components/ui/MetricCard";
 import DashboardWidget from "@/components/ui/DashboardWidget";
+import type { UsageStatsCard } from "@/lib/usage-dashboard-stats";
 
-interface UsageStats {
-  scansUsed: number;
-  scansLimit: number | null;
-  reportsGenerated: number;
-  aiUsage: number;
-  aiLimit: number | null;
-}
+type Props = {
+  /** When set (server-rendered), skips client fetch — faster first paint. */
+  initialStats?: UsageStatsCard | null;
+};
 
-export function UsageDashboard() {
-  const [stats, setStats] = useState<UsageStats | null>(null);
+export function UsageDashboard({ initialStats = null }: Props) {
+  const [stats, setStats] = useState<UsageStatsCard | null>(initialStats);
 
   useEffect(() => {
+    if (initialStats) return;
     fetch("/api/usage/stats")
       .then((res) => res.json())
       .then((data) => data.stats && setStats(data.stats))
       .catch(() => {});
-  }, []);
+  }, [initialStats]);
 
   if (!stats) {
     return (

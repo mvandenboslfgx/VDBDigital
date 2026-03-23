@@ -32,6 +32,7 @@ Gebruik deze checklist vóór en na elke productie-release om veiligheid, stabil
 | .env.example bijgewerkt | ✅ | Stripe, Supabase, SMTP, REDIS_URL, SITE_URL, OWNER_EMAILS |
 | DATABASE_URL + DIRECT_URL | ✅ | Prisma pooler + direct |
 | SITE_URL voor redirects/emails | Aanbevolen | Zetten in productie |
+| Vercel Preview/Production env | Verplicht | Zie [VERCEL_ENV_CHECKLIST.md](./VERCEL_ENV_CHECKLIST.md) (o.a. `REDIS_URL`) |
 
 ---
 

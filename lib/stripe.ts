@@ -4,17 +4,20 @@
 import Stripe from "stripe";
 import { getServerEnv } from "@/lib/env";
 
-const serverEnv = getServerEnv();
-const stripe = serverEnv.STRIPE_SECRET_KEY ? new Stripe(serverEnv.STRIPE_SECRET_KEY) : null;
-
 export function getStripe(): Stripe | null {
-  return stripe;
+  const serverEnv = getServerEnv();
+  return serverEnv.STRIPE_SECRET_KEY ? new Stripe(serverEnv.STRIPE_SECRET_KEY) : null;
 }
 
-export const STRIPE_WEBHOOK_SECRET = serverEnv.STRIPE_WEBHOOK_SECRET ?? "";
+export function getStripeWebhookSecret(): string {
+  return getServerEnv().STRIPE_WEBHOOK_SECRET ?? "";
+}
 
-export const PRICE_IDS = {
-  pro: serverEnv.STRIPE_PRICE_ID_PRO ?? "",
-  business: serverEnv.STRIPE_PRICE_ID_BUSINESS ?? "",
-  agency: serverEnv.STRIPE_PRICE_ID_AGENCY ?? "",
-} as const;
+export function getStripePriceIds() {
+  const serverEnv = getServerEnv();
+  return {
+    pro: serverEnv.STRIPE_PRICE_ID_PRO ?? "",
+    business: serverEnv.STRIPE_PRICE_ID_BUSINESS ?? "",
+    agency: serverEnv.STRIPE_PRICE_ID_AGENCY ?? "",
+  } as const;
+}

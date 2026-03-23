@@ -21,6 +21,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Fail fast: broken tree, extraneous packages, peer conflicts (non-zero exit)
+      - name: Verify dependency tree
+        run: npm ls --depth=0
+
       - name: Generate Prisma client
         run: npx prisma generate
 
