@@ -130,7 +130,7 @@ jobs:
 
       - name: Label PR (core-update)
         if: steps.deps.outputs.changed == 'true' && steps.core_diff.outputs.core_changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const label = "core-update";
@@ -168,7 +168,7 @@ jobs:
 
       - name: Comment upgrade validated
         if: success() && steps.deps.outputs.changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const body = [
