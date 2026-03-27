@@ -93,6 +93,10 @@ const nextConfig = {
       { source: "/seo-analyse-shopify", destination: "/seo/seo-analyse-shopify", permanent: true },
       { source: "/seo-analyse-saas", destination: "/seo/seo-analyse-saas", permanent: true },
       { source: "/website-audit-gratis", destination: "/seo/website-analyse-gratis", permanent: true },
+      // Backward-compatible asset paths (avoid 404 noise in logs).
+      { source: "/favicon.ico", destination: "/icon.svg", permanent: false },
+      { source: "/favicon.png", destination: "/icon.svg", permanent: false },
+      { source: "/og-default.png", destination: "/og-default.svg", permanent: false },
     ];
   },
 };

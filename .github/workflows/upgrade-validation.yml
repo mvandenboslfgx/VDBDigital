@@ -1,12 +1,10 @@
-# Safe dependency upgrade validation — lockfile/package changes only (minder dubbel met CI).
+# Safe dependency upgrade validation — full run when package files change; otherwise reports success
+# so branch protection (required check) never stays on "Expected" when paths filter skips the workflow.
 name: Upgrade Validation
 
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "package.json"
-      - "package-lock.json"
 
 concurrency:
   group: upgrade-validation-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -26,29 +24,53 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Detect package / lockfile changes in PR
+        id: deps
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          if git diff --name-only "$BASE" "$HEAD" | grep -qE '^package(-lock)?\.json$'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip (no package.json or package-lock.json changes)
+        if: steps.deps.outputs.changed != 'true'
+        run: |
+          echo "Geen wijzigingen aan package.json of package-lock.json — volledige upgrade-validatie overgeslagen (CI dekt de rest)."
+          echo "Deze job meldt wel succes zodat de verplichte branch-check niet blijft hangen."
+
       - name: Use Node 22
+        if: steps.deps.outputs.changed == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
 
       - name: Install deps (clean)
+        if: steps.deps.outputs.changed == 'true'
         run: npm ci
 
       - name: Validate dependency tree
+        if: steps.deps.outputs.changed == 'true'
         run: npm ls --depth=0
 
       - name: Prisma validate
+        if: steps.deps.outputs.changed == 'true'
         run: npx prisma validate
 
       # Expliciet: client in sync met schema (naast postinstall)
       - name: Prisma generate
+        if: steps.deps.outputs.changed == 'true'
         run: npx prisma generate
 
       - name: Typecheck
+        if: steps.deps.outputs.changed == 'true'
         run: npm run typecheck
 
       - name: Build (production mode)
+        if: steps.deps.outputs.changed == 'true'
         run: npm run build
         env:
           NODE_ENV: production
@@ -56,7 +78,7 @@ jobs:
           DIRECT_URL: "postgresql://test:test@localhost:5432/test"
           NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co"
           NEXT_PUBLIC_SUPABASE_ANON_KEY: "test"
-          STRIPE_SECRET_KEY: "sk_test_placeholder"
+          STRIPE_SECRET_KEY: "sk_placeholder"
           STRIPE_WEBHOOK_SECRET: "whsec_placeholder"
           OPENAI_API_KEY: "sk-placeholder"
           JWT_SECRET: "test-secret-min-16-chars"
@@ -65,6 +87,7 @@ jobs:
 
       # Static route — geen DB; vangt runtime/start crashes
       - name: Smoke test (next start + curl)
+        if: steps.deps.outputs.changed == 'true'
         env:
           NODE_ENV: production
           PORT: 3000
@@ -72,7 +95,7 @@ jobs:
           DIRECT_URL: "postgresql://test:test@localhost:5432/test"
           NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co"
           NEXT_PUBLIC_SUPABASE_ANON_KEY: "test"
-          STRIPE_SECRET_KEY: "sk_test_placeholder"
+          STRIPE_SECRET_KEY: "sk_placeholder"
           STRIPE_WEBHOOK_SECRET: "whsec_placeholder"
           OPENAI_API_KEY: "sk-placeholder"
           JWT_SECRET: "test-secret-min-16-chars"
@@ -94,9 +117,11 @@ jobs:
           exit 1
 
       - name: Outdated deps (informational)
+        if: steps.deps.outputs.changed == 'true'
         run: npm outdated || true
 
       - name: Core dependency diff (report + output)
+        if: steps.deps.outputs.changed == 'true'
         id: core_diff
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -104,7 +129,7 @@ jobs:
         run: node scripts/check-core-updates.js --ci-report-only
 
       - name: Label PR (core-update)
-        if: steps.core_diff.outputs.core_changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        if: steps.deps.outputs.changed == 'true' && steps.core_diff.outputs.core_changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository
         uses: actions/github-script@v7
         with:
           script: |
@@ -136,13 +161,13 @@ jobs:
 
       # Zet repo variable UPGRADE_CORE_POLICY_SOFT=true om enforce over te slaan (label blijft)
       - name: Enforce manual review for core bumps
-        if: steps.core_diff.outputs.core_changed == 'true' && vars.UPGRADE_CORE_POLICY_SOFT != 'true'
+        if: steps.deps.outputs.changed == 'true' && steps.core_diff.outputs.core_changed == 'true' && vars.UPGRADE_CORE_POLICY_SOFT != 'true'
         run: |
           echo "::error::Core dependency wijziging — handmatige review vereist (of zet repo variable UPGRADE_CORE_POLICY_SOFT=true voor soft mode)."
           exit 1
 
       - name: Comment upgrade validated
-        if: success() && github.event.pull_request.head.repo.full_name == github.repository
+        if: success() && steps.deps.outputs.changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository
         uses: actions/github-script@v7
         with:
           script: |
